@@ -1,0 +1,19 @@
+version: v1
+name: buf.build/sourcenetwork/sourcehub
+deps:
+  - buf.build/cosmos/gogo-proto
+  - buf.build/googleapis/googleapis
+  - buf.build/cosmos/cosmos-proto
+  - buf.build/cosmos/cosmos-sdk
+
+build:
+  excludes:
+    - zanzi
+
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT
+
