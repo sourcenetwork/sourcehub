@@ -1,0 +1,3 @@
+[submodule "submodules/zanzi"]
+	path = submodules/zanzi
+	url = git@github.com:sourcenetwork/source-zanzibar.git
