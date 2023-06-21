@@ -1,7 +1,57 @@
 syntax = "proto3";
+
 package sourcehub.acp;
 
 option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc CreatePolicy       (MsgCreatePolicy      ) returns (MsgCreatePolicyResponse      );
+  rpc DeletePolicy       (MsgDeletePolicy      ) returns (MsgDeletePolicyResponse      );
+  rpc CreateRelationship (MsgCreateRelationship) returns (MsgCreateRelationshipResponse);
+  rpc DeleteRelationship (MsgDeleteRelationship) returns (MsgDeleteRelationshipResponse);
+  rpc RegisterObject     (MsgRegisterObject    ) returns (MsgRegisterObjectResponse    );
+  rpc UnregisterObject   (MsgUnregisterObject  ) returns (MsgUnregisterObjectResponse  );
+}
+message MsgCreatePolicy {
+  string creator = 1;
+  string thing   = 2;
+}
+
+message MsgCreatePolicyResponse {}
+
+message MsgDeletePolicy {
+  string creator = 1;
+  string thing   = 2;
+}
+
+message MsgDeletePolicyResponse {}
+
+message MsgCreateRelationship {
+  string creator = 1;
+  string thing   = 2;
+}
+
+message MsgCreateRelationshipResponse {}
+
+message MsgDeleteRelationship {
+  string creator = 1;
+  string thing   = 2;
+}
+
+message MsgDeleteRelationshipResponse {}
+
+message MsgRegisterObject {
+  string creator = 1;
+  string thing   = 2;
+}
+
+message MsgRegisterObjectResponse {}
+
+message MsgUnregisterObject {
+  string creator = 1;
+  string thing   = 2;
+}
+
+message MsgUnregisterObjectResponse {}
+

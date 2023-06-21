@@ -75212,6 +75212,18 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  sourcehub.acp.MsgCreatePolicyResponse:
+    type: object
+  sourcehub.acp.MsgCreateRelationshipResponse:
+    type: object
+  sourcehub.acp.MsgDeletePolicyResponse:
+    type: object
+  sourcehub.acp.MsgDeleteRelationshipResponse:
+    type: object
+  sourcehub.acp.MsgRegisterObjectResponse:
+    type: object
+  sourcehub.acp.MsgUnregisterObjectResponse:
+    type: object
   sourcehub.acp.Params:
     type: object
     description: Params defines the parameters for the module.

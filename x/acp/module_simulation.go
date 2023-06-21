@@ -23,7 +23,31 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgCreatePolicy = "op_weight_msg_create_policy"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreatePolicy int = 100
+
+	opWeightMsgDeletePolicy = "op_weight_msg_delete_policy"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeletePolicy int = 100
+
+	opWeightMsgCreateRelationship = "op_weight_msg_create_relationship"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateRelationship int = 100
+
+	opWeightMsgDeleteRelationship = "op_weight_msg_delete_relationship"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeleteRelationship int = 100
+
+	opWeightMsgRegisterObject = "op_weight_msg_register_object"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgRegisterObject int = 100
+
+	opWeightMsgUnregisterObject = "op_weight_msg_unregister_object"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUnregisterObject int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.
@@ -51,6 +75,72 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
+	var weightMsgCreatePolicy int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePolicy, &weightMsgCreatePolicy, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreatePolicy = defaultWeightMsgCreatePolicy
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreatePolicy,
+		acpsimulation.SimulateMsgCreatePolicy(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeletePolicy int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeletePolicy, &weightMsgDeletePolicy, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeletePolicy = defaultWeightMsgDeletePolicy
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeletePolicy,
+		acpsimulation.SimulateMsgDeletePolicy(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgCreateRelationship int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateRelationship, &weightMsgCreateRelationship, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateRelationship = defaultWeightMsgCreateRelationship
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateRelationship,
+		acpsimulation.SimulateMsgCreateRelationship(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeleteRelationship int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteRelationship, &weightMsgDeleteRelationship, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeleteRelationship = defaultWeightMsgDeleteRelationship
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeleteRelationship,
+		acpsimulation.SimulateMsgDeleteRelationship(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgRegisterObject int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgRegisterObject, &weightMsgRegisterObject, nil,
+		func(_ *rand.Rand) {
+			weightMsgRegisterObject = defaultWeightMsgRegisterObject
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgRegisterObject,
+		acpsimulation.SimulateMsgRegisterObject(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUnregisterObject int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUnregisterObject, &weightMsgUnregisterObject, nil,
+		func(_ *rand.Rand) {
+			weightMsgUnregisterObject = defaultWeightMsgUnregisterObject
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUnregisterObject,
+		acpsimulation.SimulateMsgUnregisterObject(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -59,6 +149,54 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 // ProposalMsgs returns msgs used for governance proposals for simulations.
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCreatePolicy,
+			defaultWeightMsgCreatePolicy,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				acpsimulation.SimulateMsgCreatePolicy(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgDeletePolicy,
+			defaultWeightMsgDeletePolicy,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				acpsimulation.SimulateMsgDeletePolicy(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCreateRelationship,
+			defaultWeightMsgCreateRelationship,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				acpsimulation.SimulateMsgCreateRelationship(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgDeleteRelationship,
+			defaultWeightMsgDeleteRelationship,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				acpsimulation.SimulateMsgDeleteRelationship(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgRegisterObject,
+			defaultWeightMsgRegisterObject,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				acpsimulation.SimulateMsgRegisterObject(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgUnregisterObject,
+			defaultWeightMsgUnregisterObject,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				acpsimulation.SimulateMsgUnregisterObject(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
 		// this line is used by starport scaffolding # simapp/module/OpMsg
 	}
 }
