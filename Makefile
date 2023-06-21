@@ -14,7 +14,4 @@ proto:
 	GOPRIVATE="github.com/sourcenetwork/*"
 	docker image build --file proto/Dockerfile --tag sourcehub-proto-builder:latest proto/
 	docker run --rm -it --workdir /app -v $(PWD):/app sourcehub-proto-builder:latest buf generate --verbose
-	sudo mv github.com/sourcenetwork/sourcehub/x/acp/types/* x/acp/types/
-	sudo rm -r github.com
-	sed -i 's|types "./types"|types "github.com/sourcenetwork/source-zanzibar/types"|g' $$(fd ".*\.go")
 	go mod tidy
