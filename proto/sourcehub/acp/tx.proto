@@ -6,52 +6,71 @@ option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreatePolicy       (MsgCreatePolicy      ) returns (MsgCreatePolicyResponse      );
-  rpc DeletePolicy       (MsgDeletePolicy      ) returns (MsgDeletePolicyResponse      );
-  rpc CreateRelationship (MsgCreateRelationship) returns (MsgCreateRelationshipResponse);
-  rpc DeleteRelationship (MsgDeleteRelationship) returns (MsgDeleteRelationshipResponse);
-  rpc RegisterObject     (MsgRegisterObject    ) returns (MsgRegisterObjectResponse    );
-  rpc UnregisterObject   (MsgUnregisterObject  ) returns (MsgUnregisterObjectResponse  );
+    rpc CreatePolicy       (MsgCreatePolicy      ) returns (MsgCreatePolicyResponse      );
+    rpc DeletePolicy       (MsgDeletePolicy      ) returns (MsgDeletePolicyResponse      );
+    rpc CreateRelationship (MsgCreateRelationship) returns (MsgCreateRelationshipResponse);
+    rpc DeleteRelationship (MsgDeleteRelationship) returns (MsgDeleteRelationshipResponse);
+    rpc RegisterObject     (MsgRegisterObject    ) returns (MsgRegisterObjectResponse    );
+    rpc UnregisterObject   (MsgUnregisterObject  ) returns (MsgUnregisterObjectResponse  );
 }
 message MsgCreatePolicy {
-  string creator = 1;
-  string thing   = 2;
+    string creator = 1;
+    string policy_yaml = 3;
 }
 
-message MsgCreatePolicyResponse {}
+message MsgCreatePolicyResponse {
+    string id = 1;
+}
 
 message MsgDeletePolicy {
-  string creator = 1;
-  string thing   = 2;
+    string creator = 1;
+    string id = 2;
 }
 
-message MsgDeletePolicyResponse {}
+message MsgDeletePolicyResponse {
+    bool found = 1;
+}
 
 message MsgCreateRelationship {
-  string creator = 1;
-  string thing   = 2;
+    string creator = 1;
+    string creator_did = 2;
+    sourcenetwork.zanzi.core.Entity object = 3;
+    string relation = 4;
+    sourcenetwork.zanzi.core.Entity actor = 3;
+    string actor_relation = 5;
 }
 
-message MsgCreateRelationshipResponse {}
+message MsgCreateRelationshipResponse {
+    bool created = 1;
+}
 
 message MsgDeleteRelationship {
-  string creator = 1;
-  string thing   = 2;
+    string creator = 1;
+    string creator_did = 2;
+    sourcenetwork.zanzi.core.Entity object = 3;
+    string relation = 4;
+    sourcenetwork.zanzi.core.Entity actor = 3;
+    string actor_relation = 5;
 }
 
-message MsgDeleteRelationshipResponse {}
+message MsgDeleteRelationshipResponse {
+    bool found = 1;
+}
 
 message MsgRegisterObject {
-  string creator = 1;
-  string thing   = 2;
+    string creator = 1;
+    string creator_did = 2;
+    sourcenetwork.zanzi.core.Entity object = 3;
 }
 
 message MsgRegisterObjectResponse {}
 
 message MsgUnregisterObject {
-  string creator = 1;
-  string thing   = 2;
+    string creator = 1;
+    string creator_did = 2;
+    sourcenetwork.zanzi.core.Entity object = 3;
 }
 
-message MsgUnregisterObjectResponse {}
-
+message MsgUnregisterObjectResponse {
+    bool found = 1;
+}
