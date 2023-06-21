@@ -1,0 +1,12 @@
+syntax = "proto3";
+package sourcehub.acp;
+
+import "gogoproto/gogo.proto";
+import "sourcehub/acp/params.proto";
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+// GenesisState defines the acp module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

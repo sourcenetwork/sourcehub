@@ -46437,6 +46437,42 @@ paths:
                         }
       tags:
         - Query
+  /sourcenetwork/sourcehub/acp/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: SourcehubAcpParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
 definitions:
   cosmos.auth.v1beta1.AddressBytesToStringResponse:
     type: object
@@ -75176,3 +75212,13 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  sourcehub.acp.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  sourcehub.acp.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.

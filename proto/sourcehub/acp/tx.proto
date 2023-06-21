@@ -1,0 +1,7 @@
+syntax = "proto3";
+package sourcehub.acp;
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+// Msg defines the Msg service.
+service Msg {}

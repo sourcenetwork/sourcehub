@@ -110,6 +110,9 @@ import (
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 	"github.com/spf13/cast"
 
+	acpmodule "github.com/sourcenetwork/sourcehub/x/acp"
+	acpmodulekeeper "github.com/sourcenetwork/sourcehub/x/acp/keeper"
+	acpmoduletypes "github.com/sourcenetwork/sourcehub/x/acp/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/sourcenetwork/sourcehub/app/params"
@@ -170,6 +173,7 @@ var (
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		consensus.AppModuleBasic{},
+		acpmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -245,6 +249,7 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
+	AcpKeeper acpmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -291,6 +296,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibcexported.StoreKey, upgradetypes.StoreKey,
 		feegrant.StoreKey, evidencetypes.StoreKey, ibctransfertypes.StoreKey, icahosttypes.StoreKey,
 		capabilitytypes.StoreKey, group.StoreKey, icacontrollertypes.StoreKey, consensusparamtypes.StoreKey,
+		acpmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -513,6 +519,14 @@ func New(
 		),
 	)
 
+	app.AcpKeeper = *acpmodulekeeper.NewKeeper(
+		appCodec,
+		keys[acpmoduletypes.StoreKey],
+		keys[acpmoduletypes.MemStoreKey],
+		app.GetSubspace(acpmoduletypes.ModuleName),
+	)
+	acpModule := acpmodule.NewAppModule(appCodec, app.AcpKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -574,6 +588,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		icaModule,
+		acpModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
@@ -606,6 +621,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		acpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -631,6 +647,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		acpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -661,6 +678,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		acpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -885,6 +903,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
+	paramsKeeper.Subspace(acpmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
