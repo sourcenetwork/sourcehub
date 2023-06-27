@@ -2,4 +2,3 @@ version: v1
 
 directories:
   - proto
-  - submodules/zanzi/proto/zanzi

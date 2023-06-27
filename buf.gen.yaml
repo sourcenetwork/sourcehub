@@ -5,7 +5,7 @@ plugins:
     out: .
     opt: 
       - path=import
-      # mdoule doesn't work for gocosmos - so the build script has to
+      # module={} opt doesn't work for gocosmos - so the build script has to
       # account for it and move the generated files
       - module=github.com/sourcenetwork/sourcehub
       - plugins=grpc
