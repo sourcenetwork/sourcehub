@@ -11,10 +11,10 @@ var _ sdk.Msg = &MsgRegisterObject{}
 
 func NewMsgRegisterObject(creator string, creatorDid string, policyId string, obj *Entity) *MsgRegisterObject {
 	return &MsgRegisterObject{
-		Creator: creator,
-                CreatorDid: creatorDid,
-                PolicyId: policyId,
-                Object: obj,
+		Creator:    creator,
+		CreatorDid: creatorDid,
+		PolicyId:   policyId,
+		Object:     obj,
 	}
 }
 

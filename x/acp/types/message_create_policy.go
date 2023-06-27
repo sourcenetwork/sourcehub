@@ -11,8 +11,8 @@ var _ sdk.Msg = &MsgCreatePolicy{}
 
 func NewMsgCreatePolicy(creator string, policyYaml string) *MsgCreatePolicy {
 	return &MsgCreatePolicy{
-		Creator: creator,
-		PolicyYaml:   policyYaml,
+		Creator:    creator,
+		PolicyYaml: policyYaml,
 	}
 }
 

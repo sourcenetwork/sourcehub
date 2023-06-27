@@ -23,16 +23,16 @@ func CmdUnregisterObject() *cobra.Command {
 				return err
 			}
 
-                        obj := &types.Entity {
-                            Resource: args[2],
-                            Id: args[3],
-                        }
+			obj := &types.Entity{
+				Resource: args[2],
+				Id:       args[3],
+			}
 
 			msg := types.NewMsgUnregisterObject(
 				clientCtx.GetFromAddress().String(),
-                                args[0],
-                                args[1],
-                                obj,
+				args[0],
+				args[1],
+				obj,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

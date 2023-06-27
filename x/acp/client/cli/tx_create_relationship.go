@@ -23,24 +23,24 @@ func CmdCreateRelationship() *cobra.Command {
 				return err
 			}
 
-                        obj := &types.Entity {
-                            Resource: args[2],
-                            Id: args[3],
-                        }
+			obj := &types.Entity{
+				Resource: args[2],
+				Id:       args[3],
+			}
 
-                        actor := &types.Entity {
-                            Resource: args[5],
-                            Id: args[6],
-                        }
+			actor := &types.Entity{
+				Resource: args[5],
+				Id:       args[6],
+			}
 
 			msg := types.NewMsgCreateRelationship(
 				clientCtx.GetFromAddress().String(),
-                                args[0],
-                                args[1],
-                                obj,
-                                args[4],
-                                actor,
-                                args[7],
+				args[0],
+				args[1],
+				obj,
+				args[4],
+				actor,
+				args[7],
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

@@ -11,10 +11,10 @@ var _ sdk.Msg = &MsgUnregisterObject{}
 
 func NewMsgUnregisterObject(creator string, creatorDid string, policyId string, obj *Entity) *MsgUnregisterObject {
 	return &MsgUnregisterObject{
-		Creator: creator,
-                CreatorDid: creatorDid,
-                PolicyId: policyId,
-                Object: obj,
+		Creator:    creator,
+		CreatorDid: creatorDid,
+		PolicyId:   policyId,
+		Object:     obj,
 	}
 }
 

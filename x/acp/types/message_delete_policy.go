@@ -12,7 +12,7 @@ var _ sdk.Msg = &MsgDeletePolicy{}
 func NewMsgDeletePolicy(creator string, id string) *MsgDeletePolicy {
 	return &MsgDeletePolicy{
 		Creator: creator,
-		Id:   id,
+		Id:      id,
 	}
 }
 
