@@ -9,10 +9,12 @@ const TypeMsgRegisterObject = "register_object"
 
 var _ sdk.Msg = &MsgRegisterObject{}
 
-func NewMsgRegisterObject(creator string, thing string) *MsgRegisterObject {
+func NewMsgRegisterObject(creator string, creatorDid string, policyId string, obj *Entity) *MsgRegisterObject {
 	return &MsgRegisterObject{
 		Creator: creator,
-		Thing:   thing,
+                CreatorDid: creatorDid,
+                PolicyId: policyId,
+                Object: obj,
 	}
 }
 

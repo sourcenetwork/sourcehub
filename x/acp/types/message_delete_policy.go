@@ -9,10 +9,10 @@ const TypeMsgDeletePolicy = "delete_policy"
 
 var _ sdk.Msg = &MsgDeletePolicy{}
 
-func NewMsgDeletePolicy(creator string, thing string) *MsgDeletePolicy {
+func NewMsgDeletePolicy(creator string, id string) *MsgDeletePolicy {
 	return &MsgDeletePolicy{
 		Creator: creator,
-		Thing:   thing,
+		Id:   id,
 	}
 }
 

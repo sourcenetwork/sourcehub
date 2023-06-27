@@ -9,10 +9,12 @@ const TypeMsgUnregisterObject = "unregister_object"
 
 var _ sdk.Msg = &MsgUnregisterObject{}
 
-func NewMsgUnregisterObject(creator string, thing string) *MsgUnregisterObject {
+func NewMsgUnregisterObject(creator string, creatorDid string, policyId string, obj *Entity) *MsgUnregisterObject {
 	return &MsgUnregisterObject{
 		Creator: creator,
-		Thing:   thing,
+                CreatorDid: creatorDid,
+                PolicyId: policyId,
+                Object: obj,
 	}
 }
 

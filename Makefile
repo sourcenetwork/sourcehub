@@ -21,3 +21,7 @@ proto:
 	cp -r github.com/sourcenetwork/sourcehub/* .
 	rm -rf github.com
 	go mod tidy
+
+.PHONY: test
+test:
+	go test ./...

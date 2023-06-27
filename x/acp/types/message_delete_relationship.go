@@ -9,10 +9,15 @@ const TypeMsgDeleteRelationship = "delete_relationship"
 
 var _ sdk.Msg = &MsgDeleteRelationship{}
 
-func NewMsgDeleteRelationship(creator string, thing string) *MsgDeleteRelationship {
+func NewMsgDeleteRelationship(creator string, creatorDid string, policyId string, obj *Entity, relation string, actor *Entity, actorRel string) *MsgDeleteRelationship {
 	return &MsgDeleteRelationship{
 		Creator: creator,
-		Thing:   thing,
+                CreatorDid: creatorDid,
+                PolicyId: policyId,
+                Object: obj,
+                Relation: relation,
+                Actor: actor,
+                ActorRelation: actorRel,
 	}
 }
 

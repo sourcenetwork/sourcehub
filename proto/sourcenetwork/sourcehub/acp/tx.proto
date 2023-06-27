@@ -36,10 +36,11 @@ message MsgDeletePolicyResponse {
 message MsgCreateRelationship {
     string creator = 1;
     string creator_did = 2;
-    Entity object = 3;
-    string relation = 4;
-    Entity actor = 5;
-    string actor_relation = 6;
+    string policy_id = 3;
+    Entity object = 4;
+    string relation = 5;
+    Entity actor = 6;
+    string actor_relation = 7;
 }
 
 message MsgCreateRelationshipResponse {
@@ -49,10 +50,11 @@ message MsgCreateRelationshipResponse {
 message MsgDeleteRelationship {
     string creator = 1;
     string creator_did = 2;
-    Entity object = 3;
-    string relation = 4;
-    Entity actor = 5;
-    string actor_relation = 6;
+    string policy_id = 3;
+    Entity object = 4;
+    string relation = 5;
+    Entity actor = 6;
+    string actor_relation = 7;
 }
 
 message MsgDeleteRelationshipResponse {
@@ -62,7 +64,8 @@ message MsgDeleteRelationshipResponse {
 message MsgRegisterObject {
     string creator = 1;
     string creator_did = 2;
-    Entity object = 3;
+    string policy_id = 3;
+    Entity object = 4;
 }
 
 message MsgRegisterObjectResponse {}
@@ -70,7 +73,8 @@ message MsgRegisterObjectResponse {}
 message MsgUnregisterObject {
     string creator = 1;
     string creator_did = 2;
-    Entity object = 3;
+    string policy_id = 3;
+    Entity object = 4;
 }
 
 message MsgUnregisterObjectResponse {

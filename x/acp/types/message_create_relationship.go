@@ -9,10 +9,15 @@ const TypeMsgCreateRelationship = "create_relationship"
 
 var _ sdk.Msg = &MsgCreateRelationship{}
 
-func NewMsgCreateRelationship(creator string, thing string) *MsgCreateRelationship {
+func NewMsgCreateRelationship(creator string, creatorDid string, policyId string, obj *Entity, relation string, actor *Entity, actorRel string) *MsgCreateRelationship {
 	return &MsgCreateRelationship{
 		Creator: creator,
-		Thing:   thing,
+                CreatorDid: creatorDid,
+                PolicyId: policyId,
+                Object: obj,
+                Relation: relation,
+                Actor: actor,
+                ActorRelation: actorRel,
 	}
 }
 
