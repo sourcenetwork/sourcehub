@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sourcehub.acp;
+package sourcenetwork.sourcehub.acp;
 
 import "gogoproto/gogo.proto";
 import "sourcehub/acp/params.proto";

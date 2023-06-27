@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package sourcehub.acp;
+package sourcenetwork.sourcehub.acp;
 
 option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
