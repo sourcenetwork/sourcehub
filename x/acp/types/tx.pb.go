@@ -8,6 +8,7 @@ import (
 	fmt "fmt"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
+	core "github.com/sourcenetwork/zanzi/pkg/core"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -28,8 +29,8 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgCreatePolicy struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Thing   string `protobuf:"bytes,2,opt,name=thing,proto3" json:"thing,omitempty"`
+	Creator    string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	PolicyYaml string `protobuf:"bytes,3,opt,name=policy_yaml,json=policyYaml,proto3" json:"policy_yaml,omitempty"`
 }
 
 func (m *MsgCreatePolicy) Reset()         { *m = MsgCreatePolicy{} }
@@ -72,14 +73,15 @@ func (m *MsgCreatePolicy) GetCreator() string {
 	return ""
 }
 
-func (m *MsgCreatePolicy) GetThing() string {
+func (m *MsgCreatePolicy) GetPolicyYaml() string {
 	if m != nil {
-		return m.Thing
+		return m.PolicyYaml
 	}
 	return ""
 }
 
 type MsgCreatePolicyResponse struct {
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (m *MsgCreatePolicyResponse) Reset()         { *m = MsgCreatePolicyResponse{} }
@@ -115,9 +117,16 @@ func (m *MsgCreatePolicyResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreatePolicyResponse proto.InternalMessageInfo
 
+func (m *MsgCreatePolicyResponse) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
 type MsgDeletePolicy struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Thing   string `protobuf:"bytes,2,opt,name=thing,proto3" json:"thing,omitempty"`
+	Id      string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (m *MsgDeletePolicy) Reset()         { *m = MsgDeletePolicy{} }
@@ -160,14 +169,15 @@ func (m *MsgDeletePolicy) GetCreator() string {
 	return ""
 }
 
-func (m *MsgDeletePolicy) GetThing() string {
+func (m *MsgDeletePolicy) GetId() string {
 	if m != nil {
-		return m.Thing
+		return m.Id
 	}
 	return ""
 }
 
 type MsgDeletePolicyResponse struct {
+	Found bool `protobuf:"varint,1,opt,name=found,proto3" json:"found,omitempty"`
 }
 
 func (m *MsgDeletePolicyResponse) Reset()         { *m = MsgDeletePolicyResponse{} }
@@ -203,9 +213,20 @@ func (m *MsgDeletePolicyResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeletePolicyResponse proto.InternalMessageInfo
 
+func (m *MsgDeletePolicyResponse) GetFound() bool {
+	if m != nil {
+		return m.Found
+	}
+	return false
+}
+
 type MsgCreateRelationship struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Thing   string `protobuf:"bytes,2,opt,name=thing,proto3" json:"thing,omitempty"`
+	Creator       string       `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	CreatorDid    string       `protobuf:"bytes,2,opt,name=creator_did,json=creatorDid,proto3" json:"creator_did,omitempty"`
+	Object        *core.Entity `protobuf:"bytes,3,opt,name=object,proto3" json:"object,omitempty"`
+	Relation      string       `protobuf:"bytes,4,opt,name=relation,proto3" json:"relation,omitempty"`
+	Actor         *core.Entity `protobuf:"bytes,5,opt,name=actor,proto3" json:"actor,omitempty"`
+	ActorRelation string       `protobuf:"bytes,6,opt,name=actor_relation,json=actorRelation,proto3" json:"actor_relation,omitempty"`
 }
 
 func (m *MsgCreateRelationship) Reset()         { *m = MsgCreateRelationship{} }
@@ -248,14 +269,43 @@ func (m *MsgCreateRelationship) GetCreator() string {
 	return ""
 }
 
-func (m *MsgCreateRelationship) GetThing() string {
+func (m *MsgCreateRelationship) GetCreatorDid() string {
 	if m != nil {
-		return m.Thing
+		return m.CreatorDid
+	}
+	return ""
+}
+
+func (m *MsgCreateRelationship) GetObject() *core.Entity {
+	if m != nil {
+		return m.Object
+	}
+	return nil
+}
+
+func (m *MsgCreateRelationship) GetRelation() string {
+	if m != nil {
+		return m.Relation
+	}
+	return ""
+}
+
+func (m *MsgCreateRelationship) GetActor() *core.Entity {
+	if m != nil {
+		return m.Actor
+	}
+	return nil
+}
+
+func (m *MsgCreateRelationship) GetActorRelation() string {
+	if m != nil {
+		return m.ActorRelation
 	}
 	return ""
 }
 
 type MsgCreateRelationshipResponse struct {
+	Created bool `protobuf:"varint,1,opt,name=created,proto3" json:"created,omitempty"`
 }
 
 func (m *MsgCreateRelationshipResponse) Reset()         { *m = MsgCreateRelationshipResponse{} }
@@ -291,9 +341,20 @@ func (m *MsgCreateRelationshipResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreateRelationshipResponse proto.InternalMessageInfo
 
+func (m *MsgCreateRelationshipResponse) GetCreated() bool {
+	if m != nil {
+		return m.Created
+	}
+	return false
+}
+
 type MsgDeleteRelationship struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Thing   string `protobuf:"bytes,2,opt,name=thing,proto3" json:"thing,omitempty"`
+	Creator       string       `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	CreatorDid    string       `protobuf:"bytes,2,opt,name=creator_did,json=creatorDid,proto3" json:"creator_did,omitempty"`
+	Object        *core.Entity `protobuf:"bytes,3,opt,name=object,proto3" json:"object,omitempty"`
+	Relation      string       `protobuf:"bytes,4,opt,name=relation,proto3" json:"relation,omitempty"`
+	Actor         *core.Entity `protobuf:"bytes,5,opt,name=actor,proto3" json:"actor,omitempty"`
+	ActorRelation string       `protobuf:"bytes,6,opt,name=actor_relation,json=actorRelation,proto3" json:"actor_relation,omitempty"`
 }
 
 func (m *MsgDeleteRelationship) Reset()         { *m = MsgDeleteRelationship{} }
@@ -336,14 +397,43 @@ func (m *MsgDeleteRelationship) GetCreator() string {
 	return ""
 }
 
-func (m *MsgDeleteRelationship) GetThing() string {
+func (m *MsgDeleteRelationship) GetCreatorDid() string {
 	if m != nil {
-		return m.Thing
+		return m.CreatorDid
+	}
+	return ""
+}
+
+func (m *MsgDeleteRelationship) GetObject() *core.Entity {
+	if m != nil {
+		return m.Object
+	}
+	return nil
+}
+
+func (m *MsgDeleteRelationship) GetRelation() string {
+	if m != nil {
+		return m.Relation
+	}
+	return ""
+}
+
+func (m *MsgDeleteRelationship) GetActor() *core.Entity {
+	if m != nil {
+		return m.Actor
+	}
+	return nil
+}
+
+func (m *MsgDeleteRelationship) GetActorRelation() string {
+	if m != nil {
+		return m.ActorRelation
 	}
 	return ""
 }
 
 type MsgDeleteRelationshipResponse struct {
+	Found bool `protobuf:"varint,1,opt,name=found,proto3" json:"found,omitempty"`
 }
 
 func (m *MsgDeleteRelationshipResponse) Reset()         { *m = MsgDeleteRelationshipResponse{} }
@@ -379,9 +469,17 @@ func (m *MsgDeleteRelationshipResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeleteRelationshipResponse proto.InternalMessageInfo
 
+func (m *MsgDeleteRelationshipResponse) GetFound() bool {
+	if m != nil {
+		return m.Found
+	}
+	return false
+}
+
 type MsgRegisterObject struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Thing   string `protobuf:"bytes,2,opt,name=thing,proto3" json:"thing,omitempty"`
+	Creator    string       `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	CreatorDid string       `protobuf:"bytes,2,opt,name=creator_did,json=creatorDid,proto3" json:"creator_did,omitempty"`
+	Object     *core.Entity `protobuf:"bytes,3,opt,name=object,proto3" json:"object,omitempty"`
 }
 
 func (m *MsgRegisterObject) Reset()         { *m = MsgRegisterObject{} }
@@ -424,11 +522,18 @@ func (m *MsgRegisterObject) GetCreator() string {
 	return ""
 }
 
-func (m *MsgRegisterObject) GetThing() string {
+func (m *MsgRegisterObject) GetCreatorDid() string {
 	if m != nil {
-		return m.Thing
+		return m.CreatorDid
 	}
 	return ""
+}
+
+func (m *MsgRegisterObject) GetObject() *core.Entity {
+	if m != nil {
+		return m.Object
+	}
+	return nil
 }
 
 type MsgRegisterObjectResponse struct {
@@ -468,8 +573,9 @@ func (m *MsgRegisterObjectResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRegisterObjectResponse proto.InternalMessageInfo
 
 type MsgUnregisterObject struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Thing   string `protobuf:"bytes,2,opt,name=thing,proto3" json:"thing,omitempty"`
+	Creator    string       `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	CreatorDid string       `protobuf:"bytes,2,opt,name=creator_did,json=creatorDid,proto3" json:"creator_did,omitempty"`
+	Object     *core.Entity `protobuf:"bytes,3,opt,name=object,proto3" json:"object,omitempty"`
 }
 
 func (m *MsgUnregisterObject) Reset()         { *m = MsgUnregisterObject{} }
@@ -512,14 +618,22 @@ func (m *MsgUnregisterObject) GetCreator() string {
 	return ""
 }
 
-func (m *MsgUnregisterObject) GetThing() string {
+func (m *MsgUnregisterObject) GetCreatorDid() string {
 	if m != nil {
-		return m.Thing
+		return m.CreatorDid
 	}
 	return ""
 }
 
+func (m *MsgUnregisterObject) GetObject() *core.Entity {
+	if m != nil {
+		return m.Object
+	}
+	return nil
+}
+
 type MsgUnregisterObjectResponse struct {
+	Found bool `protobuf:"varint,1,opt,name=found,proto3" json:"found,omitempty"`
 }
 
 func (m *MsgUnregisterObjectResponse) Reset()         { *m = MsgUnregisterObjectResponse{} }
@@ -555,6 +669,13 @@ func (m *MsgUnregisterObjectResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUnregisterObjectResponse proto.InternalMessageInfo
 
+func (m *MsgUnregisterObjectResponse) GetFound() bool {
+	if m != nil {
+		return m.Found
+	}
+	return false
+}
+
 func init() {
 	proto.RegisterType((*MsgCreatePolicy)(nil), "sourcehub.acp.MsgCreatePolicy")
 	proto.RegisterType((*MsgCreatePolicyResponse)(nil), "sourcehub.acp.MsgCreatePolicyResponse")
@@ -573,32 +694,42 @@ func init() {
 func init() { proto.RegisterFile("sourcehub/acp/tx.proto", fileDescriptor_5bb2974ac27b9ccc) }
 
 var fileDescriptor_5bb2974ac27b9ccc = []byte{
-	// 388 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xcb, 0x4a, 0xf3, 0x40,
-	0x18, 0x86, 0x9b, 0xff, 0xf7, 0x80, 0x1f, 0x1e, 0xe3, 0xa9, 0x4d, 0x69, 0x2c, 0xa5, 0x48, 0x11,
-	0x49, 0x40, 0xaf, 0x40, 0xab, 0xe8, 0x26, 0x28, 0x01, 0x5d, 0x88, 0x9b, 0x24, 0x0c, 0x93, 0x68,
-	0xcd, 0x84, 0x99, 0x29, 0xb6, 0x77, 0xe1, 0x65, 0x09, 0x6e, 0xba, 0x74, 0x29, 0xed, 0x8d, 0x48,
-	0x1b, 0x13, 0x73, 0x98, 0x5a, 0x4b, 0x5d, 0xce, 0xcc, 0x3b, 0xcf, 0xf3, 0x2d, 0x5e, 0x3e, 0xd8,
-	0x61, 0xa4, 0x4d, 0x1d, 0xe4, 0xb6, 0x6d, 0xdd, 0x72, 0x02, 0x9d, 0x77, 0xb4, 0x80, 0x12, 0x4e,
-	0xe4, 0x95, 0xf8, 0x5e, 0xb3, 0x9c, 0xa0, 0x76, 0x02, 0x6b, 0x06, 0xc3, 0x4d, 0x8a, 0x2c, 0x8e,
-	0xae, 0x49, 0xcb, 0x73, 0xba, 0x72, 0x11, 0x16, 0x9d, 0xe1, 0x99, 0xd0, 0xa2, 0x54, 0x95, 0x1a,
-	0x4b, 0x66, 0x74, 0x94, 0xb7, 0x60, 0x9e, 0xbb, 0x9e, 0x8f, 0x8b, 0xff, 0x46, 0xf7, 0xe1, 0xa1,
-	0x56, 0x82, 0xdd, 0x0c, 0xc2, 0x44, 0x2c, 0x20, 0x3e, 0x43, 0x5f, 0xf4, 0x33, 0xd4, 0x42, 0x33,
-	0xd2, 0x93, 0x88, 0x98, 0x7e, 0x01, 0xdb, 0xb1, 0xd8, 0x44, 0x2d, 0x8b, 0x7b, 0xc4, 0x67, 0xae,
-	0x17, 0x4c, 0xed, 0xd8, 0x83, 0x8a, 0x10, 0x94, 0x31, 0x85, 0x43, 0xfc, 0x81, 0x29, 0x0f, 0x8a,
-	0x4d, 0x4d, 0xd8, 0x30, 0x18, 0x36, 0x11, 0xf6, 0x18, 0x47, 0xf4, 0xca, 0x7e, 0x40, 0x0e, 0x9f,
-	0xda, 0x52, 0x86, 0x52, 0x0e, 0x12, 0x1b, 0xce, 0x61, 0xd3, 0x60, 0xf8, 0xc6, 0xa7, 0xb3, 0x39,
-	0x2a, 0x50, 0x16, 0x60, 0x22, 0xcb, 0xd1, 0xdb, 0x1c, 0xfc, 0x37, 0x18, 0x96, 0x6f, 0x61, 0x39,
-	0x55, 0x2e, 0x55, 0x4b, 0xf5, 0x4f, 0xcb, 0x34, 0x47, 0xd9, 0xff, 0xf9, 0x3d, 0xe2, 0x0f, 0xb9,
-	0xa9, 0x5a, 0x09, 0xb8, 0xc9, 0x77, 0x11, 0x57, 0xd4, 0x29, 0xd9, 0x05, 0x59, 0x50, 0xa8, 0xfa,
-	0xb8, 0xa9, 0x92, 0x29, 0xe5, 0xf0, 0x37, 0xa9, 0xa4, 0x49, 0x50, 0xa8, 0xfa, 0xb8, 0x39, 0x27,
-	0x99, 0xc6, 0x77, 0x4a, 0xbe, 0x87, 0xd5, 0x4c, 0xa1, 0xaa, 0xf9, 0xff, 0xe9, 0x84, 0xd2, 0x98,
-	0x94, 0x88, 0xe9, 0x36, 0xac, 0xe7, 0xca, 0x54, 0xcb, 0xff, 0xce, 0x66, 0x94, 0x83, 0xc9, 0x99,
-	0xc8, 0x71, 0x7a, 0xf9, 0xda, 0x57, 0xa5, 0x5e, 0x5f, 0x95, 0x3e, 0xfa, 0xaa, 0xf4, 0x32, 0x50,
-	0x0b, 0xbd, 0x81, 0x5a, 0x78, 0x1f, 0xa8, 0x85, 0x3b, 0x0d, 0x7b, 0x7c, 0x48, 0x70, 0xc8, 0x93,
-	0x1e, 0xf2, 0x7c, 0xc4, 0x9f, 0x09, 0x7d, 0xd4, 0xbf, 0xf7, 0x5f, 0x27, 0xdc, 0x80, 0xdd, 0x00,
-	0x31, 0x7b, 0x61, 0xb4, 0x05, 0x8f, 0x3f, 0x03, 0x00, 0x00, 0xff, 0xff, 0xd7, 0x00, 0x96, 0x87,
-	0x1f, 0x05, 0x00, 0x00,
+	// 553 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x55, 0xcf, 0x6f, 0xd3, 0x30,
+	0x14, 0x5e, 0xba, 0xb5, 0x8c, 0xb7, 0xad, 0x80, 0xf9, 0x55, 0x32, 0x2d, 0x54, 0xd1, 0x40, 0x03,
+	0xa1, 0x44, 0xda, 0x04, 0x02, 0x71, 0x83, 0x21, 0x71, 0xa0, 0x02, 0x45, 0x62, 0x12, 0x08, 0xa9,
+	0x4a, 0x53, 0x93, 0x1a, 0xd2, 0x38, 0x8a, 0x5d, 0xb1, 0xee, 0x1f, 0x00, 0x71, 0xe2, 0xcf, 0x42,
+	0xe2, 0xb2, 0x23, 0x47, 0xd4, 0xfe, 0x23, 0xa8, 0x76, 0x6d, 0x92, 0x26, 0x6b, 0x7b, 0x03, 0x89,
+	0x5b, 0x9e, 0xfd, 0xbd, 0xef, 0x7b, 0xfe, 0xf2, 0xfc, 0x0c, 0xd7, 0x18, 0x1d, 0xa4, 0x01, 0xee,
+	0x0d, 0x3a, 0xae, 0x1f, 0x24, 0x2e, 0x3f, 0x76, 0x92, 0x94, 0x72, 0x8a, 0xb6, 0xf4, 0xba, 0xe3,
+	0x07, 0x89, 0xb9, 0x73, 0xe2, 0xc7, 0x27, 0xc4, 0x0d, 0x68, 0x8a, 0xdd, 0x14, 0x47, 0x3e, 0x27,
+	0x34, 0x66, 0x3d, 0x92, 0x48, 0xb4, 0xfd, 0x02, 0x2e, 0xb4, 0x58, 0xf8, 0x34, 0xc5, 0x3e, 0xc7,
+	0xaf, 0x68, 0x44, 0x82, 0x21, 0x6a, 0xc0, 0xb9, 0x60, 0x12, 0xd3, 0xb4, 0x61, 0x34, 0x8d, 0xbd,
+	0xf3, 0x9e, 0x0a, 0xd1, 0x4d, 0xd8, 0x48, 0x04, 0xa6, 0x3d, 0xf4, 0xfb, 0x51, 0x63, 0x55, 0xec,
+	0x82, 0x5c, 0x7a, 0xe3, 0xf7, 0x23, 0xfb, 0x0e, 0x5c, 0x9f, 0x61, 0xf3, 0x30, 0x4b, 0x68, 0xcc,
+	0x30, 0xaa, 0x43, 0x85, 0x74, 0xa7, 0x84, 0x15, 0xd2, 0xb5, 0x1f, 0x0b, 0xe1, 0x43, 0x1c, 0xe1,
+	0x25, 0x84, 0x65, 0x72, 0x45, 0x27, 0xbb, 0x42, 0x27, 0x9b, 0xac, 0x75, 0xae, 0x40, 0xf5, 0x3d,
+	0x1d, 0xc4, 0x52, 0x6a, 0xdd, 0x93, 0x81, 0xfd, 0xb9, 0x02, 0x57, 0x75, 0x65, 0x5e, 0xc6, 0x86,
+	0xf9, 0xa7, 0x9d, 0x7e, 0xb6, 0xbb, 0x5a, 0x1d, 0xa6, 0x4b, 0x87, 0xa4, 0x8b, 0x1e, 0x42, 0x8d,
+	0x76, 0x3e, 0xe0, 0x80, 0x0b, 0x27, 0x36, 0xf6, 0x9b, 0x8e, 0xb4, 0x3e, 0xc6, 0xfc, 0x13, 0x4d,
+	0x3f, 0x3a, 0xc2, 0x79, 0x67, 0xe2, 0xbc, 0xf3, 0x2c, 0xe6, 0x84, 0x0f, 0xbd, 0x29, 0x1e, 0x99,
+	0xb0, 0xae, 0xfe, 0x45, 0x63, 0x4d, 0xf0, 0xea, 0x18, 0x3d, 0x80, 0xaa, 0x1f, 0x4c, 0xca, 0xa9,
+	0x2e, 0x49, 0x2a, 0xe1, 0xe8, 0x16, 0xd4, 0xc5, 0x47, 0x5b, 0x33, 0xd7, 0x04, 0xf3, 0x96, 0x58,
+	0x55, 0x67, 0xb6, 0x1f, 0xc1, 0x4e, 0xa9, 0x11, 0xda, 0x40, 0x65, 0x08, 0x56, 0x16, 0xaa, 0x50,
+	0x99, 0x28, 0x6d, 0xff, 0xaf, 0x4d, 0xbc, 0x2f, 0x4c, 0x2c, 0x1a, 0xb1, 0xa0, 0x0b, 0xbf, 0x18,
+	0x70, 0xa9, 0xc5, 0x42, 0x0f, 0x87, 0x84, 0x71, 0x9c, 0xbe, 0x94, 0xe7, 0xf8, 0x1b, 0xe6, 0xd9,
+	0xdb, 0x70, 0xa3, 0x50, 0x89, 0xaa, 0xde, 0xfe, 0x6a, 0xc0, 0xe5, 0x16, 0x0b, 0x5f, 0xc7, 0xe9,
+	0x3f, 0x50, 0xe9, 0x01, 0x6c, 0x97, 0xd4, 0x32, 0xdf, 0xe9, 0xfd, 0x1f, 0x6b, 0xb0, 0xda, 0x62,
+	0x21, 0x3a, 0x82, 0xcd, 0xdc, 0x6c, 0xb3, 0x9c, 0xdc, 0x74, 0x74, 0x66, 0xa6, 0x95, 0x79, 0x7b,
+	0xfe, 0xbe, 0x56, 0x3d, 0x82, 0xcd, 0xdc, 0xe8, 0x2a, 0xe1, 0xcd, 0xee, 0x97, 0xf1, 0x96, 0x4e,
+	0xaf, 0x1e, 0xa0, 0x92, 0x19, 0xb5, 0x7b, 0x56, 0x55, 0x59, 0x94, 0x79, 0x6f, 0x19, 0x54, 0x56,
+	0xa9, 0xe4, 0x22, 0xef, 0x9e, 0x55, 0xe7, 0x22, 0xa5, 0x39, 0x77, 0xe1, 0x1d, 0xd4, 0x67, 0x3a,
+	0xbe, 0x59, 0xcc, 0xcf, 0x23, 0xcc, 0xbd, 0x45, 0x08, 0xcd, 0xde, 0x81, 0x8b, 0x85, 0x3e, 0xb5,
+	0x8b, 0xd9, 0xb3, 0x18, 0xf3, 0xee, 0x62, 0x8c, 0xd2, 0x78, 0xf2, 0xfc, 0xfb, 0xc8, 0x32, 0x4e,
+	0x47, 0x96, 0xf1, 0x6b, 0x64, 0x19, 0xdf, 0xc6, 0xd6, 0xca, 0xe9, 0xd8, 0x5a, 0xf9, 0x39, 0xb6,
+	0x56, 0xde, 0x3a, 0x21, 0xe1, 0x13, 0x86, 0x80, 0xf6, 0xdd, 0x5c, 0x43, 0xbb, 0x7f, 0x5e, 0xe7,
+	0x63, 0xf9, 0x3e, 0x0f, 0x13, 0xcc, 0x3a, 0x35, 0xf1, 0xea, 0x1e, 0xfc, 0x0e, 0x00, 0x00, 0xff,
+	0xff, 0x73, 0xae, 0xe0, 0x2b, 0xbd, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -881,12 +1012,12 @@ func (m *MsgCreatePolicy) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Thing) > 0 {
-		i -= len(m.Thing)
-		copy(dAtA[i:], m.Thing)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Thing)))
+	if len(m.PolicyYaml) > 0 {
+		i -= len(m.PolicyYaml)
+		copy(dAtA[i:], m.PolicyYaml)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.PolicyYaml)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Creator) > 0 {
 		i -= len(m.Creator)
@@ -918,6 +1049,13 @@ func (m *MsgCreatePolicyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -941,10 +1079,10 @@ func (m *MsgDeletePolicy) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Thing) > 0 {
-		i -= len(m.Thing)
-		copy(dAtA[i:], m.Thing)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Thing)))
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Id)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -978,6 +1116,16 @@ func (m *MsgDeletePolicyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
+	if m.Found {
+		i--
+		if m.Found {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1001,10 +1149,48 @@ func (m *MsgCreateRelationship) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Thing) > 0 {
-		i -= len(m.Thing)
-		copy(dAtA[i:], m.Thing)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Thing)))
+	if len(m.ActorRelation) > 0 {
+		i -= len(m.ActorRelation)
+		copy(dAtA[i:], m.ActorRelation)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ActorRelation)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.Actor != nil {
+		{
+			size, err := m.Actor.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Relation) > 0 {
+		i -= len(m.Relation)
+		copy(dAtA[i:], m.Relation)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Relation)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Object != nil {
+		{
+			size, err := m.Object.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.CreatorDid) > 0 {
+		i -= len(m.CreatorDid)
+		copy(dAtA[i:], m.CreatorDid)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CreatorDid)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1038,6 +1224,16 @@ func (m *MsgCreateRelationshipResponse) MarshalToSizedBuffer(dAtA []byte) (int, 
 	_ = i
 	var l int
 	_ = l
+	if m.Created {
+		i--
+		if m.Created {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1061,10 +1257,48 @@ func (m *MsgDeleteRelationship) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Thing) > 0 {
-		i -= len(m.Thing)
-		copy(dAtA[i:], m.Thing)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Thing)))
+	if len(m.ActorRelation) > 0 {
+		i -= len(m.ActorRelation)
+		copy(dAtA[i:], m.ActorRelation)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ActorRelation)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.Actor != nil {
+		{
+			size, err := m.Actor.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Relation) > 0 {
+		i -= len(m.Relation)
+		copy(dAtA[i:], m.Relation)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Relation)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Object != nil {
+		{
+			size, err := m.Object.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.CreatorDid) > 0 {
+		i -= len(m.CreatorDid)
+		copy(dAtA[i:], m.CreatorDid)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CreatorDid)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1098,6 +1332,16 @@ func (m *MsgDeleteRelationshipResponse) MarshalToSizedBuffer(dAtA []byte) (int, 
 	_ = i
 	var l int
 	_ = l
+	if m.Found {
+		i--
+		if m.Found {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1121,10 +1365,22 @@ func (m *MsgRegisterObject) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Thing) > 0 {
-		i -= len(m.Thing)
-		copy(dAtA[i:], m.Thing)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Thing)))
+	if m.Object != nil {
+		{
+			size, err := m.Object.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.CreatorDid) > 0 {
+		i -= len(m.CreatorDid)
+		copy(dAtA[i:], m.CreatorDid)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CreatorDid)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1181,10 +1437,22 @@ func (m *MsgUnregisterObject) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Thing) > 0 {
-		i -= len(m.Thing)
-		copy(dAtA[i:], m.Thing)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Thing)))
+	if m.Object != nil {
+		{
+			size, err := m.Object.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.CreatorDid) > 0 {
+		i -= len(m.CreatorDid)
+		copy(dAtA[i:], m.CreatorDid)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CreatorDid)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1218,6 +1486,16 @@ func (m *MsgUnregisterObjectResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	_ = i
 	var l int
 	_ = l
+	if m.Found {
+		i--
+		if m.Found {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1242,7 +1520,7 @@ func (m *MsgCreatePolicy) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Thing)
+	l = len(m.PolicyYaml)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1255,6 +1533,10 @@ func (m *MsgCreatePolicyResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1268,7 +1550,7 @@ func (m *MsgDeletePolicy) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Thing)
+	l = len(m.Id)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1281,6 +1563,9 @@ func (m *MsgDeletePolicyResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Found {
+		n += 2
+	}
 	return n
 }
 
@@ -1294,7 +1579,23 @@ func (m *MsgCreateRelationship) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Thing)
+	l = len(m.CreatorDid)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Object != nil {
+		l = m.Object.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Relation)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Actor != nil {
+		l = m.Actor.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ActorRelation)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1307,6 +1608,9 @@ func (m *MsgCreateRelationshipResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Created {
+		n += 2
+	}
 	return n
 }
 
@@ -1320,7 +1624,23 @@ func (m *MsgDeleteRelationship) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Thing)
+	l = len(m.CreatorDid)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Object != nil {
+		l = m.Object.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Relation)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Actor != nil {
+		l = m.Actor.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ActorRelation)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1333,6 +1653,9 @@ func (m *MsgDeleteRelationshipResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Found {
+		n += 2
+	}
 	return n
 }
 
@@ -1346,8 +1669,12 @@ func (m *MsgRegisterObject) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Thing)
+	l = len(m.CreatorDid)
 	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Object != nil {
+		l = m.Object.Size()
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
@@ -1372,8 +1699,12 @@ func (m *MsgUnregisterObject) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Thing)
+	l = len(m.CreatorDid)
 	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Object != nil {
+		l = m.Object.Size()
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
@@ -1385,6 +1716,9 @@ func (m *MsgUnregisterObjectResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Found {
+		n += 2
+	}
 	return n
 }
 
@@ -1455,9 +1789,9 @@ func (m *MsgCreatePolicy) Unmarshal(dAtA []byte) error {
 			}
 			m.Creator = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Thing", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field PolicyYaml", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1485,7 +1819,7 @@ func (m *MsgCreatePolicy) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Thing = string(dAtA[iNdEx:postIndex])
+			m.PolicyYaml = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1537,6 +1871,38 @@ func (m *MsgCreatePolicyResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgCreatePolicyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1621,7 +1987,7 @@ func (m *MsgDeletePolicy) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Thing", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1649,7 +2015,7 @@ func (m *MsgDeletePolicy) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Thing = string(dAtA[iNdEx:postIndex])
+			m.Id = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1701,6 +2067,26 @@ func (m *MsgDeletePolicyResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgDeletePolicyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Found", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Found = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1785,7 +2171,7 @@ func (m *MsgCreateRelationship) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Thing", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatorDid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1813,7 +2199,143 @@ func (m *MsgCreateRelationship) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Thing = string(dAtA[iNdEx:postIndex])
+			m.CreatorDid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Object", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Object == nil {
+				m.Object = &core.Entity{}
+			}
+			if err := m.Object.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Relation", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Relation = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Actor", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Actor == nil {
+				m.Actor = &core.Entity{}
+			}
+			if err := m.Actor.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ActorRelation", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ActorRelation = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1865,6 +2387,26 @@ func (m *MsgCreateRelationshipResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgCreateRelationshipResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Created", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Created = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1949,7 +2491,7 @@ func (m *MsgDeleteRelationship) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Thing", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatorDid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1977,7 +2519,143 @@ func (m *MsgDeleteRelationship) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Thing = string(dAtA[iNdEx:postIndex])
+			m.CreatorDid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Object", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Object == nil {
+				m.Object = &core.Entity{}
+			}
+			if err := m.Object.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Relation", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Relation = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Actor", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Actor == nil {
+				m.Actor = &core.Entity{}
+			}
+			if err := m.Actor.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ActorRelation", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ActorRelation = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2029,6 +2707,26 @@ func (m *MsgDeleteRelationshipResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgDeleteRelationshipResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Found", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Found = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -2113,7 +2811,7 @@ func (m *MsgRegisterObject) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Thing", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatorDid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2141,7 +2839,43 @@ func (m *MsgRegisterObject) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Thing = string(dAtA[iNdEx:postIndex])
+			m.CreatorDid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Object", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Object == nil {
+				m.Object = &core.Entity{}
+			}
+			if err := m.Object.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2277,7 +3011,7 @@ func (m *MsgUnregisterObject) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Thing", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatorDid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2305,7 +3039,43 @@ func (m *MsgUnregisterObject) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Thing = string(dAtA[iNdEx:postIndex])
+			m.CreatorDid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Object", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Object == nil {
+				m.Object = &core.Entity{}
+			}
+			if err := m.Object.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2357,6 +3127,26 @@ func (m *MsgUnregisterObjectResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgUnregisterObjectResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Found", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Found = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

@@ -1,4 +1,6 @@
 IGNITE_RUN = docker run --rm -ti --volume $(PWD):/apps ignitehq/cli:latest
+UID := $(shell id --user)
+GID := $(shell id --group)
 
 .PHONY: build
 build:
@@ -14,4 +16,6 @@ proto:
 	GOPRIVATE="github.com/sourcenetwork/*"
 	docker image build --file proto/Dockerfile --tag sourcehub-proto-builder:latest proto/
 	docker run --rm -it --workdir /app -v $(PWD):/app sourcehub-proto-builder:latest buf generate --verbose
+	cp -r github.com/sourcenetwork/sourcehub/* .
+	sudo rm -rf github.com
 	go mod tidy

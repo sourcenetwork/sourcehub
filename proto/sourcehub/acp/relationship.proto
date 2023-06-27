@@ -1,0 +1,12 @@
+syntax = "proto3";
+package sourcehub.acp;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+// Entity identifies an object within a policy
+message Entity {
+    string resource = 1;
+    string id = 2;
+}

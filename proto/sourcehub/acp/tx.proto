@@ -4,7 +4,7 @@ package sourcehub.acp;
 
 option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
-import "zanzi/core/relationship.proto";
+import "sourcehub/acp/relationship.proto";
 
 // Msg defines the Msg service.
 service Msg {
@@ -36,9 +36,9 @@ message MsgDeletePolicyResponse {
 message MsgCreateRelationship {
     string creator = 1;
     string creator_did = 2;
-    sourcenetwork.zanzi.core.Entity object = 3;
+    Entity object = 3;
     string relation = 4;
-    sourcenetwork.zanzi.core.Entity actor = 5;
+    Entity actor = 5;
     string actor_relation = 6;
 }
 
@@ -49,9 +49,9 @@ message MsgCreateRelationshipResponse {
 message MsgDeleteRelationship {
     string creator = 1;
     string creator_did = 2;
-    sourcenetwork.zanzi.core.Entity object = 3;
+    Entity object = 3;
     string relation = 4;
-    sourcenetwork.zanzi.core.Entity actor = 5;
+    Entity actor = 5;
     string actor_relation = 6;
 }
 
@@ -62,7 +62,7 @@ message MsgDeleteRelationshipResponse {
 message MsgRegisterObject {
     string creator = 1;
     string creator_did = 2;
-    sourcenetwork.zanzi.core.Entity object = 3;
+    Entity object = 3;
 }
 
 message MsgRegisterObjectResponse {}
@@ -70,7 +70,7 @@ message MsgRegisterObjectResponse {}
 message MsgUnregisterObject {
     string creator = 1;
     string creator_did = 2;
-    sourcenetwork.zanzi.core.Entity object = 3;
+    Entity object = 3;
 }
 
 message MsgUnregisterObjectResponse {

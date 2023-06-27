@@ -1,0 +1,12 @@
+syntax = "proto3";
+package sourcehub.acp;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+// Params defines the parameters for the module.
+message Entity {
+    string resource = 1;
+    string id = 2;
+}
