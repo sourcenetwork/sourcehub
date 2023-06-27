@@ -15,8 +15,9 @@ proto-ignite:
 proto:
 	GOPRIVATE="github.com/sourcenetwork/*"
 	docker image build --file proto/Dockerfile --tag sourcehub-proto-builder:latest proto/
-	docker run --rm -it --workdir /app -v $(PWD):/app sourcehub-proto-builder:latest buf generate --verbose
+	docker run --rm -it --workdir /app --user ${UID}:${GID} --volume $(PWD):/app sourcehub-proto-builder:latest buf generate --verbose
+	# since gogoproto does not have a `module` argument as google's proto
+	# the script has to do some cleaning up
 	cp -r github.com/sourcenetwork/sourcehub/* .
-	sudo rm -rf github.com
-	gofmt -w -r '"github.com/gogo/protobuf/grpc" -> "github.com/cosmos/gogoproto/grpc"' .
+	rm -rf github.com
 	go mod tidy
