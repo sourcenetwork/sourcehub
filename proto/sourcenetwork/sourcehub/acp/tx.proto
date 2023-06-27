@@ -4,7 +4,7 @@ package sourcenetwork.sourcehub.acp;
 
 option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
-import "sourcehub/acp/relationship.proto";
+import "sourcenetwork/sourcehub/acp/relationship.proto";
 
 // Msg defines the Msg service.
 service Msg {

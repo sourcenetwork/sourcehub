@@ -18,4 +18,5 @@ proto:
 	docker run --rm -it --workdir /app -v $(PWD):/app sourcehub-proto-builder:latest buf generate --verbose
 	cp -r github.com/sourcenetwork/sourcehub/* .
 	sudo rm -rf github.com
+	gofmt -w -r '"github.com/gogo/protobuf/grpc" -> "github.com/cosmos/gogoproto/grpc"' .
 	go mod tidy

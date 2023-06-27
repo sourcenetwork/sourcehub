@@ -6,6 +6,10 @@ deps:
   - buf.build/cosmos/cosmos-proto
   - buf.build/cosmos/cosmos-sdk
 
+
+build:
+  excludes: []
+
 breaking:
   use:
     - FILE

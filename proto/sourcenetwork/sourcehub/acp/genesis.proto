@@ -2,7 +2,7 @@ syntax = "proto3";
 package sourcenetwork.sourcehub.acp;
 
 import "gogoproto/gogo.proto";
-import "sourcehub/acp/params.proto";
+import "sourcenetwork/sourcehub/acp/params.proto";
 
 option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 

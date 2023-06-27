@@ -4,7 +4,7 @@ package sourcenetwork.sourcehub.acp;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "sourcehub/acp/params.proto";
+import "sourcenetwork/sourcehub/acp/params.proto";
 
 option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
