@@ -1,12 +1,18 @@
-# Proto
+# About
 
 Protobuff definitions for SourceHub.
 
-# Buf
-SourceHub makes use of buf to build and manage its proto types.
+# Setup
 
-# Acp Module
-The ACP module depends on `zanzi`'s proto definitions.
-The dependencies are linked through the `buf.work.yaml` file in the project root.
-The workspace file references the buf module inside the source-zanzibar repository.
-The source-zanzibar repository is fetched as a git-submodule, the submodule was chosen because source-zanzibar proto types are still evolving, therefore it doesn't make sense to publish them in the buf repository.
+SourceHub uses the `buff` ecosystem to manage its protobuff types.
+
+The public Tx and Query types used by SourceHub are defined within a single buff module.
+
+Go code genration uses [Cosmo's gogoproto](https://github.com/cosmos/gogoproto) (fork of gogo protobuff) "protoc" plugin.
+
+Note that [buf does not use protoc](https://buf.build/docs/reference/internal-compiler/).
+
+# Generating
+
+The protoc environment is built in a [Dockerfile](./Dockerfile).
+run `make proto` in the root project directory to regenreate the protobuff files.
