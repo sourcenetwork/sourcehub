@@ -1,0 +1,68 @@
+
+syntax = "proto3";
+package sourcenetwork.sourcehub.acp;
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+import "sourcenetwork/sourcehub/acp/policy.proto";
+
+// PolicyEncodingType enumerates supported marshaling types for policies.
+enum PolicyMarshalingType {
+    // Fallback value for a missing Marshaling Type
+    UNKNOWN = 0;
+
+    // Policy Marshaled as a YAML Short Policy definition
+    SHORT_YAML = 1;
+
+    // Policy Marshaled as a JSON Short Policy definition
+    SHORT_JSON = 2;
+}
+
+// PolicyShort is a compact Policy definition which is conveniently expressed
+// as JSON or YAML. The shorthand format is used created a Policy.
+message PolicyShort {
+
+    string name = 1;
+
+    string description = 2;
+
+    // meta field stores arbitrary key-values from users
+    map<string, string> meta = 4;
+
+    // resources defines resources within a policy.
+    // map keys define the name for a resource
+    map<string, ResourceShort> resources = 5;
+
+    // actor resource defines the actor resource for the policy
+    // optional.
+    ActorResource actor = 6;
+
+    // specify the policy version
+    string version = 7;
+}
+
+message ResourceShort {
+    string doc = 1;
+    map<string, PermissionShort> permissions = 2;
+    map<string, RelationShort> relations = 3;
+}
+
+
+message RelationShort {
+    string doc = 1;
+
+    // list of relations managed by the current relation
+
+    repeated string manages = 2;
+
+    // types define a list of target types the current relation can point to.
+    // Each type restriction points to a a resource's relation.
+    // The syntax for a type restriction is "{resource}->{relation}", where relation is optional.
+    // An empty relation means the relationship can only point to an object node, as opposed to an userset.
+    repeated string types = 3;
+}
+
+message PermissionShort {
+    string doc = 1;
+    string expr = 2;
+}

@@ -11,4 +11,11 @@ plugins:
 
   - name: grpc-gateway
     out: .
-    opt: logtostderr=true,allow_colon_final_segments=true
+    opt: 
+      - logtostderr=true
+      - allow_colon_final_segments=true
+
+  - name: validate-go
+    out: .
+    opt:
+      - path=import

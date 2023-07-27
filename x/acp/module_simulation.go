@@ -27,10 +27,6 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCreatePolicy int = 100
 
-	opWeightMsgDeletePolicy = "op_weight_msg_delete_policy"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgDeletePolicy int = 100
-
 	opWeightMsgCreateRelationship = "op_weight_msg_create_relationship"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCreateRelationship int = 100
@@ -84,17 +80,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgCreatePolicy,
 		acpsimulation.SimulateMsgCreatePolicy(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgDeletePolicy int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeletePolicy, &weightMsgDeletePolicy, nil,
-		func(_ *rand.Rand) {
-			weightMsgDeletePolicy = defaultWeightMsgDeletePolicy
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgDeletePolicy,
-		acpsimulation.SimulateMsgDeletePolicy(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgCreateRelationship int
@@ -154,14 +139,6 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			defaultWeightMsgCreatePolicy,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				acpsimulation.SimulateMsgCreatePolicy(am.accountKeeper, am.bankKeeper, am.keeper)
-				return nil
-			},
-		),
-		simulation.NewWeightedProposalMsg(
-			opWeightMsgDeletePolicy,
-			defaultWeightMsgDeletePolicy,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				acpsimulation.SimulateMsgDeletePolicy(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),

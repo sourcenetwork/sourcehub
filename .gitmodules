@@ -1,0 +1,6 @@
+[submodule "submodules/zanzi"]
+	path = submodules/zanzi
+	url = git@github.com:sourcenetwork/source-zanzibar.git
+[submodule "submodules/raccoondb"]
+	path = submodules/raccoondb
+	url = git@github.com:sourcenetwork/raccoondb.git

@@ -1,0 +1,22 @@
+name: policy
+description: ok
+resources:
+  foo:
+    relations: 
+      reader:
+      owner:
+        doc: owner owns
+        types:
+          - blah
+          - ok->that
+        manages: 
+          - reader
+    permissions: 
+      abc:
+        expr: owner
+        doc: abc doc
+      def: 
+        expr: owner + abc
+actor:
+  name: actor-resource
+  doc: my actor

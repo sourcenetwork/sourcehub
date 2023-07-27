@@ -1,0 +1,47 @@
+syntax = "proto3";
+package sourcenetwork.sourcehub.acp;
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+import "google/protobuf/timestamp.proto";
+import "sourcenetwork/sourcehub/acp/policy.proto";
+
+
+// PolicyData contains ACP module specific data which will be stored
+// in Zanzi's Policy in the appdata field.
+message PolicyData {
+    // acp_policy stores the acp module Policy type - this is done 
+    // to preserve the distinction between relation and "permissions".
+    Policy acp_policy = 1;
+    ManagementGraph management_graph = 2;
+}
+
+// ManagementGraph represents a Policy's Relation Management Graph.
+// 
+// The ManagementGraph is a directed graph which expresses the notion of "XX".
+// "XX" is the idea that a certain set of relationships with relation R will be managed by an actor with relation RM.
+// Thus we can say RM manages R, meaning that if an actor A has a relationship 'actor {A} is a {RM} for {O}' where O is an object,
+// then Actor A can create relationships 'actor {S} is a {R} for {O}' for any actor S.
+//
+// Nodes in the Graph are Relations in a Policy.
+// Edges point from one Relation to another.
+// 
+// NOTE: This proto definition should be treated as an *abstract data type*,
+// meaning that the fields should not be manually editted.
+message ManagementGraph {
+    // map of node id to node definition
+    map<string, ManagerNode> nodes = 1;
+    // stores all edges leaving a node
+    map<string, ManagerEdges> forward_edges = 2;
+    // stores all edges pointing to a node
+    map<string, ManagerEdges> backward_edges = 3;
+}
+
+message ManagerNode {
+    string id = 1;
+    string text = 2;
+}
+
+message ManagerEdges {
+    map<string, bool> edges = 1;
+}

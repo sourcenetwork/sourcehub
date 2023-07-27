@@ -5,32 +5,27 @@ package sourcenetwork.sourcehub.acp;
 option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
 import "sourcenetwork/sourcehub/acp/relationship.proto";
+import "sourcenetwork/sourcehub/acp/policy_marshaled.proto";
+import "google/protobuf/timestamp.proto";
 
 // Msg defines the Msg service.
 service Msg {
     rpc CreatePolicy       (MsgCreatePolicy      ) returns (MsgCreatePolicyResponse      );
-    rpc DeletePolicy       (MsgDeletePolicy      ) returns (MsgDeletePolicyResponse      );
     rpc CreateRelationship (MsgCreateRelationship) returns (MsgCreateRelationshipResponse);
     rpc DeleteRelationship (MsgDeleteRelationship) returns (MsgDeleteRelationshipResponse);
     rpc RegisterObject     (MsgRegisterObject    ) returns (MsgRegisterObjectResponse    );
     rpc UnregisterObject   (MsgUnregisterObject  ) returns (MsgUnregisterObjectResponse  );
 }
+
 message MsgCreatePolicy {
     string creator = 1;
-    string policy_yaml = 3;
+    string policy = 2;
+    PolicyMarshalingType marshal_type = 3;
+    google.protobuf.Timestamp creation_time = 4;
 }
 
 message MsgCreatePolicyResponse {
     string id = 1;
-}
-
-message MsgDeletePolicy {
-    string creator = 1;
-    string id = 2;
-}
-
-message MsgDeletePolicyResponse {
-    bool found = 1;
 }
 
 message MsgCreateRelationship {

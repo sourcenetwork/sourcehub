@@ -1,6 +1,62 @@
 syntax = "proto3";
 package sourcenetwork.sourcehub.acp;
 
-import "gogoproto/gogo.proto";
-
 option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+
+
+// Policy represents an ACP module Policy definition.
+// Each Policy defines a set of high level rules over how the acces control system
+// should behave.
+message Policy {
+    string id = 1 [(buf.validate.field).string = {min_len: 3}];
+    string name = 2 [(buf.validate.field).string = {min_len: 3}];
+    string description = 3;
+    google.protobuf.Timestamp creation_time = 4;
+    map<string, string> attributes = 5;
+    repeated Resource resources = 6; 
+    ActorResource actor_resource = 7;
+    string creator = 10 [(buf.validate.field).string = {min_len: 3}];
+}
+
+// Resource models a namespace for objects in a Policy.
+// Appications will have multiple entities which they must manage such as files or groups.
+// A Resource represents a set of entities of a certain type.
+message Resource {
+    string name = 1 [(buf.validate.field).string = {min_len: 3}];
+    string doc = 2;
+    repeated Permission permissions = 3;
+    repeated Relation relations = 4;
+}
+
+
+message Relation {
+    string name = 1 [(buf.validate.field).string = {min_len: 3}];
+
+    string doc = 2;
+
+    // list of relations managed by the current relation
+    repeated string manages = 3;
+
+    // value restriction types
+    repeated Userset vr_types = 4;
+}
+
+message Userset {
+    string resource = 1 [(buf.validate.field).string = {min_len: 3}];
+    string relation = 2 [(buf.validate.field).string = {min_len: 3}];
+}
+
+message Permission {
+    string name = 1 [(buf.validate.field).string = {min_len: 3}];
+    string doc = 2;
+    string expression = 3;
+}
+
+message ActorResource {
+    string name = 1 [(buf.validate.field).string = {min_len: 3}];
+    string doc = 2;
+    repeated Relation relations = 3;
+}

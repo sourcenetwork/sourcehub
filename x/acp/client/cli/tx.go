@@ -31,7 +31,6 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdCreatePolicy())
-	cmd.AddCommand(CmdDeletePolicy())
 	cmd.AddCommand(CmdCreateRelationship())
 	cmd.AddCommand(CmdDeleteRelationship())
 	cmd.AddCommand(CmdRegisterObject())

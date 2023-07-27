@@ -20,7 +20,8 @@ func TestMsgCreatePolicy_ValidateBasic(t *testing.T) {
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
-		}, {
+		},
+		{
 			name: "valid address",
 			msg: MsgCreatePolicy{
 				Creator: sample.AccAddress(),

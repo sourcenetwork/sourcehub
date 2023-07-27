@@ -2,13 +2,17 @@
 version: v1
 deps:
   - remote: buf.build
+    owner: bufbuild
+    repository: protovalidate
+    commit: 4464c06fa39945d7af6dee1e63790bc6
+  - remote: buf.build
     owner: cosmos
     repository: cosmos-proto
     commit: 1935555c206d4afb9e94615dfd0fad31
   - remote: buf.build
     owner: cosmos
     repository: cosmos-sdk
-    commit: 9d547dbea90f47afbe1898388fcebffb
+    commit: aa25660f4ff746388669ce36b3778442
   - remote: buf.build
     owner: cosmos
     repository: gogo-proto

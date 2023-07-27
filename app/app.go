@@ -524,6 +524,7 @@ func New(
 		keys[acpmoduletypes.StoreKey],
 		keys[acpmoduletypes.MemStoreKey],
 		app.GetSubspace(acpmoduletypes.ModuleName),
+		app.AccountKeeper,
 	)
 	acpModule := acpmodule.NewAppModule(appCodec, app.AcpKeeper, app.AccountKeeper, app.BankKeeper)
 

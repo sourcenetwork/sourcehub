@@ -27,10 +27,12 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{}
 }
 
+/*
 // Validate validates the set of params
 func (p Params) Validate() error {
 	return nil
 }
+*/
 
 // String implements the Stringer interface.
 func (p Params) String() string {

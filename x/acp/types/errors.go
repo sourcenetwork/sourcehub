@@ -8,5 +8,6 @@ import (
 
 // x/acp module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrAcpInternal = sdkerrors.Register(ModuleName, 1000, "internal error")
+	ErrPolicyInput = sdkerrors.Register(ModuleName, 1001, "policy input error")
 )

@@ -9,10 +9,11 @@ const TypeMsgCreatePolicy = "create_policy"
 
 var _ sdk.Msg = &MsgCreatePolicy{}
 
-func NewMsgCreatePolicy(creator string, policyYaml string) *MsgCreatePolicy {
+func NewMsgCreatePolicy(creator string, policy string, t PolicyMarshalingType) *MsgCreatePolicy {
 	return &MsgCreatePolicy{
-		Creator:    creator,
-		PolicyYaml: policyYaml,
+		Creator:     creator,
+		Policy:      policy,
+		MarshalType: t,
 	}
 }
 
