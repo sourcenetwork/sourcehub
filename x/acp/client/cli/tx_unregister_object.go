@@ -14,16 +14,16 @@ var _ = strconv.Itoa(0)
 
 func CmdUnregisterObject() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "unregister-object [creator-did] [policy-id] [resource] [id]",
+		Use:   "unregister-object [policy-id] [resource] [id]",
 		Short: "Broadcast message UnregisterObject",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			obj := &types.Entity{
+			obj := &types.Object{
 				Resource: args[2],
 				Id:       args[3],
 			}
@@ -31,7 +31,6 @@ func CmdUnregisterObject() *cobra.Command {
 			msg := types.NewMsgUnregisterObject(
 				clientCtx.GetFromAddress().String(),
 				args[0],
-				args[1],
 				obj,
 			)
 			if err := msg.ValidateBasic(); err != nil {

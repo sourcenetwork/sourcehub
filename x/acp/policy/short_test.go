@@ -1,8 +1,8 @@
 package policy
 
 import (
+	"reflect"
 	"testing"
-        "reflect"
 
 	"github.com/stretchr/testify/require"
 
@@ -46,14 +46,14 @@ func TestFullUnmarshal(t *testing.T) {
 					&types.Relation{
 						Name: "owner",
 						Doc:  "owner owns",
-						VrTypes: []*types.Userset{
-							&types.Userset{
-								Resource: "blah",
-								Relation: "",
+						VrTypes: []*types.Restriction{
+							&types.Restriction{
+								ResourceName: "blah",
+								RelationName: "",
 							},
-							&types.Userset{
-								Resource: "ok",
-								Relation: "that",
+							&types.Restriction{
+								ResourceName: "ok",
+								RelationName: "that",
 							},
 						},
 						Manages: []string{
@@ -82,10 +82,10 @@ func TestFullUnmarshal(t *testing.T) {
 	}
 	t.Log(err)
 	require.Nil(t, err)
-        if !reflect.DeepEqual(want, out){
-            t.Log(want.String())
-            t.Log(out.String())
-        }
+	if !reflect.DeepEqual(want, out) {
+		t.Log(want.String())
+		t.Log(out.String())
+	}
 	require.Equal(t, want, out)
 }
 
@@ -238,7 +238,7 @@ func TestDuplicatedRelationErrors(t *testing.T) {
 	require.NotNil(t, err)
 }
 
-func TestUsersetIdentifierMapsBothForms(t *testing.T) {
+func TestRestrictionIdentifierMapsBothForms(t *testing.T) {
 	in := `
     resources:
       foo:
@@ -259,14 +259,14 @@ func TestUsersetIdentifierMapsBothForms(t *testing.T) {
 				Relations: []*types.Relation{
 					&types.Relation{
 						Name: "blah",
-						VrTypes: []*types.Userset{
-							&types.Userset{
-								Resource: "actor",
-								Relation: "",
+						VrTypes: []*types.Restriction{
+							&types.Restriction{
+								ResourceName: "actor",
+								RelationName: "",
 							},
-							&types.Userset{
-								Resource: "book",
-								Relation: "owner",
+							&types.Restriction{
+								ResourceName: "book",
+								RelationName: "owner",
 							},
 						},
 					},

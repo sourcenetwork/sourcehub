@@ -11,6 +11,10 @@ func (g *ManagementGraph) LoadFromPolicy(policy *Policy) {
 		for _, relation := range resource.Relations {
 			g.registerRel(resource.Name, relation.Name)
 
+			// add owner as the manager of the current relation
+			// since an owner should be able to manage every relation
+			g.registerManagedRel(resource.Name, "owner", relation.Name)
+
 			for _, managedRel := range relation.Manages {
 				g.registerManagedRel(resource.Name, relation.Name, managedRel)
 			}
@@ -24,7 +28,7 @@ func (g *ManagementGraph) LoadFromPolicy(policy *Policy) {
 	}
 }
 
-// IsWellFormed walk through edges in graph and verifies whether the
+// IsWellFormed walks through edges in graph and verifies whether the
 // source and destination nodes for the edges are defined.
 // If any edge is not defined, returns an error with the offending edges.
 // If graph is well formed, return nil
@@ -104,4 +108,24 @@ func (g *ManagementGraph) getNode(id string) (*ManagerNode, bool) {
 
 func (g *ManagementGraph) buildNodeId(resource, rel string) string {
 	return resource + "/" + rel
+}
+
+// GetManagers return the list of relations which manages the relationName.
+// Returns nil if relation wasn't found
+func (g *ManagementGraph) GetManagers(resourceName, relationName string) []string {
+	// The Management graph points from the manager relation to the managee
+	// therefore the backward edges can be used to derive the managing relations
+
+	relId := g.buildNodeId(resourceName, relationName)
+	ancestors, ok := g.BackwardEdges[relId]
+	if !ok {
+		return nil
+	}
+
+	managers := make([]string, 0, len(ancestors.Edges))
+	for id, _ := range ancestors.Edges {
+		node, _ := g.getNode(id)
+		managers = append(managers, node.Text)
+	}
+	return managers
 }

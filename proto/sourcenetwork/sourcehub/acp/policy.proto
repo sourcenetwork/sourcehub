@@ -41,20 +41,27 @@ message Relation {
     repeated string manages = 3;
 
     // value restriction types
-    repeated Userset vr_types = 4;
+    repeated Restriction vr_types = 4;
 }
 
-message Userset {
-    string resource = 1 [(buf.validate.field).string = {min_len: 3}];
-    string relation = 2 [(buf.validate.field).string = {min_len: 3}];
+// Restriction models a specification which a Relationship's actor
+// should meet.
+message Restriction {
+    // resource_name scopes permissible actors resource
+    string resource_name = 1;
+    // relation_name scopes permissible actors relation
+    string relation_name = 2;
 }
 
+// Permission models a special type of Relation which is evaluated at runtime.
+// A permission often maps to an operation defined for a resource which an actor may attempt.
 message Permission {
     string name = 1 [(buf.validate.field).string = {min_len: 3}];
     string doc = 2;
     string expression = 3;
 }
 
+// ActorResource represents a special Resource which is reserved for Policy actors.
 message ActorResource {
     string name = 1 [(buf.validate.field).string = {min_len: 3}];
     string doc = 2;

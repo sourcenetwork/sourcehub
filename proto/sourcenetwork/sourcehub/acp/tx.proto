@@ -6,6 +6,7 @@ option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
 import "sourcenetwork/sourcehub/acp/relationship.proto";
 import "sourcenetwork/sourcehub/acp/policy_marshaled.proto";
+import "sourcenetwork/sourcehub/acp/policy.proto";
 import "google/protobuf/timestamp.proto";
 
 // Msg defines the Msg service.
@@ -25,17 +26,16 @@ message MsgCreatePolicy {
 }
 
 message MsgCreatePolicyResponse {
-    string id = 1;
+    Policy policy = 1;
 }
 
 message MsgCreateRelationship {
     string creator = 1;
-    string creator_did = 2;
-    string policy_id = 3;
-    Entity object = 4;
-    string relation = 5;
-    Entity actor = 6;
-    string actor_relation = 7;
+    string policy_id = 2;
+    Object object = 3;
+    string relation = 4;
+    Subject subject = 5;
+    google.protobuf.Timestamp creation_time = 6;
 }
 
 message MsgCreateRelationshipResponse {
@@ -44,12 +44,10 @@ message MsgCreateRelationshipResponse {
 
 message MsgDeleteRelationship {
     string creator = 1;
-    string creator_did = 2;
-    string policy_id = 3;
-    Entity object = 4;
-    string relation = 5;
-    Entity actor = 6;
-    string actor_relation = 7;
+    string policy_id = 2;
+    Object object = 3;
+    string relation = 4;
+    Subject subject = 5;
 }
 
 message MsgDeleteRelationshipResponse {
@@ -58,18 +56,19 @@ message MsgDeleteRelationshipResponse {
 
 message MsgRegisterObject {
     string creator = 1;
-    string creator_did = 2;
-    string policy_id = 3;
-    Entity object = 4;
+    string policy_id = 2;
+    Registration registration = 3;
+    google.protobuf.Timestamp creation_time = 5;
 }
 
-message MsgRegisterObjectResponse {}
+message MsgRegisterObjectResponse {
+    RegistrationResult result = 1;
+}
 
 message MsgUnregisterObject {
     string creator = 1;
-    string creator_did = 2;
-    string policy_id = 3;
-    Entity object = 4;
+    string policy_id = 2;
+    Object object = 3;
 }
 
 message MsgUnregisterObjectResponse {

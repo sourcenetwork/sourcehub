@@ -11,25 +11,28 @@ import (
 
 func (k msgServer) CreatePolicy(goCtx context.Context, msg *types.MsgCreatePolicy) (*types.MsgCreatePolicyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	engine, err := k.GetZanziEngine(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	// We can safely assume Creator exists otherwise
 	// antee handler would've errored out
 	addr := sdk.MustAccAddressFromBech32(msg.Creator)
-	acc := k.accountKeeper.GetAccount(ctx, addr)
-	sequence := acc.GetSequence()
 
-	pol, err := policy.NewPolicy(msg.Policy, msg.MarshalType, msg.Creator,
-		sequence, msg.CreationTime)
-	if err != nil {
-		return nil, types.ErrPolicyInput.Wrapf("failed to create policy: %v", err)
+	cmd := policy.CreatePolicyCommand{
+		CreatorAddr:  addr,
+		Policy:       msg.Policy,
+		MarshalType:  msg.MarshalType,
+		CreationTime: msg.CreationTime,
 	}
+	pol, err := cmd.Execute(goCtx, k.accountKeeper, engine)
 
-	err = k.polRepo.Set(goCtx, pol)
 	if err != nil {
-		return nil, types.ErrPolicyInput.Wrapf("failed to create policy: %v", err)
+		return nil, err
 	}
 
 	return &types.MsgCreatePolicyResponse{
-		Id: pol.Id,
+		Policy: pol,
 	}, nil
 }

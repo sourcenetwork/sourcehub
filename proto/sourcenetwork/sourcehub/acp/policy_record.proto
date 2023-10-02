@@ -4,22 +4,20 @@ package sourcenetwork.sourcehub.acp;
 option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
 import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
 import "sourcenetwork/sourcehub/acp/policy.proto";
 
 
-// PolicyData contains ACP module specific data which will be stored
-// in Zanzi's Policy in the appdata field.
-message PolicyData {
-    // acp_policy stores the acp module Policy type - this is done 
-    // to preserve the distinction between relation and "permissions".
-    Policy acp_policy = 1;
+// PolicyRecord represents a the Policy Document which will be persisted in the data layer
+message PolicyRecord {
+    Policy policy = 1;
     ManagementGraph management_graph = 2;
 }
 
 // ManagementGraph represents a Policy's Relation Management Graph.
 // 
-// The ManagementGraph is a directed graph which expresses the notion of "XX".
-// "XX" is the idea that a certain set of relationships with relation R will be managed by an actor with relation RM.
+// The ManagementGraph is a directed graph which expresses the notion of Relation Management Authority.
+// Relation Management Authority is the idea that a certain set of relationships with relation R will be managed by an actor with relation RM.
 // Thus we can say RM manages R, meaning that if an actor A has a relationship 'actor {A} is a {RM} for {O}' where O is an object,
 // then Actor A can create relationships 'actor {S} is a {R} for {O}' for any actor S.
 //

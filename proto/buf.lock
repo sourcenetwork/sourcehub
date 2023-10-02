@@ -4,7 +4,7 @@ deps:
   - remote: buf.build
     owner: bufbuild
     repository: protovalidate
-    commit: 4464c06fa39945d7af6dee1e63790bc6
+    commit: 63dfe56cc2c44cffa4815366ba7a99c0
   - remote: buf.build
     owner: cosmos
     repository: cosmos-proto
@@ -12,7 +12,7 @@ deps:
   - remote: buf.build
     owner: cosmos
     repository: cosmos-sdk
-    commit: aa25660f4ff746388669ce36b3778442
+    commit: 064b85cbdc3943d792d4670759c3a490
   - remote: buf.build
     owner: cosmos
     repository: gogo-proto
@@ -20,4 +20,8 @@ deps:
   - remote: buf.build
     owner: googleapis
     repository: googleapis
-    commit: cc916c31859748a68fd229a3c8d7a2e8
+    commit: 28151c0d0a1641bf938a7672c500e01d
+  - remote: buf.build
+    owner: protocolbuffers
+    repository: wellknowntypes
+    commit: 657250e6a39648cbb169d079a60bd9ba

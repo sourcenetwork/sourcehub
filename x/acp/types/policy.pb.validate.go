@@ -91,7 +91,7 @@ func (m *Policy) validate(all bool) error {
 		}
 	}
 
-	// no validation rules for Metadata
+	// no validation rules for Attributes
 
 	for idx, item := range m.GetResources() {
 		_, _ = idx, item
@@ -155,8 +155,6 @@ func (m *Policy) validate(all bool) error {
 			}
 		}
 	}
-
-	// no validation rules for Attributes
 
 	// no validation rules for Creator
 
@@ -545,44 +543,45 @@ var _ interface {
 	ErrorName() string
 } = RelationValidationError{}
 
-// Validate checks the field values on Userset with the rules defined in the
-// proto definition for this message. If any rules are violated, the first
+// Validate checks the field values on Restriction with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
-func (m *Userset) Validate() error {
+func (m *Restriction) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on Userset with the rules defined in the
-// proto definition for this message. If any rules are violated, the result is
-// a list of violation errors wrapped in UsersetMultiError, or nil if none found.
-func (m *Userset) ValidateAll() error {
+// ValidateAll checks the field values on Restriction with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in RestrictionMultiError, or
+// nil if none found.
+func (m *Restriction) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *Userset) validate(all bool) error {
+func (m *Restriction) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
-	// no validation rules for Resource
+	// no validation rules for ResourceName
 
-	// no validation rules for Relation
+	// no validation rules for RelationName
 
 	if len(errors) > 0 {
-		return UsersetMultiError(errors)
+		return RestrictionMultiError(errors)
 	}
 
 	return nil
 }
 
-// UsersetMultiError is an error wrapping multiple validation errors returned
-// by Userset.ValidateAll() if the designated constraints aren't met.
-type UsersetMultiError []error
+// RestrictionMultiError is an error wrapping multiple validation errors
+// returned by Restriction.ValidateAll() if the designated constraints aren't met.
+type RestrictionMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m UsersetMultiError) Error() string {
+func (m RestrictionMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -591,11 +590,11 @@ func (m UsersetMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m UsersetMultiError) AllErrors() []error { return m }
+func (m RestrictionMultiError) AllErrors() []error { return m }
 
-// UsersetValidationError is the validation error returned by Userset.Validate
-// if the designated constraints aren't met.
-type UsersetValidationError struct {
+// RestrictionValidationError is the validation error returned by
+// Restriction.Validate if the designated constraints aren't met.
+type RestrictionValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -603,22 +602,22 @@ type UsersetValidationError struct {
 }
 
 // Field function returns field value.
-func (e UsersetValidationError) Field() string { return e.field }
+func (e RestrictionValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e UsersetValidationError) Reason() string { return e.reason }
+func (e RestrictionValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e UsersetValidationError) Cause() error { return e.cause }
+func (e RestrictionValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e UsersetValidationError) Key() bool { return e.key }
+func (e RestrictionValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e UsersetValidationError) ErrorName() string { return "UsersetValidationError" }
+func (e RestrictionValidationError) ErrorName() string { return "RestrictionValidationError" }
 
 // Error satisfies the builtin error interface
-func (e UsersetValidationError) Error() string {
+func (e RestrictionValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -630,14 +629,14 @@ func (e UsersetValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sUserset.%s: %s%s",
+		"invalid %sRestriction.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = UsersetValidationError{}
+var _ error = RestrictionValidationError{}
 
 var _ interface {
 	Field() string
@@ -645,7 +644,7 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = UsersetValidationError{}
+} = RestrictionValidationError{}
 
 // Validate checks the field values on Permission with the rules defined in the
 // proto definition for this message. If any rules are violated, the first

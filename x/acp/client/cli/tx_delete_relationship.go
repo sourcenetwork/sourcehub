@@ -14,7 +14,7 @@ var _ = strconv.Itoa(0)
 
 func CmdDeleteRelationship() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-relationship [actor-did] [policy-id] [resource] [obj-id] [relation] [actor-resource] [actor-id] [actor-rel]",
+		Use:   "delete-relationship [policy-id] [resource] [obj-id] [relation] [actor-resource] [actor-id] [actor-rel]",
 		Short: "Broadcast message DeleteRelationship",
 		Args:  cobra.ExactArgs(8),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -23,24 +23,24 @@ func CmdDeleteRelationship() *cobra.Command {
 				return err
 			}
 
-			obj := &types.Entity{
-				Resource: args[2],
-				Id:       args[3],
+			obj := &types.Object{
+				Resource: args[1],
+				Id:       args[2],
 			}
 
-			actor := &types.Entity{
-				Resource: args[5],
-				Id:       args[6],
-			}
+			subject := &types.Subject{}
+			/*
+					Resource: args[5],
+					Id:       args[6],
+				}
+			*/
 
 			msg := types.NewMsgDeleteRelationship(
 				clientCtx.GetFromAddress().String(),
 				args[0],
-				args[1],
 				obj,
-				args[4],
-				actor,
-				args[7],
+				args[3],
+				subject,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

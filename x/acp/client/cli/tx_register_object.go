@@ -14,7 +14,7 @@ var _ = strconv.Itoa(0)
 
 func CmdRegisterObject() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register-object [actor-did] [policyId] [namespace] [id]",
+		Use:   "register-object [creator] [policyId] [resource-name] [objId]",
 		Short: "Broadcast message RegisterObject",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -22,17 +22,22 @@ func CmdRegisterObject() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			_ = args[0]
+			policyId := args[1]
+			resource := args[2]
+			objId := args[3]
 
-			obj := &types.Entity{
-				Resource: args[2],
-				Id:       args[3],
+			registration := &types.Registration{
+				Object: &types.Object{
+					Resource: resource,
+					Id:       objId,
+				},
+				Actor: &types.Actor{
+					Id: clientCtx.GetFromAddress().String(),
+				},
 			}
-			msg := types.NewMsgRegisterObject(
-				clientCtx.GetFromAddress().String(),
-				args[0],
-				args[1],
-				obj,
-			)
+
+			msg := types.NewMsgRegisterObject(policyId, registration)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

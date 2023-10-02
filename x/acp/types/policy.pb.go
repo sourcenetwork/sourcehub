@@ -32,10 +32,9 @@ type Policy struct {
 	Name          string            `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Description   string            `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	CreationTime  *types.Timestamp  `protobuf:"bytes,4,opt,name=creation_time,json=creationTime,proto3" json:"creation_time,omitempty"`
-	Metadata      map[string]string `protobuf:"bytes,5,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Attributes    map[string]string `protobuf:"bytes,5,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	Resources     []*Resource       `protobuf:"bytes,6,rep,name=resources,proto3" json:"resources,omitempty"`
 	ActorResource *ActorResource    `protobuf:"bytes,7,opt,name=actor_resource,json=actorResource,proto3" json:"actor_resource,omitempty"`
-	Attributes    map[string]string `protobuf:"bytes,8,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	Creator       string            `protobuf:"bytes,10,opt,name=creator,proto3" json:"creator,omitempty"`
 }
 
@@ -100,9 +99,9 @@ func (m *Policy) GetCreationTime() *types.Timestamp {
 	return nil
 }
 
-func (m *Policy) GetMetadata() map[string]string {
+func (m *Policy) GetAttributes() map[string]string {
 	if m != nil {
-		return m.Metadata
+		return m.Attributes
 	}
 	return nil
 }
@@ -117,13 +116,6 @@ func (m *Policy) GetResources() []*Resource {
 func (m *Policy) GetActorResource() *ActorResource {
 	if m != nil {
 		return m.ActorResource
-	}
-	return nil
-}
-
-func (m *Policy) GetAttributes() map[string]string {
-	if m != nil {
-		return m.Attributes
 	}
 	return nil
 }
@@ -212,7 +204,7 @@ type Relation struct {
 	// list of relations managed by the current relation
 	Manages []string `protobuf:"bytes,3,rep,name=manages,proto3" json:"manages,omitempty"`
 	// value restriction types
-	VrTypes []*Userset `protobuf:"bytes,4,rep,name=vr_types,json=vrTypes,proto3" json:"vr_types,omitempty"`
+	VrTypes []*Restriction `protobuf:"bytes,4,rep,name=vr_types,json=vrTypes,proto3" json:"vr_types,omitempty"`
 }
 
 func (m *Relation) Reset()         { *m = Relation{} }
@@ -269,30 +261,34 @@ func (m *Relation) GetManages() []string {
 	return nil
 }
 
-func (m *Relation) GetVrTypes() []*Userset {
+func (m *Relation) GetVrTypes() []*Restriction {
 	if m != nil {
 		return m.VrTypes
 	}
 	return nil
 }
 
-type Userset struct {
-	Resource string `protobuf:"bytes,1,opt,name=resource,proto3" json:"resource,omitempty"`
-	Relation string `protobuf:"bytes,2,opt,name=relation,proto3" json:"relation,omitempty"`
+// Restriction models a specification which a Relationship's actor
+// should meet.
+type Restriction struct {
+	// resource_name scopes permissible actors resource
+	ResourceName string `protobuf:"bytes,1,opt,name=resource_name,json=resourceName,proto3" json:"resource_name,omitempty"`
+	// relation_name scopes permissible actors relation
+	RelationName string `protobuf:"bytes,2,opt,name=relation_name,json=relationName,proto3" json:"relation_name,omitempty"`
 }
 
-func (m *Userset) Reset()         { *m = Userset{} }
-func (m *Userset) String() string { return proto.CompactTextString(m) }
-func (*Userset) ProtoMessage()    {}
-func (*Userset) Descriptor() ([]byte, []int) {
+func (m *Restriction) Reset()         { *m = Restriction{} }
+func (m *Restriction) String() string { return proto.CompactTextString(m) }
+func (*Restriction) ProtoMessage()    {}
+func (*Restriction) Descriptor() ([]byte, []int) {
 	return fileDescriptor_73cee55eeb663430, []int{3}
 }
-func (m *Userset) XXX_Unmarshal(b []byte) error {
+func (m *Restriction) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Userset) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Restriction) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Userset.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Restriction.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -302,32 +298,34 @@ func (m *Userset) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Userset) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Userset.Merge(m, src)
+func (m *Restriction) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Restriction.Merge(m, src)
 }
-func (m *Userset) XXX_Size() int {
+func (m *Restriction) XXX_Size() int {
 	return m.Size()
 }
-func (m *Userset) XXX_DiscardUnknown() {
-	xxx_messageInfo_Userset.DiscardUnknown(m)
+func (m *Restriction) XXX_DiscardUnknown() {
+	xxx_messageInfo_Restriction.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Userset proto.InternalMessageInfo
+var xxx_messageInfo_Restriction proto.InternalMessageInfo
 
-func (m *Userset) GetResource() string {
+func (m *Restriction) GetResourceName() string {
 	if m != nil {
-		return m.Resource
+		return m.ResourceName
 	}
 	return ""
 }
 
-func (m *Userset) GetRelation() string {
+func (m *Restriction) GetRelationName() string {
 	if m != nil {
-		return m.Relation
+		return m.RelationName
 	}
 	return ""
 }
 
+// Permission models a special type of Relation which is evaluated at runtime.
+// A permission often maps to an operation defined for a resource which an actor may attempt.
 type Permission struct {
 	Name       string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Doc        string `protobuf:"bytes,2,opt,name=doc,proto3" json:"doc,omitempty"`
@@ -388,6 +386,7 @@ func (m *Permission) GetExpression() string {
 	return ""
 }
 
+// ActorResource represents a special Resource which is reserved for Policy actors.
 type ActorResource struct {
 	Name      string      `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Doc       string      `protobuf:"bytes,2,opt,name=doc,proto3" json:"doc,omitempty"`
@@ -451,10 +450,9 @@ func (m *ActorResource) GetRelations() []*Relation {
 func init() {
 	proto.RegisterType((*Policy)(nil), "sourcenetwork.sourcehub.acp.Policy")
 	proto.RegisterMapType((map[string]string)(nil), "sourcenetwork.sourcehub.acp.Policy.AttributesEntry")
-	proto.RegisterMapType((map[string]string)(nil), "sourcenetwork.sourcehub.acp.Policy.MetadataEntry")
 	proto.RegisterType((*Resource)(nil), "sourcenetwork.sourcehub.acp.Resource")
 	proto.RegisterType((*Relation)(nil), "sourcenetwork.sourcehub.acp.Relation")
-	proto.RegisterType((*Userset)(nil), "sourcenetwork.sourcehub.acp.Userset")
+	proto.RegisterType((*Restriction)(nil), "sourcenetwork.sourcehub.acp.Restriction")
 	proto.RegisterType((*Permission)(nil), "sourcenetwork.sourcehub.acp.Permission")
 	proto.RegisterType((*ActorResource)(nil), "sourcenetwork.sourcehub.acp.ActorResource")
 }
@@ -464,45 +462,44 @@ func init() {
 }
 
 var fileDescriptor_73cee55eeb663430 = []byte{
-	// 604 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x41, 0x6f, 0xd3, 0x3e,
-	0x14, 0x5f, 0x9a, 0x6e, 0xe9, 0x5e, 0xff, 0xfd, 0x33, 0x59, 0x48, 0x58, 0xad, 0x14, 0x4a, 0x00,
-	0x51, 0x71, 0x48, 0xc4, 0x76, 0x41, 0x20, 0x34, 0x6d, 0x08, 0x69, 0x1c, 0x26, 0x81, 0x37, 0x2e,
-	0x70, 0xa8, 0xdc, 0xc4, 0x94, 0x68, 0x4d, 0x1c, 0x39, 0x6e, 0x59, 0xcf, 0x7c, 0x01, 0x0e, 0x7c,
-	0x1a, 0x3e, 0x01, 0xdc, 0x76, 0xe4, 0x88, 0xda, 0xaf, 0xc1, 0x01, 0xc5, 0x4e, 0xd2, 0xa6, 0x82,
-	0x6a, 0xe5, 0xe6, 0xf7, 0xfc, 0x7e, 0xcf, 0xbf, 0xdf, 0xf3, 0xcf, 0x86, 0x5e, 0xca, 0xc7, 0xc2,
-	0x67, 0x31, 0x93, 0x1f, 0xb9, 0xb8, 0xf0, 0x74, 0xf4, 0x61, 0x3c, 0xf0, 0xa8, 0x9f, 0x78, 0x09,
-	0x1f, 0x85, 0xfe, 0xd4, 0x4d, 0x04, 0x97, 0x1c, 0x75, 0x2a, 0x95, 0x6e, 0x59, 0xe9, 0x52, 0x3f,
-	0x69, 0xdf, 0x1e, 0x72, 0x3e, 0x1c, 0x31, 0x4f, 0x95, 0x0e, 0xc6, 0xef, 0x3d, 0x19, 0x46, 0x2c,
-	0x95, 0x34, 0x4a, 0x34, 0xba, 0xdd, 0xc9, 0x92, 0x13, 0x3a, 0x0a, 0x03, 0x2a, 0x59, 0xb9, 0xd0,
-	0x9b, 0xce, 0xaf, 0x3a, 0xec, 0xbc, 0x52, 0x67, 0xa1, 0x5b, 0x50, 0x0b, 0x03, 0x6c, 0x74, 0x8d,
-	0xde, 0xee, 0xb1, 0xf5, 0xf5, 0xa4, 0x2e, 0x6a, 0x7b, 0x26, 0xa9, 0x85, 0x01, 0xea, 0x40, 0x3d,
-	0xa6, 0x11, 0xc3, 0xb5, 0xea, 0x96, 0x4a, 0xa2, 0x2e, 0x34, 0x03, 0x96, 0xfa, 0x22, 0x4c, 0x64,
-	0xc8, 0x63, 0x6c, 0x66, 0x35, 0x64, 0x39, 0x85, 0x0e, 0xa1, 0xe5, 0x0b, 0x46, 0xb3, 0x75, 0x3f,
-	0xe3, 0x86, 0xeb, 0x5d, 0xa3, 0xd7, 0xdc, 0x6f, 0xbb, 0x9a, 0xb8, 0x5b, 0x10, 0x77, 0xcf, 0x0b,
-	0xe2, 0xe4, 0xbf, 0x02, 0x90, 0xa5, 0xd0, 0x29, 0x34, 0x22, 0x26, 0x69, 0x40, 0x25, 0xc5, 0xdb,
-	0x5d, 0xb3, 0xd7, 0xdc, 0x7f, 0xe4, 0xae, 0x99, 0x88, 0xab, 0xf5, 0xb8, 0xa7, 0x39, 0xe6, 0x45,
-	0x2c, 0xc5, 0x94, 0x94, 0x2d, 0xd0, 0x73, 0xd8, 0x15, 0x4c, 0x23, 0x52, 0xbc, 0xa3, 0xfa, 0xdd,
-	0x5f, 0xdb, 0x8f, 0xe4, 0xd5, 0x64, 0x81, 0x43, 0xaf, 0xe1, 0x7f, 0xea, 0x4b, 0x2e, 0xfa, 0x45,
-	0x0a, 0x5b, 0x4a, 0xd5, 0xc3, 0xb5, 0x9d, 0x8e, 0x32, 0x48, 0xd9, 0xae, 0x45, 0x97, 0x43, 0x74,
-	0x06, 0x40, 0xa5, 0x14, 0xe1, 0x60, 0x2c, 0x59, 0x8a, 0x1b, 0x8a, 0xd8, 0xc1, 0x75, 0x84, 0x1e,
-	0x95, 0x28, 0x2d, 0x75, 0xa9, 0x0d, 0xba, 0x03, 0x96, 0x9a, 0x25, 0x17, 0x18, 0xaa, 0xd7, 0x57,
-	0xe4, 0xdb, 0x4f, 0xa1, 0x55, 0x19, 0x15, 0xda, 0x03, 0xf3, 0x82, 0x4d, 0xb5, 0x13, 0x48, 0xb6,
-	0x44, 0x37, 0x61, 0x7b, 0x42, 0x47, 0xe3, 0xdc, 0x02, 0x44, 0x07, 0x4f, 0x6a, 0x8f, 0x8d, 0xf6,
-	0x33, 0xb8, 0xb1, 0x72, 0xfc, 0x26, 0x70, 0xe7, 0xbb, 0x01, 0x8d, 0x72, 0x00, 0x85, 0xcf, 0x8c,
-	0x3f, 0xf9, 0x6c, 0x0f, 0xcc, 0x80, 0xfb, 0x79, 0x87, 0x6c, 0x89, 0x5e, 0x42, 0x33, 0x61, 0x22,
-	0x0a, 0xd3, 0x34, 0xe4, 0x71, 0x8a, 0x4d, 0x35, 0xb0, 0x07, 0xeb, 0x07, 0x56, 0xd6, 0x93, 0x65,
-	0xac, 0xb6, 0xc4, 0x48, 0x39, 0x2e, 0xc5, 0xf5, 0x6b, 0x59, 0x42, 0x57, 0x93, 0x05, 0xce, 0xf9,
-	0xa2, 0xb4, 0xe8, 0x68, 0x53, 0x2d, 0x18, 0xac, 0x88, 0xc6, 0x74, 0xc8, 0xb4, 0x8e, 0x5d, 0x52,
-	0x84, 0xe8, 0x10, 0x1a, 0x13, 0xd1, 0x97, 0xd3, 0x84, 0x15, 0xcc, 0xee, 0xad, 0x65, 0xf6, 0x26,
-	0x65, 0x22, 0x65, 0x92, 0x58, 0x13, 0x71, 0x9e, 0x81, 0x9c, 0x33, 0xb0, 0xf2, 0x1c, 0xba, 0x0b,
-	0x8d, 0xd2, 0xae, 0x2b, 0xc4, 0xca, 0x0d, 0x5d, 0xa4, 0x55, 0xac, 0xbe, 0xf8, 0x72, 0xc3, 0x79,
-	0x07, 0xb0, 0x98, 0xe5, 0xa6, 0x62, 0x6d, 0x00, 0x76, 0x99, 0x08, 0xa6, 0xc0, 0xf9, 0x8f, 0xb1,
-	0x94, 0x71, 0x3e, 0x19, 0xd0, 0xaa, 0xbc, 0x94, 0x4d, 0x0f, 0xa8, 0x5c, 0xa7, 0xf9, 0x6f, 0xd7,
-	0x79, 0x7c, 0xf2, 0x6d, 0x66, 0x1b, 0x57, 0x33, 0xdb, 0xf8, 0x39, 0xb3, 0x8d, 0xcf, 0x73, 0x7b,
-	0xeb, 0x6a, 0x6e, 0x6f, 0xfd, 0x98, 0xdb, 0x5b, 0x6f, 0xdd, 0x61, 0x28, 0x33, 0xa4, 0xcf, 0x23,
-	0xef, 0x6f, 0x7f, 0xf8, 0xa5, 0xfa, 0xc5, 0xd5, 0xb5, 0x0d, 0x76, 0xd4, 0x0f, 0x77, 0xf0, 0x3b,
-	0x00, 0x00, 0xff, 0xff, 0x31, 0xcc, 0x14, 0x31, 0xf1, 0x05, 0x00, 0x00,
+	// 578 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0xc1, 0x8a, 0x13, 0x31,
+	0x18, 0xde, 0xe9, 0x74, 0xb7, 0xdb, 0xbf, 0x5b, 0x2d, 0x41, 0x30, 0xb4, 0x30, 0xd6, 0x11, 0xb1,
+	0x78, 0x98, 0x81, 0xdd, 0x8b, 0x08, 0x22, 0xbb, 0x8b, 0xb0, 0x5e, 0x44, 0xe3, 0x82, 0xa0, 0x87,
+	0x92, 0x4e, 0x63, 0x0d, 0xdb, 0x99, 0x0c, 0x99, 0xb4, 0x6e, 0xcf, 0xbe, 0x80, 0x47, 0x9f, 0xc5,
+	0x27, 0xd0, 0xdb, 0x1e, 0x3d, 0x4a, 0xfb, 0x02, 0x3e, 0x82, 0x24, 0xe9, 0x4c, 0xa7, 0xa2, 0xd5,
+	0x7a, 0xcb, 0xff, 0xcd, 0xf7, 0xfd, 0xf9, 0xbf, 0x7c, 0x99, 0x40, 0x2f, 0x13, 0x13, 0x19, 0xb1,
+	0x84, 0xa9, 0xf7, 0x42, 0x5e, 0x84, 0xb6, 0x7a, 0x37, 0x19, 0x84, 0x34, 0x4a, 0xc3, 0x54, 0x8c,
+	0x79, 0x34, 0x0b, 0x52, 0x29, 0x94, 0x40, 0x9d, 0x35, 0x66, 0x50, 0x30, 0x03, 0x1a, 0xa5, 0xed,
+	0x5b, 0x23, 0x21, 0x46, 0x63, 0x16, 0x1a, 0xea, 0x60, 0xf2, 0x36, 0x54, 0x3c, 0x66, 0x99, 0xa2,
+	0x71, 0x6a, 0xd5, 0xed, 0x8e, 0x06, 0xa7, 0x74, 0xcc, 0x87, 0x54, 0xb1, 0x62, 0x61, 0x3f, 0xfa,
+	0x3f, 0x5c, 0xd8, 0x7b, 0x6e, 0xf6, 0x42, 0x37, 0xa1, 0xc2, 0x87, 0xd8, 0xe9, 0x3a, 0xbd, 0xfa,
+	0x49, 0xed, 0xf3, 0x59, 0x55, 0x56, 0x5a, 0x2e, 0xa9, 0xf0, 0x21, 0xea, 0x40, 0x35, 0xa1, 0x31,
+	0xc3, 0x95, 0xf5, 0x4f, 0x06, 0x44, 0x5d, 0x68, 0x0c, 0x59, 0x16, 0x49, 0x9e, 0x2a, 0x2e, 0x12,
+	0xec, 0x6a, 0x0e, 0x29, 0x43, 0xe8, 0x31, 0x34, 0x23, 0xc9, 0xa8, 0x5e, 0xf7, 0xf5, 0x6c, 0xb8,
+	0xda, 0x75, 0x7a, 0x8d, 0xc3, 0x76, 0x60, 0x07, 0x0f, 0xf2, 0xc1, 0x83, 0xf3, 0x7c, 0x70, 0x72,
+	0x90, 0x0b, 0x34, 0x84, 0x5e, 0x02, 0x50, 0xa5, 0x24, 0x1f, 0x4c, 0x14, 0xcb, 0xf0, 0x6e, 0xd7,
+	0xed, 0x35, 0x0e, 0x8f, 0x82, 0x0d, 0x67, 0x12, 0x58, 0x47, 0xc1, 0x71, 0xa1, 0x7a, 0x92, 0x28,
+	0x39, 0x23, 0xa5, 0x36, 0xe8, 0x14, 0xea, 0x92, 0x59, 0x55, 0x86, 0xf7, 0x4c, 0xcf, 0xbb, 0x1b,
+	0x7b, 0x92, 0x25, 0x9b, 0xac, 0x74, 0xe8, 0x05, 0x5c, 0xa3, 0x91, 0x12, 0xb2, 0x9f, 0x43, 0xb8,
+	0x66, 0xbc, 0xdd, 0xdf, 0xd8, 0xe9, 0x58, 0x4b, 0x8a, 0x76, 0x4d, 0x5a, 0x2e, 0xd1, 0x6d, 0xa8,
+	0x19, 0xf3, 0x42, 0x62, 0x58, 0x3f, 0xef, 0x1c, 0x6f, 0x3f, 0x82, 0xeb, 0xbf, 0x38, 0x43, 0x2d,
+	0x70, 0x2f, 0xd8, 0xcc, 0x86, 0x47, 0xf4, 0x12, 0xdd, 0x80, 0xdd, 0x29, 0x1d, 0x4f, 0x96, 0xa9,
+	0x11, 0x5b, 0x3c, 0xac, 0x3c, 0x70, 0xfc, 0xaf, 0x0e, 0xec, 0x17, 0xdb, 0xe5, 0xd9, 0x3a, 0xbf,
+	0xcb, 0xb6, 0x05, 0xee, 0x50, 0x44, 0xcb, 0x0e, 0x7a, 0x89, 0x9e, 0x42, 0x23, 0x65, 0x32, 0xe6,
+	0x59, 0xc6, 0x45, 0x92, 0x61, 0xd7, 0x9c, 0xdb, 0xbd, 0xcd, 0x59, 0x14, 0x7c, 0x52, 0xd6, 0xda,
+	0x00, 0xc6, 0x26, 0xe5, 0x0c, 0x57, 0xff, 0x29, 0x00, 0xcb, 0x26, 0x2b, 0x9d, 0xff, 0xc9, 0x78,
+	0xb1, 0xd5, 0xb6, 0x5e, 0x30, 0xd4, 0x62, 0x9a, 0xd0, 0x11, 0xb3, 0x3e, 0xea, 0x24, 0x2f, 0xd1,
+	0x29, 0xec, 0x4f, 0x65, 0x5f, 0xcd, 0x52, 0x96, 0x4f, 0xd6, 0xfb, 0xdb, 0xd5, 0x50, 0x92, 0x47,
+	0x66, 0xb8, 0xda, 0x54, 0x9e, 0x6b, 0xa1, 0xff, 0x0a, 0x1a, 0x25, 0x1c, 0xdd, 0x81, 0x66, 0x7e,
+	0x49, 0xfa, 0xab, 0x29, 0xc9, 0x41, 0x0e, 0x3e, 0xd3, 0x43, 0x1a, 0x92, 0x75, 0xd3, 0x5f, 0xfd,
+	0x72, 0x9a, 0x64, 0x41, 0x4d, 0xf2, 0xdf, 0x00, 0xac, 0xce, 0x74, 0x5b, 0xd3, 0x1e, 0x00, 0xbb,
+	0x4c, 0x25, 0x33, 0xe2, 0xe5, 0xdf, 0x5a, 0x42, 0xfc, 0x0f, 0x0e, 0x34, 0xd7, 0xee, 0xe7, 0xb6,
+	0x1b, 0xac, 0xc5, 0xea, 0xfe, 0x5f, 0xac, 0x27, 0x67, 0x5f, 0xe6, 0x9e, 0x73, 0x35, 0xf7, 0x9c,
+	0xef, 0x73, 0xcf, 0xf9, 0xb8, 0xf0, 0x76, 0xae, 0x16, 0xde, 0xce, 0xb7, 0x85, 0xb7, 0xf3, 0x3a,
+	0x18, 0x71, 0xa5, 0x95, 0x91, 0x88, 0xc3, 0x3f, 0xbd, 0x9f, 0x97, 0xe6, 0x05, 0x35, 0xf1, 0x0d,
+	0xf6, 0xcc, 0xeb, 0x72, 0xf4, 0x33, 0x00, 0x00, 0xff, 0xff, 0x9d, 0xfa, 0x08, 0xb2, 0x6d, 0x05,
+	0x00, 0x00,
 }
 
 func (m *Policy) Marshal() (dAtA []byte, err error) {
@@ -532,25 +529,6 @@ func (m *Policy) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x52
 	}
-	if len(m.Attributes) > 0 {
-		for k := range m.Attributes {
-			v := m.Attributes[k]
-			baseI := i
-			i -= len(v)
-			copy(dAtA[i:], v)
-			i = encodeVarintPolicy(dAtA, i, uint64(len(v)))
-			i--
-			dAtA[i] = 0x12
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = encodeVarintPolicy(dAtA, i, uint64(len(k)))
-			i--
-			dAtA[i] = 0xa
-			i = encodeVarintPolicy(dAtA, i, uint64(baseI-i))
-			i--
-			dAtA[i] = 0x42
-		}
-	}
 	if m.ActorResource != nil {
 		{
 			size, err := m.ActorResource.MarshalToSizedBuffer(dAtA[:i])
@@ -577,9 +555,9 @@ func (m *Policy) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x32
 		}
 	}
-	if len(m.Metadata) > 0 {
-		for k := range m.Metadata {
-			v := m.Metadata[k]
+	if len(m.Attributes) > 0 {
+		for k := range m.Attributes {
+			v := m.Attributes[k]
 			baseI := i
 			i -= len(v)
 			copy(dAtA[i:], v)
@@ -757,7 +735,7 @@ func (m *Relation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *Userset) Marshal() (dAtA []byte, err error) {
+func (m *Restriction) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -767,27 +745,27 @@ func (m *Userset) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Userset) MarshalTo(dAtA []byte) (int, error) {
+func (m *Restriction) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Userset) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Restriction) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Relation) > 0 {
-		i -= len(m.Relation)
-		copy(dAtA[i:], m.Relation)
-		i = encodeVarintPolicy(dAtA, i, uint64(len(m.Relation)))
+	if len(m.RelationName) > 0 {
+		i -= len(m.RelationName)
+		copy(dAtA[i:], m.RelationName)
+		i = encodeVarintPolicy(dAtA, i, uint64(len(m.RelationName)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Resource) > 0 {
-		i -= len(m.Resource)
-		copy(dAtA[i:], m.Resource)
-		i = encodeVarintPolicy(dAtA, i, uint64(len(m.Resource)))
+	if len(m.ResourceName) > 0 {
+		i -= len(m.ResourceName)
+		copy(dAtA[i:], m.ResourceName)
+		i = encodeVarintPolicy(dAtA, i, uint64(len(m.ResourceName)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -922,8 +900,8 @@ func (m *Policy) Size() (n int) {
 		l = m.CreationTime.Size()
 		n += 1 + l + sovPolicy(uint64(l))
 	}
-	if len(m.Metadata) > 0 {
-		for k, v := range m.Metadata {
+	if len(m.Attributes) > 0 {
+		for k, v := range m.Attributes {
 			_ = k
 			_ = v
 			mapEntrySize := 1 + len(k) + sovPolicy(uint64(len(k))) + 1 + len(v) + sovPolicy(uint64(len(v)))
@@ -939,14 +917,6 @@ func (m *Policy) Size() (n int) {
 	if m.ActorResource != nil {
 		l = m.ActorResource.Size()
 		n += 1 + l + sovPolicy(uint64(l))
-	}
-	if len(m.Attributes) > 0 {
-		for k, v := range m.Attributes {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovPolicy(uint64(len(k))) + 1 + len(v) + sovPolicy(uint64(len(v)))
-			n += mapEntrySize + 1 + sovPolicy(uint64(mapEntrySize))
-		}
 	}
 	l = len(m.Creator)
 	if l > 0 {
@@ -1013,17 +983,17 @@ func (m *Relation) Size() (n int) {
 	return n
 }
 
-func (m *Userset) Size() (n int) {
+func (m *Restriction) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Resource)
+	l = len(m.ResourceName)
 	if l > 0 {
 		n += 1 + l + sovPolicy(uint64(l))
 	}
-	l = len(m.Relation)
+	l = len(m.RelationName)
 	if l > 0 {
 		n += 1 + l + sovPolicy(uint64(l))
 	}
@@ -1243,203 +1213,6 @@ func (m *Policy) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPolicy
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthPolicy
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthPolicy
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Metadata == nil {
-				m.Metadata = make(map[string]string)
-			}
-			var mapkey string
-			var mapvalue string
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowPolicy
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowPolicy
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthPolicy
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return ErrInvalidLengthPolicy
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var stringLenmapvalue uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowPolicy
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapvalue |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapvalue := int(stringLenmapvalue)
-					if intStringLenmapvalue < 0 {
-						return ErrInvalidLengthPolicy
-					}
-					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
-					if postStringIndexmapvalue < 0 {
-						return ErrInvalidLengthPolicy
-					}
-					if postStringIndexmapvalue > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
-					iNdEx = postStringIndexmapvalue
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipPolicy(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if (skippy < 0) || (iNdEx+skippy) < 0 {
-						return ErrInvalidLengthPolicy
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Metadata[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Resources", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPolicy
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthPolicy
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthPolicy
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Resources = append(m.Resources, &Resource{})
-			if err := m.Resources[len(m.Resources)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ActorResource", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPolicy
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthPolicy
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthPolicy
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.ActorResource == nil {
-				m.ActorResource = &ActorResource{}
-			}
-			if err := m.ActorResource.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Attributes", wireType)
 			}
 			var msglen int
@@ -1564,6 +1337,76 @@ func (m *Policy) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Attributes[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Resources", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPolicy
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPolicy
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPolicy
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Resources = append(m.Resources, &Resource{})
+			if err := m.Resources[len(m.Resources)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ActorResource", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPolicy
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPolicy
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPolicy
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ActorResource == nil {
+				m.ActorResource = &ActorResource{}
+			}
+			if err := m.ActorResource.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 10:
 			if wireType != 2 {
@@ -1954,7 +1797,7 @@ func (m *Relation) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.VrTypes = append(m.VrTypes, &Userset{})
+			m.VrTypes = append(m.VrTypes, &Restriction{})
 			if err := m.VrTypes[len(m.VrTypes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1980,7 +1823,7 @@ func (m *Relation) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Userset) Unmarshal(dAtA []byte) error {
+func (m *Restriction) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2003,15 +1846,15 @@ func (m *Userset) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Userset: wiretype end group for non-group")
+			return fmt.Errorf("proto: Restriction: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Userset: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Restriction: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Resource", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ResourceName", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2039,11 +1882,11 @@ func (m *Userset) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Resource = string(dAtA[iNdEx:postIndex])
+			m.ResourceName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Relation", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field RelationName", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2071,7 +1914,7 @@ func (m *Userset) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Relation = string(dAtA[iNdEx:postIndex])
+			m.RelationName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

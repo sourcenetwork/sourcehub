@@ -192,7 +192,34 @@ func (m *MsgCreatePolicyResponse) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
+	if all {
+		switch v := interface{}(m.GetPolicy()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, MsgCreatePolicyResponseValidationError{
+					field:  "Policy",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, MsgCreatePolicyResponseValidationError{
+					field:  "Policy",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetPolicy()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return MsgCreatePolicyResponseValidationError{
+				field:  "Policy",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if len(errors) > 0 {
 		return MsgCreatePolicyResponseMultiError(errors)
@@ -298,8 +325,6 @@ func (m *MsgCreateRelationship) validate(all bool) error {
 
 	// no validation rules for Creator
 
-	// no validation rules for CreatorDid
-
 	// no validation rules for PolicyId
 
 	if all {
@@ -334,11 +359,11 @@ func (m *MsgCreateRelationship) validate(all bool) error {
 	// no validation rules for Relation
 
 	if all {
-		switch v := interface{}(m.GetActor()).(type) {
+		switch v := interface{}(m.GetSubject()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, MsgCreateRelationshipValidationError{
-					field:  "Actor",
+					field:  "Subject",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -346,23 +371,50 @@ func (m *MsgCreateRelationship) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, MsgCreateRelationshipValidationError{
-					field:  "Actor",
+					field:  "Subject",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetActor()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetSubject()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return MsgCreateRelationshipValidationError{
-				field:  "Actor",
+				field:  "Subject",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
 		}
 	}
 
-	// no validation rules for ActorRelation
+	if all {
+		switch v := interface{}(m.GetCreationTime()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, MsgCreateRelationshipValidationError{
+					field:  "CreationTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, MsgCreateRelationshipValidationError{
+					field:  "CreationTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCreationTime()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return MsgCreateRelationshipValidationError{
+				field:  "CreationTime",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if len(errors) > 0 {
 		return MsgCreateRelationshipMultiError(errors)
@@ -573,8 +625,6 @@ func (m *MsgDeleteRelationship) validate(all bool) error {
 
 	// no validation rules for Creator
 
-	// no validation rules for CreatorDid
-
 	// no validation rules for PolicyId
 
 	if all {
@@ -609,11 +659,11 @@ func (m *MsgDeleteRelationship) validate(all bool) error {
 	// no validation rules for Relation
 
 	if all {
-		switch v := interface{}(m.GetActor()).(type) {
+		switch v := interface{}(m.GetSubject()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, MsgDeleteRelationshipValidationError{
-					field:  "Actor",
+					field:  "Subject",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -621,23 +671,21 @@ func (m *MsgDeleteRelationship) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, MsgDeleteRelationshipValidationError{
-					field:  "Actor",
+					field:  "Subject",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetActor()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetSubject()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return MsgDeleteRelationshipValidationError{
-				field:  "Actor",
+				field:  "Subject",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
 		}
 	}
-
-	// no validation rules for ActorRelation
 
 	if len(errors) > 0 {
 		return MsgDeleteRelationshipMultiError(errors)
@@ -848,16 +896,14 @@ func (m *MsgRegisterObject) validate(all bool) error {
 
 	// no validation rules for Creator
 
-	// no validation rules for CreatorDid
-
 	// no validation rules for PolicyId
 
 	if all {
-		switch v := interface{}(m.GetObject()).(type) {
+		switch v := interface{}(m.GetRegistration()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, MsgRegisterObjectValidationError{
-					field:  "Object",
+					field:  "Registration",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -865,16 +911,45 @@ func (m *MsgRegisterObject) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, MsgRegisterObjectValidationError{
-					field:  "Object",
+					field:  "Registration",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetObject()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetRegistration()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return MsgRegisterObjectValidationError{
-				field:  "Object",
+				field:  "Registration",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetCreationTime()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, MsgRegisterObjectValidationError{
+					field:  "CreationTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, MsgRegisterObjectValidationError{
+					field:  "CreationTime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCreationTime()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return MsgRegisterObjectValidationError{
+				field:  "CreationTime",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
@@ -983,6 +1058,8 @@ func (m *MsgRegisterObjectResponse) validate(all bool) error {
 
 	var errors []error
 
+	// no validation rules for Result
+
 	if len(errors) > 0 {
 		return MsgRegisterObjectResponseMultiError(errors)
 	}
@@ -1086,8 +1163,6 @@ func (m *MsgUnregisterObject) validate(all bool) error {
 	var errors []error
 
 	// no validation rules for Creator
-
-	// no validation rules for CreatorDid
 
 	// no validation rules for PolicyId
 

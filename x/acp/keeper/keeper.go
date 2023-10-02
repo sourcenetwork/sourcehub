@@ -9,7 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/sourcenetwork/sourcehub/x/acp/policy"
+	"github.com/sourcenetwork/sourcehub/x/acp/auth_engine"
+	"github.com/sourcenetwork/sourcehub/x/acp/auth_engine/zanzi"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
@@ -19,7 +20,6 @@ type (
 		storeKey      storetypes.StoreKey
 		memKey        storetypes.StoreKey
 		paramstore    paramtypes.Subspace
-		polRepo       policy.Repository
 		accountKeeper types.AccountKeeper
 	}
 )
@@ -41,11 +41,16 @@ func NewKeeper(
 		storeKey:      storeKey,
 		memKey:        memKey,
 		paramstore:    ps,
-		polRepo:       policy.NewRepository(storeKey),
 		accountKeeper: accountKeeper,
 	}
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+func (k *Keeper) GetZanziEngine(ctx sdk.Context) (auth_engine.AuthEngine, error) {
+	kv := ctx.KVStore(k.storeKey)
+	logger := k.Logger(ctx)
+	return zanzi.NewZanzi(kv, logger)
 }

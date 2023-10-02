@@ -36,12 +36,12 @@ func CmdCreatePolicy() *cobra.Command {
 			var marshalingType types.PolicyMarshalingType
 
 			if len(args) == 2 {
-                                marshalingType = types.PolicyMarshalingType_UNKNOWN
+				marshalingType = types.PolicyMarshalingType_UNKNOWN
 				policyFile = args[1]
 
 				marshalingTypeCode, ok := types.PolicyMarshalingType_value[args[0]]
 				if ok {
-                                    marshalingType = types.PolicyMarshalingType(marshalingTypeCode)
+					marshalingType = types.PolicyMarshalingType(marshalingTypeCode)
 				}
 			} else {
 				policyFile = args[0]

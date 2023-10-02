@@ -7,6 +7,7 @@ import (
 	fmt "fmt"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
+	types "github.com/cosmos/gogoproto/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -23,24 +24,56 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Entity identifies an object within a policy
-type Entity struct {
+// RegistrationResult encodes the possible result set from Registering an Object
+type RegistrationResult int32
+
+const (
+	RegistrationResult_Noop       RegistrationResult = 0
+	RegistrationResult_Denied     RegistrationResult = 1
+	RegistrationResult_Registered RegistrationResult = 2
+	RegistrationResult_Unarchived RegistrationResult = 3
+)
+
+var RegistrationResult_name = map[int32]string{
+	0: "Noop",
+	1: "Denied",
+	2: "Registered",
+	3: "Unarchived",
+}
+
+var RegistrationResult_value = map[string]int32{
+	"Noop":       0,
+	"Denied":     1,
+	"Registered": 2,
+	"Unarchived": 3,
+}
+
+func (x RegistrationResult) String() string {
+	return proto.EnumName(RegistrationResult_name, int32(x))
+}
+
+func (RegistrationResult) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_85f0b0e8e9bfdbf4, []int{0}
+}
+
+// Object represents an entity which must be access controlled within a Policy.
+type Object struct {
 	Resource string `protobuf:"bytes,1,opt,name=resource,proto3" json:"resource,omitempty"`
 	Id       string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (m *Entity) Reset()         { *m = Entity{} }
-func (m *Entity) String() string { return proto.CompactTextString(m) }
-func (*Entity) ProtoMessage()    {}
-func (*Entity) Descriptor() ([]byte, []int) {
+func (m *Object) Reset()         { *m = Object{} }
+func (m *Object) String() string { return proto.CompactTextString(m) }
+func (*Object) ProtoMessage()    {}
+func (*Object) Descriptor() ([]byte, []int) {
 	return fileDescriptor_85f0b0e8e9bfdbf4, []int{0}
 }
-func (m *Entity) XXX_Unmarshal(b []byte) error {
+func (m *Object) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Entity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Object) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Entity.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Object.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -50,34 +83,472 @@ func (m *Entity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Entity) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Entity.Merge(m, src)
+func (m *Object) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Object.Merge(m, src)
 }
-func (m *Entity) XXX_Size() int {
+func (m *Object) XXX_Size() int {
 	return m.Size()
 }
-func (m *Entity) XXX_DiscardUnknown() {
-	xxx_messageInfo_Entity.DiscardUnknown(m)
+func (m *Object) XXX_DiscardUnknown() {
+	xxx_messageInfo_Object.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Entity proto.InternalMessageInfo
+var xxx_messageInfo_Object proto.InternalMessageInfo
 
-func (m *Entity) GetResource() string {
+func (m *Object) GetResource() string {
 	if m != nil {
 		return m.Resource
 	}
 	return ""
 }
 
-func (m *Entity) GetId() string {
+func (m *Object) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
+// Actor represents an entity which makes access requests to a Policy.
+type Actor struct {
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *Actor) Reset()         { *m = Actor{} }
+func (m *Actor) String() string { return proto.CompactTextString(m) }
+func (*Actor) ProtoMessage()    {}
+func (*Actor) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85f0b0e8e9bfdbf4, []int{1}
+}
+func (m *Actor) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Actor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Actor.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Actor) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Actor.Merge(m, src)
+}
+func (m *Actor) XXX_Size() int {
+	return m.Size()
+}
+func (m *Actor) XXX_DiscardUnknown() {
+	xxx_messageInfo_Actor.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Actor proto.InternalMessageInfo
+
+func (m *Actor) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+// ActorSet represents a set of Actors in a Policy.
+// It is specified through an Object, Relation pair, which represents
+// all actors which have a relationship with given obj-rel pair.
+// This expansion is recursive.
+type ActorSet struct {
+	Object   *Object `protobuf:"bytes,1,opt,name=object,proto3" json:"object,omitempty"`
+	Relation string  `protobuf:"bytes,2,opt,name=relation,proto3" json:"relation,omitempty"`
+}
+
+func (m *ActorSet) Reset()         { *m = ActorSet{} }
+func (m *ActorSet) String() string { return proto.CompactTextString(m) }
+func (*ActorSet) ProtoMessage()    {}
+func (*ActorSet) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85f0b0e8e9bfdbf4, []int{2}
+}
+func (m *ActorSet) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ActorSet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ActorSet.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ActorSet) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActorSet.Merge(m, src)
+}
+func (m *ActorSet) XXX_Size() int {
+	return m.Size()
+}
+func (m *ActorSet) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActorSet.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ActorSet proto.InternalMessageInfo
+
+func (m *ActorSet) GetObject() *Object {
+	if m != nil {
+		return m.Object
+	}
+	return nil
+}
+
+func (m *ActorSet) GetRelation() string {
+	if m != nil {
+		return m.Relation
+	}
+	return ""
+}
+
+// AllActors models a special Relationship Subject which indicates
+// that all Actors in the Policy are included.
+type AllActors struct {
+}
+
+func (m *AllActors) Reset()         { *m = AllActors{} }
+func (m *AllActors) String() string { return proto.CompactTextString(m) }
+func (*AllActors) ProtoMessage()    {}
+func (*AllActors) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85f0b0e8e9bfdbf4, []int{3}
+}
+func (m *AllActors) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AllActors) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AllActors.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AllActors) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AllActors.Merge(m, src)
+}
+func (m *AllActors) XXX_Size() int {
+	return m.Size()
+}
+func (m *AllActors) XXX_DiscardUnknown() {
+	xxx_messageInfo_AllActors.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AllActors proto.InternalMessageInfo
+
+// Subject specifies the target of a Relationship.
+type Subject struct {
+	// Types that are valid to be assigned to Subject:
+	//	*Subject_Actor
+	//	*Subject_ActorSet
+	//	*Subject_AllActors
+	Subject isSubject_Subject `protobuf_oneof:"subject"`
+}
+
+func (m *Subject) Reset()         { *m = Subject{} }
+func (m *Subject) String() string { return proto.CompactTextString(m) }
+func (*Subject) ProtoMessage()    {}
+func (*Subject) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85f0b0e8e9bfdbf4, []int{4}
+}
+func (m *Subject) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Subject) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Subject.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Subject) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Subject.Merge(m, src)
+}
+func (m *Subject) XXX_Size() int {
+	return m.Size()
+}
+func (m *Subject) XXX_DiscardUnknown() {
+	xxx_messageInfo_Subject.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Subject proto.InternalMessageInfo
+
+type isSubject_Subject interface {
+	isSubject_Subject()
+	MarshalTo([]byte) (int, error)
+	Size() int
+}
+
+type Subject_Actor struct {
+	Actor *Actor `protobuf:"bytes,1,opt,name=actor,proto3,oneof" json:"actor,omitempty"`
+}
+type Subject_ActorSet struct {
+	ActorSet *ActorSet `protobuf:"bytes,2,opt,name=actor_set,json=actorSet,proto3,oneof" json:"actor_set,omitempty"`
+}
+type Subject_AllActors struct {
+	AllActors *AllActors `protobuf:"bytes,3,opt,name=all_actors,json=allActors,proto3,oneof" json:"all_actors,omitempty"`
+}
+
+func (*Subject_Actor) isSubject_Subject()     {}
+func (*Subject_ActorSet) isSubject_Subject()  {}
+func (*Subject_AllActors) isSubject_Subject() {}
+
+func (m *Subject) GetSubject() isSubject_Subject {
+	if m != nil {
+		return m.Subject
+	}
+	return nil
+}
+
+func (m *Subject) GetActor() *Actor {
+	if x, ok := m.GetSubject().(*Subject_Actor); ok {
+		return x.Actor
+	}
+	return nil
+}
+
+func (m *Subject) GetActorSet() *ActorSet {
+	if x, ok := m.GetSubject().(*Subject_ActorSet); ok {
+		return x.ActorSet
+	}
+	return nil
+}
+
+func (m *Subject) GetAllActors() *AllActors {
+	if x, ok := m.GetSubject().(*Subject_AllActors); ok {
+		return x.AllActors
+	}
+	return nil
+}
+
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*Subject) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*Subject_Actor)(nil),
+		(*Subject_ActorSet)(nil),
+		(*Subject_AllActors)(nil),
+	}
+}
+
+// Relationship models an access control rule.
+// It states that the given subject has relation with object.
+type Relationship struct {
+	Object   *Object  `protobuf:"bytes,1,opt,name=object,proto3" json:"object,omitempty"`
+	Relation string   `protobuf:"bytes,2,opt,name=relation,proto3" json:"relation,omitempty"`
+	Subject  *Subject `protobuf:"bytes,3,opt,name=subject,proto3" json:"subject,omitempty"`
+}
+
+func (m *Relationship) Reset()         { *m = Relationship{} }
+func (m *Relationship) String() string { return proto.CompactTextString(m) }
+func (*Relationship) ProtoMessage()    {}
+func (*Relationship) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85f0b0e8e9bfdbf4, []int{5}
+}
+func (m *Relationship) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Relationship) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Relationship.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Relationship) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Relationship.Merge(m, src)
+}
+func (m *Relationship) XXX_Size() int {
+	return m.Size()
+}
+func (m *Relationship) XXX_DiscardUnknown() {
+	xxx_messageInfo_Relationship.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Relationship proto.InternalMessageInfo
+
+func (m *Relationship) GetObject() *Object {
+	if m != nil {
+		return m.Object
+	}
+	return nil
+}
+
+func (m *Relationship) GetRelation() string {
+	if m != nil {
+		return m.Relation
+	}
+	return ""
+}
+
+func (m *Relationship) GetSubject() *Subject {
+	if m != nil {
+		return m.Subject
+	}
+	return nil
+}
+
+// RelationshipRecord represents a document contained a Relationship and additional data.
+type RelationshipRecord struct {
+	CreationTime *types.Timestamp `protobuf:"bytes,1,opt,name=creation_time,json=creationTime,proto3" json:"creation_time,omitempty"`
+	Creator      string           `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
+	PolicyId     string           `protobuf:"bytes,3,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
+	Relationship *Relationship    `protobuf:"bytes,4,opt,name=relationship,proto3" json:"relationship,omitempty"`
+	Archived     bool             `protobuf:"varint,5,opt,name=archived,proto3" json:"archived,omitempty"`
+}
+
+func (m *RelationshipRecord) Reset()         { *m = RelationshipRecord{} }
+func (m *RelationshipRecord) String() string { return proto.CompactTextString(m) }
+func (*RelationshipRecord) ProtoMessage()    {}
+func (*RelationshipRecord) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85f0b0e8e9bfdbf4, []int{6}
+}
+func (m *RelationshipRecord) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RelationshipRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RelationshipRecord.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RelationshipRecord) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RelationshipRecord.Merge(m, src)
+}
+func (m *RelationshipRecord) XXX_Size() int {
+	return m.Size()
+}
+func (m *RelationshipRecord) XXX_DiscardUnknown() {
+	xxx_messageInfo_RelationshipRecord.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RelationshipRecord proto.InternalMessageInfo
+
+func (m *RelationshipRecord) GetCreationTime() *types.Timestamp {
+	if m != nil {
+		return m.CreationTime
+	}
+	return nil
+}
+
+func (m *RelationshipRecord) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *RelationshipRecord) GetPolicyId() string {
+	if m != nil {
+		return m.PolicyId
+	}
+	return ""
+}
+
+func (m *RelationshipRecord) GetRelationship() *Relationship {
+	if m != nil {
+		return m.Relationship
+	}
+	return nil
+}
+
+func (m *RelationshipRecord) GetArchived() bool {
+	if m != nil {
+		return m.Archived
+	}
+	return false
+}
+
+// Registration represents a record assigning an Object as being owned by an Actor
+type Registration struct {
+	Object *Object `protobuf:"bytes,2,opt,name=object,proto3" json:"object,omitempty"`
+	Actor  *Actor  `protobuf:"bytes,3,opt,name=actor,proto3" json:"actor,omitempty"`
+}
+
+func (m *Registration) Reset()         { *m = Registration{} }
+func (m *Registration) String() string { return proto.CompactTextString(m) }
+func (*Registration) ProtoMessage()    {}
+func (*Registration) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85f0b0e8e9bfdbf4, []int{7}
+}
+func (m *Registration) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Registration) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Registration.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Registration) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Registration.Merge(m, src)
+}
+func (m *Registration) XXX_Size() int {
+	return m.Size()
+}
+func (m *Registration) XXX_DiscardUnknown() {
+	xxx_messageInfo_Registration.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Registration proto.InternalMessageInfo
+
+func (m *Registration) GetObject() *Object {
+	if m != nil {
+		return m.Object
+	}
+	return nil
+}
+
+func (m *Registration) GetActor() *Actor {
+	if m != nil {
+		return m.Actor
+	}
+	return nil
+}
+
 func init() {
-	proto.RegisterType((*Entity)(nil), "sourcenetwork.sourcehub.acp.Entity")
+	proto.RegisterEnum("sourcenetwork.sourcehub.acp.RegistrationResult", RegistrationResult_name, RegistrationResult_value)
+	proto.RegisterType((*Object)(nil), "sourcenetwork.sourcehub.acp.Object")
+	proto.RegisterType((*Actor)(nil), "sourcenetwork.sourcehub.acp.Actor")
+	proto.RegisterType((*ActorSet)(nil), "sourcenetwork.sourcehub.acp.ActorSet")
+	proto.RegisterType((*AllActors)(nil), "sourcenetwork.sourcehub.acp.AllActors")
+	proto.RegisterType((*Subject)(nil), "sourcenetwork.sourcehub.acp.Subject")
+	proto.RegisterType((*Relationship)(nil), "sourcenetwork.sourcehub.acp.Relationship")
+	proto.RegisterType((*RelationshipRecord)(nil), "sourcenetwork.sourcehub.acp.RelationshipRecord")
+	proto.RegisterType((*Registration)(nil), "sourcenetwork.sourcehub.acp.Registration")
 }
 
 func init() {
@@ -85,22 +556,45 @@ func init() {
 }
 
 var fileDescriptor_85f0b0e8e9bfdbf4 = []byte{
-	// 186 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xd2, 0x2b, 0xce, 0x2f, 0x2d,
-	0x4a, 0x4e, 0xcd, 0x4b, 0x2d, 0x29, 0xcf, 0x2f, 0xca, 0xd6, 0x87, 0xf0, 0x32, 0x4a, 0x93, 0xf4,
-	0x13, 0x93, 0x0b, 0xf4, 0x8b, 0x52, 0x73, 0x12, 0x4b, 0x32, 0xf3, 0xf3, 0x8a, 0x33, 0x32, 0x0b,
-	0xf4, 0x0a, 0x8a, 0xf2, 0x4b, 0xf2, 0x85, 0xa4, 0x51, 0xd4, 0xeb, 0xc1, 0xd5, 0xeb, 0x25, 0x26,
-	0x17, 0x48, 0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x83, 0xd5, 0xe9, 0x83, 0x58, 0x10, 0x2d, 0x4a, 0x26,
-	0x5c, 0x6c, 0xae, 0x79, 0x25, 0x99, 0x25, 0x95, 0x42, 0x52, 0x5c, 0x1c, 0x45, 0xa9, 0x10, 0x2d,
-	0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x9c, 0x41, 0x70, 0xbe, 0x10, 0x1f, 0x17, 0x53, 0x66, 0x8a, 0x04,
-	0x13, 0x58, 0x94, 0x29, 0x33, 0xc5, 0xc9, 0xe3, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18,
-	0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5,
-	0x18, 0xa2, 0xf4, 0xd2, 0x33, 0x4b, 0x40, 0x36, 0x26, 0xe7, 0xe7, 0xea, 0xe3, 0x72, 0x7d, 0x05,
-	0xd8, 0xfd, 0x25, 0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0x60, 0x67, 0x18, 0x03, 0x02, 0x00, 0x00,
-	0xff, 0xff, 0x6d, 0xcb, 0xce, 0xab, 0xeb, 0x00, 0x00, 0x00,
+	// 555 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0xcd, 0x8e, 0xd3, 0x30,
+	0x10, 0x8e, 0xbb, 0xdb, 0x36, 0x99, 0x96, 0x55, 0x65, 0x21, 0x11, 0x75, 0xa5, 0xb0, 0x0a, 0x3f,
+	0x5a, 0x38, 0x24, 0xd2, 0xc2, 0x01, 0x81, 0x04, 0xda, 0xd5, 0x4a, 0x14, 0x24, 0x40, 0x72, 0xe1,
+	0xc2, 0xa5, 0x4a, 0x1d, 0x93, 0x1a, 0xd2, 0x3a, 0x72, 0x5c, 0x60, 0x1f, 0x80, 0x3b, 0x6f, 0xc1,
+	0xab, 0x70, 0xdc, 0x23, 0x37, 0x50, 0xfb, 0x10, 0x5c, 0x51, 0xec, 0x24, 0xdb, 0x1e, 0x08, 0x70,
+	0xe0, 0x96, 0x6f, 0xec, 0x99, 0xef, 0x9b, 0x99, 0x2f, 0x86, 0x20, 0x17, 0x4b, 0x49, 0xd9, 0x82,
+	0xa9, 0x0f, 0x42, 0xbe, 0x0b, 0x0d, 0x9a, 0x2d, 0xa7, 0x61, 0x44, 0xb3, 0x50, 0xb2, 0x34, 0x52,
+	0x5c, 0x2c, 0xf2, 0x19, 0xcf, 0x82, 0x4c, 0x0a, 0x25, 0xf0, 0xfe, 0xd6, 0xfd, 0xa0, 0xbe, 0x1f,
+	0x44, 0x34, 0x1b, 0x5e, 0x4e, 0x44, 0x22, 0xf4, 0xbd, 0xb0, 0xf8, 0x32, 0x29, 0xc3, 0xab, 0x89,
+	0x10, 0x49, 0xca, 0x42, 0x8d, 0xa6, 0xcb, 0x37, 0xa1, 0xe2, 0x73, 0x96, 0xab, 0x68, 0x5e, 0xd6,
+	0xf4, 0xef, 0x42, 0xe7, 0xc5, 0xf4, 0x2d, 0xa3, 0x0a, 0x0f, 0xc1, 0x96, 0xcc, 0xd4, 0x74, 0xd1,
+	0x01, 0x3a, 0x74, 0x48, 0x8d, 0xf1, 0x1e, 0xb4, 0x78, 0xec, 0xb6, 0x74, 0xb4, 0xc5, 0x63, 0xff,
+	0x0a, 0xb4, 0x8f, 0xa9, 0x12, 0xb2, 0x3c, 0x40, 0xf5, 0x01, 0x05, 0x5b, 0x1f, 0x8c, 0x99, 0xc2,
+	0x0f, 0xa0, 0x23, 0x74, 0x69, 0x7d, 0xde, 0x3b, 0xba, 0x16, 0x34, 0xe8, 0x0f, 0x8c, 0x0a, 0x52,
+	0xa6, 0x18, 0x35, 0x66, 0x02, 0x25, 0x6f, 0x8d, 0xfd, 0x1e, 0x38, 0xc7, 0x69, 0xaa, 0x79, 0x72,
+	0xff, 0x3b, 0x82, 0xee, 0x78, 0x69, 0x92, 0xee, 0x43, 0x3b, 0x2a, 0xa2, 0x25, 0xa1, 0xdf, 0x48,
+	0xa8, 0xf3, 0x47, 0x16, 0x31, 0x29, 0xf8, 0x14, 0x1c, 0xfd, 0x31, 0xc9, 0x99, 0xd2, 0x8c, 0xbd,
+	0xa3, 0x1b, 0x7f, 0xce, 0x1f, 0x33, 0x35, 0xb2, 0x88, 0x1d, 0x55, 0x3d, 0x3f, 0x06, 0x88, 0xd2,
+	0x74, 0xa2, 0x71, 0xee, 0xee, 0xe8, 0x32, 0x37, 0x9b, 0xcb, 0x54, 0x9d, 0x8c, 0x2c, 0xe2, 0x44,
+	0x15, 0x38, 0x71, 0xa0, 0x9b, 0x9b, 0xae, 0xfc, 0x2f, 0x08, 0xfa, 0x64, 0xc3, 0x0d, 0xff, 0x6d,
+	0xb0, 0xf8, 0x61, 0x4d, 0x5a, 0x4a, 0xbf, 0xde, 0x58, 0xb9, 0x1c, 0x3b, 0xa9, 0x95, 0xfe, 0x44,
+	0x80, 0x37, 0x95, 0x12, 0x46, 0x85, 0x8c, 0xf1, 0x23, 0xb8, 0x44, 0x25, 0xd3, 0xd1, 0x49, 0xe1,
+	0xbf, 0x52, 0xf6, 0x30, 0x30, 0xe6, 0x0c, 0x2a, 0x73, 0x06, 0x2f, 0x2b, 0x73, 0x92, 0x7e, 0x95,
+	0x50, 0x84, 0xb0, 0x0b, 0x5d, 0x8d, 0x85, 0x2c, 0x25, 0x57, 0x10, 0xef, 0x83, 0x93, 0x89, 0x94,
+	0xd3, 0xb3, 0x09, 0x8f, 0xb5, 0x66, 0x87, 0xd8, 0x26, 0xf0, 0x24, 0xc6, 0xcf, 0xa0, 0xbf, 0xf9,
+	0x17, 0xb9, 0xbb, 0x9a, 0xf6, 0x56, 0x63, 0x4f, 0x5b, 0xf2, 0xb7, 0xd2, 0x8b, 0xc9, 0x45, 0x92,
+	0xce, 0xf8, 0x7b, 0x16, 0xbb, 0xed, 0x03, 0x74, 0x68, 0x93, 0x1a, 0xfb, 0x9f, 0xf4, 0x8e, 0x12,
+	0x9e, 0x2b, 0x69, 0x46, 0x79, 0xb1, 0xa3, 0xd6, 0xbf, 0xef, 0xe8, 0x5e, 0xe5, 0xe3, 0x9d, 0xbf,
+	0xf5, 0x71, 0xe9, 0xe2, 0xdb, 0x4f, 0x8b, 0x05, 0x5c, 0xc8, 0x20, 0x2c, 0x5f, 0xa6, 0x0a, 0xdb,
+	0xb0, 0xfb, 0x5c, 0x88, 0x6c, 0x60, 0x61, 0x80, 0xce, 0x29, 0x5b, 0x70, 0x16, 0x0f, 0x10, 0xde,
+	0x03, 0x30, 0x77, 0x99, 0x64, 0xf1, 0xa0, 0x55, 0xe0, 0x57, 0x8b, 0xaa, 0xa3, 0xc1, 0xce, 0xc9,
+	0xe8, 0xeb, 0xca, 0x43, 0xe7, 0x2b, 0x0f, 0xfd, 0x58, 0x79, 0xe8, 0xf3, 0xda, 0xb3, 0xce, 0xd7,
+	0x9e, 0xf5, 0x6d, 0xed, 0x59, 0xaf, 0x83, 0x84, 0xab, 0x82, 0x9e, 0x8a, 0x79, 0xf8, 0xbb, 0x37,
+	0xec, 0xa3, 0x7e, 0xc5, 0xd4, 0x59, 0xc6, 0xf2, 0x69, 0x47, 0x6f, 0xf8, 0xce, 0xaf, 0x00, 0x00,
+	0x00, 0xff, 0xff, 0x34, 0xce, 0xd5, 0x21, 0xf1, 0x04, 0x00, 0x00,
 }
 
-func (m *Entity) Marshal() (dAtA []byte, err error) {
+func (m *Object) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -110,12 +604,12 @@ func (m *Entity) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Entity) MarshalTo(dAtA []byte) (int, error) {
+func (m *Object) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Entity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Object) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -137,6 +631,368 @@ func (m *Entity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *Actor) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Actor) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Actor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintRelationship(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ActorSet) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ActorSet) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ActorSet) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Relation) > 0 {
+		i -= len(m.Relation)
+		copy(dAtA[i:], m.Relation)
+		i = encodeVarintRelationship(dAtA, i, uint64(len(m.Relation)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Object != nil {
+		{
+			size, err := m.Object.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintRelationship(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AllActors) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AllActors) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AllActors) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *Subject) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Subject) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Subject) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Subject != nil {
+		{
+			size := m.Subject.Size()
+			i -= size
+			if _, err := m.Subject.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Subject_Actor) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Subject_Actor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.Actor != nil {
+		{
+			size, err := m.Actor.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintRelationship(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+func (m *Subject_ActorSet) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Subject_ActorSet) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.ActorSet != nil {
+		{
+			size, err := m.ActorSet.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintRelationship(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	return len(dAtA) - i, nil
+}
+func (m *Subject_AllActors) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Subject_AllActors) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.AllActors != nil {
+		{
+			size, err := m.AllActors.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintRelationship(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	return len(dAtA) - i, nil
+}
+func (m *Relationship) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Relationship) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Relationship) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Subject != nil {
+		{
+			size, err := m.Subject.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintRelationship(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Relation) > 0 {
+		i -= len(m.Relation)
+		copy(dAtA[i:], m.Relation)
+		i = encodeVarintRelationship(dAtA, i, uint64(len(m.Relation)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Object != nil {
+		{
+			size, err := m.Object.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintRelationship(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RelationshipRecord) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RelationshipRecord) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RelationshipRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Archived {
+		i--
+		if m.Archived {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.Relationship != nil {
+		{
+			size, err := m.Relationship.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintRelationship(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.PolicyId) > 0 {
+		i -= len(m.PolicyId)
+		copy(dAtA[i:], m.PolicyId)
+		i = encodeVarintRelationship(dAtA, i, uint64(len(m.PolicyId)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintRelationship(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.CreationTime != nil {
+		{
+			size, err := m.CreationTime.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintRelationship(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Registration) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Registration) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Registration) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Actor != nil {
+		{
+			size, err := m.Actor.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintRelationship(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Object != nil {
+		{
+			size, err := m.Object.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintRelationship(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintRelationship(dAtA []byte, offset int, v uint64) int {
 	offset -= sovRelationship(v)
 	base := offset
@@ -148,7 +1004,7 @@ func encodeVarintRelationship(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *Entity) Size() (n int) {
+func (m *Object) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -165,13 +1021,166 @@ func (m *Entity) Size() (n int) {
 	return n
 }
 
+func (m *Actor) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	return n
+}
+
+func (m *ActorSet) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Object != nil {
+		l = m.Object.Size()
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	l = len(m.Relation)
+	if l > 0 {
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	return n
+}
+
+func (m *AllActors) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *Subject) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Subject != nil {
+		n += m.Subject.Size()
+	}
+	return n
+}
+
+func (m *Subject_Actor) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Actor != nil {
+		l = m.Actor.Size()
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	return n
+}
+func (m *Subject_ActorSet) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ActorSet != nil {
+		l = m.ActorSet.Size()
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	return n
+}
+func (m *Subject_AllActors) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.AllActors != nil {
+		l = m.AllActors.Size()
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	return n
+}
+func (m *Relationship) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Object != nil {
+		l = m.Object.Size()
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	l = len(m.Relation)
+	if l > 0 {
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	if m.Subject != nil {
+		l = m.Subject.Size()
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	return n
+}
+
+func (m *RelationshipRecord) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.CreationTime != nil {
+		l = m.CreationTime.Size()
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	l = len(m.PolicyId)
+	if l > 0 {
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	if m.Relationship != nil {
+		l = m.Relationship.Size()
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	if m.Archived {
+		n += 2
+	}
+	return n
+}
+
+func (m *Registration) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Object != nil {
+		l = m.Object.Size()
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	if m.Actor != nil {
+		l = m.Actor.Size()
+		n += 1 + l + sovRelationship(uint64(l))
+	}
+	return n
+}
+
 func sovRelationship(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozRelationship(x uint64) (n int) {
 	return sovRelationship(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *Entity) Unmarshal(dAtA []byte) error {
+func (m *Object) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -194,10 +1203,10 @@ func (m *Entity) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Entity: wiretype end group for non-group")
+			return fmt.Errorf("proto: Object: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Entity: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Object: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -263,6 +1272,893 @@ func (m *Entity) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRelationship(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Actor) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRelationship
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Actor: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Actor: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRelationship(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ActorSet) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRelationship
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ActorSet: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ActorSet: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Object", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Object == nil {
+				m.Object = &Object{}
+			}
+			if err := m.Object.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Relation", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Relation = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRelationship(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AllActors) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRelationship
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AllActors: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AllActors: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRelationship(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Subject) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRelationship
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Subject: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Subject: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Actor", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &Actor{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Subject = &Subject_Actor{v}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ActorSet", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &ActorSet{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Subject = &Subject_ActorSet{v}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AllActors", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &AllActors{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Subject = &Subject_AllActors{v}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRelationship(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Relationship) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRelationship
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Relationship: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Relationship: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Object", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Object == nil {
+				m.Object = &Object{}
+			}
+			if err := m.Object.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Relation", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Relation = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Subject == nil {
+				m.Subject = &Subject{}
+			}
+			if err := m.Subject.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRelationship(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RelationshipRecord) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRelationship
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RelationshipRecord: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RelationshipRecord: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreationTime", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.CreationTime == nil {
+				m.CreationTime = &types.Timestamp{}
+			}
+			if err := m.CreationTime.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PolicyId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PolicyId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Relationship", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Relationship == nil {
+				m.Relationship = &Relationship{}
+			}
+			if err := m.Relationship.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Archived", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Archived = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRelationship(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Registration) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRelationship
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Registration: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Registration: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Object", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Object == nil {
+				m.Object = &Object{}
+			}
+			if err := m.Object.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Actor", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRelationship
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthRelationship
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Actor == nil {
+				m.Actor = &Actor{}
+			}
+			if err := m.Actor.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

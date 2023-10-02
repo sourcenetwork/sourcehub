@@ -46,18 +46,18 @@ func (u *shortUnmarshaler) mapPolShort(pol *types.PolicyShort) *types.Policy {
 		resources = append(resources, mapped)
 	}
 
-        policy := &types.Policy{
+	policy := &types.Policy{
 		Name:          pol.Name,
 		Description:   pol.Description,
-		Attributes:      pol.Meta,
+		Attributes:    pol.Meta,
 		Resources:     resources,
 		ActorResource: pol.Actor,
 	}
 
-        // Sort to ensure unmarshaling tests are not flaky
-        policy.Sort()
+	// Sort to ensure unmarshaling tests are not flaky
+	policy.Sort()
 
-        return policy
+	return policy
 }
 
 func (u *shortUnmarshaler) mapResource(name string, resource *types.ResourceShort) *types.Resource {
@@ -94,7 +94,7 @@ func (u *shortUnmarshaler) mapRelation(name string, rel *types.RelationShort) *t
 		}
 	}
 
-	vrTypes := utils.MapSlice(rel.Types, func(typeStr string) *types.Userset {
+	vrTypes := utils.MapSlice(rel.Types, func(typeStr string) *types.Restriction {
 		return u.mapType(typeStr)
 	})
 	return &types.Relation{
@@ -105,11 +105,11 @@ func (u *shortUnmarshaler) mapRelation(name string, rel *types.RelationShort) *t
 	}
 }
 
-func (u *shortUnmarshaler) mapType(typeStr string) *types.Userset {
+func (u *shortUnmarshaler) mapType(typeStr string) *types.Restriction {
 	resource, rel, _ := strings.Cut(typeStr, typeDivider)
-	return &types.Userset{
-		Resource: resource,
-		Relation: rel,
+	return &types.Restriction{
+		ResourceName: resource,
+		RelationName: rel,
 	}
 }
 
