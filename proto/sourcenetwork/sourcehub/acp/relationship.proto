@@ -36,6 +36,7 @@ message Subject {
         Actor actor = 1;
         ActorSet actor_set = 2;
         AllActors all_actors = 3;
+        Object object = 4;
     }
 }
 

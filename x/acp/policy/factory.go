@@ -17,18 +17,23 @@ type factory struct{}
 
 // NewPolicy creates a new policy from a marshal policy string.
 // The policy is unmarshaled according to the given marshaling type and normalized.
-func (f *factory) Create(polStr string, t types.PolicyMarshalingType, creator string, sequence uint64, creationTime *gogotypes.Timestamp) (*types.PolicyRecord, error) {
-	policy, err := unmarshal(polStr, t)
-	if err != nil {
-		return nil, err
-	}
-
+func (f *factory) Create(policyIR PolicyIR, creator string, sequence uint64, creationTime *gogotypes.Timestamp) (*types.PolicyRecord, error) {
+    
+    policy := &types.Policy{
+        Id: "",
+        Name: policyIR.Name,
+        Description: policyIR.Description,
+        CreationTime: creationTime,
+        Attributes: policyIR.Attributes,
+        Resources: policyIR.Resources,
+        ActorResource: policyIR.ActorResource,
+        Creator: creator,
+    }
 	f.normalize(policy)
 
-	ider := policyIder{}
-	policy.Id = ider.Id(policy, sequence)
-	policy.Creator = creator
-	policy.CreationTime = creationTime
+        ider := policyIder{}
+        policy.Id = ider.Id(policy, sequence)
+
 
 	graph := buildManagementGraph(policy)
 	f.addManagementPermissions(policy, graph)

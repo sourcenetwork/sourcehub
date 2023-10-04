@@ -12,7 +12,7 @@ import "google/protobuf/timestamp.proto";
 // Msg defines the Msg service.
 service Msg {
     rpc CreatePolicy       (MsgCreatePolicy      ) returns (MsgCreatePolicyResponse      );
-    rpc CreateRelationship (MsgCreateRelationship) returns (MsgCreateRelationshipResponse);
+    rpc SetRelationship (MsgSetRelationship) returns (MsgSetRelationshipResponse);
     rpc DeleteRelationship (MsgDeleteRelationship) returns (MsgDeleteRelationshipResponse);
     rpc RegisterObject     (MsgRegisterObject    ) returns (MsgRegisterObjectResponse    );
     rpc UnregisterObject   (MsgUnregisterObject  ) returns (MsgUnregisterObjectResponse  );
@@ -29,17 +29,29 @@ message MsgCreatePolicyResponse {
     Policy policy = 1;
 }
 
-message MsgCreateRelationship {
+message MsgSetRelationship {
     string creator = 1;
     string policy_id = 2;
-    Object object = 3;
-    string relation = 4;
-    Subject subject = 5;
-    google.protobuf.Timestamp creation_time = 6;
+    google.protobuf.Timestamp creation_time = 3;
+    Relationship relationship = 4;
 }
 
-message MsgCreateRelationshipResponse {
-    bool created = 1;
+// SetRelationshipResult indicates the outcome of a Set Relationship Tx
+enum SetRelationshipResult {
+
+    // Indicates no change in the system were made
+    // Either an error ocurred or the Relationship already existed - likely created by a different actor.
+    SetRelNoOp = 0; 
+
+    // Created indicates a new Relationship was created
+    SetRelCreated = 1;
+
+    // Denied indicates the Actor was not allowed to create the Relationship
+    SetRelDenied = 2;
+}
+
+message MsgSetRelationshipResponse {
+    SetRelationshipResult result = 1;
 }
 
 message MsgDeleteRelationship {

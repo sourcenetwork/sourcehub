@@ -13,6 +13,24 @@ func NewPolicyRecord(policy *Policy) (*PolicyRecord, error) {
 	}, nil
 }
 
+func NewRelationship(resource, objId, relation, subjResource, subjId string) *Relationship {
+	return &Relationship{
+		Object: &Object{
+			Resource: resource,
+			Id:       objId,
+		},
+		Relation: relation,
+		Subject: &Subject{
+			Subject: &Subject_Object{
+				Object: &Object{
+                                    Resource: subjResource,
+					Id: subjId,
+				},
+			},
+		},
+	}
+}
+
 func NewActorRelationship(resource, objId, relation, actor string) *Relationship {
 	return &Relationship{
 		Object: &Object{

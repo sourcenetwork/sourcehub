@@ -27,9 +27,9 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCreatePolicy int = 100
 
-	opWeightMsgCreateRelationship = "op_weight_msg_create_relationship"
+	opWeightMsgSetRelationship = "op_weight_msg_set_relationship"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgCreateRelationship int = 100
+	defaultWeightMsgSetRelationship int = 100
 
 	opWeightMsgDeleteRelationship = "op_weight_msg_delete_relationship"
 	// TODO: Determine the simulation weight value
@@ -82,15 +82,15 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		acpsimulation.SimulateMsgCreatePolicy(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgCreateRelationship int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateRelationship, &weightMsgCreateRelationship, nil,
+	var weightMsgSetRelationship int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSetRelationship, &weightMsgSetRelationship, nil,
 		func(_ *rand.Rand) {
-			weightMsgCreateRelationship = defaultWeightMsgCreateRelationship
+			weightMsgSetRelationship = defaultWeightMsgSetRelationship
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCreateRelationship,
-		acpsimulation.SimulateMsgCreateRelationship(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgSetRelationship,
+		acpsimulation.SimulateMsgSetRelationship(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgDeleteRelationship int
@@ -143,10 +143,10 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			},
 		),
 		simulation.NewWeightedProposalMsg(
-			opWeightMsgCreateRelationship,
-			defaultWeightMsgCreateRelationship,
+			opWeightMsgSetRelationship,
+			defaultWeightMsgSetRelationship,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				acpsimulation.SimulateMsgCreateRelationship(am.accountKeeper, am.bankKeeper, am.keeper)
+				acpsimulation.SimulateMsgSetRelationship(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),

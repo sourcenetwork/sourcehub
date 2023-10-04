@@ -1,7 +1,6 @@
 package policy
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -36,7 +35,7 @@ func TestFullUnmarshal(t *testing.T) {
 	unmarshaler := shortUnmarshaler{}
 	out, err := unmarshaler.UnmarshalYAML(in)
 
-	want := &types.Policy{
+	want := PolicyIR{
 		Name:        "policy",
 		Description: "ok",
 		Resources: []*types.Resource{
@@ -80,12 +79,7 @@ func TestFullUnmarshal(t *testing.T) {
 			Doc:  "my actor",
 		},
 	}
-	t.Log(err)
 	require.Nil(t, err)
-	if !reflect.DeepEqual(want, out) {
-		t.Log(want.String())
-		t.Log(out.String())
-	}
 	require.Equal(t, want, out)
 }
 
@@ -98,7 +92,7 @@ func TestEmptyResourceMapsToResource(t *testing.T) {
 	unmarshaler := shortUnmarshaler{}
 	out, err := unmarshaler.UnmarshalYAML(in)
 
-	want := &types.Policy{
+	want := PolicyIR{
 		Resources: []*types.Resource{
 			&types.Resource{
 				Name: "foo",
@@ -120,7 +114,7 @@ func TestResourceWithoutPermsOrRelsMapsToResource(t *testing.T) {
 	unmarshaler := shortUnmarshaler{}
 	out, err := unmarshaler.UnmarshalYAML(in)
 
-	want := &types.Policy{
+	want := PolicyIR{
 		Resources: []*types.Resource{
 			&types.Resource{
 				Name:        "foo",
@@ -144,7 +138,7 @@ func TestEmptyRelationMapsToRelation(t *testing.T) {
 	unmarshaler := shortUnmarshaler{}
 	out, err := unmarshaler.UnmarshalYAML(in)
 
-	want := &types.Policy{
+	want := PolicyIR{
 		Resources: []*types.Resource{
 			&types.Resource{
 				Name: "foo",
@@ -178,7 +172,7 @@ func TestEmptyPermissionMapsToPermission(t *testing.T) {
 	unmarshaler := shortUnmarshaler{}
 	out, err := unmarshaler.UnmarshalYAML(in)
 
-	want := &types.Policy{
+	want := PolicyIR{
 		Resources: []*types.Resource{
 			&types.Resource{
 				Name: "foo",
@@ -252,7 +246,7 @@ func TestRestrictionIdentifierMapsBothForms(t *testing.T) {
 	unmarshaler := shortUnmarshaler{}
 	out, err := unmarshaler.UnmarshalYAML(in)
 
-	want := &types.Policy{
+	want := PolicyIR{
 		Resources: []*types.Resource{
 			&types.Resource{
 				Name: "foo",

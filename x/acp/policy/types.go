@@ -6,7 +6,32 @@ import (
 	"fmt"
 
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
+        "github.com/sourcenetwork/sourcehub/utils"
 )
+
+// PolicyIR is an intermediary representation of a Policy which marshaled representations
+// must unmarshall to.
+type PolicyIR struct {
+    Name string
+    Description string
+    Attributes map[string]string
+    Resources []*types.Resource
+    ActorResource *types.ActorResource
+}
+
+// sort performs an in place sorting of resources, relations and permissions in a policy
+func (pol *PolicyIR) sort() {
+	resourceExtractor := func(resource *types.Resource) string { return resource.Name }
+	relationExtractor := func(relation *types.Relation) string { return relation.Name }
+	permissionExtractor := func(permission *types.Permission) string { return permission.Name }
+
+	utils.AsSortable(pol.Resources, resourceExtractor).Sort()
+
+	for _, resource := range pol.Resources {
+		utils.AsSortable(resource.Relations, relationExtractor).Sort()
+		utils.AsSortable(resource.Permissions, permissionExtractor).Sort()
+	}
+}
 
 // policyIder builds Policy ids
 type policyIder struct{}

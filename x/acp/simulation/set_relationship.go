@@ -10,7 +10,7 @@ import (
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
-func SimulateMsgCreateRelationship(
+func SimulateMsgSetRelationship(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -18,12 +18,12 @@ func SimulateMsgCreateRelationship(
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgCreateRelationship{
+		msg := &types.MsgSetRelationship{
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handling the CreateRelationship simulation
+		// TODO: Handling the SetRelationship simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "CreateRelationship simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "SetRelationship simulation not implemented"), nil, nil
 	}
 }

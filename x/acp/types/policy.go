@@ -4,6 +4,8 @@ import (
 	"github.com/sourcenetwork/sourcehub/utils"
 )
 
+const ManagementPermissionPrefix string = "_can_manage_"
+
 // Sort performs an in place sorting of all entities in a Policy.
 // Every resource, along with its relations and permissions, are sorted by name.
 func (pol *Policy) Sort() {
@@ -17,4 +19,10 @@ func (pol *Policy) Sort() {
 		utils.AsSortable(resource.Relations, relationExtractor).Sort()
 		utils.AsSortable(resource.Permissions, permissionExtractor).Sort()
 	}
+}
+
+// GetManagementPermissionName returns the name of the Management Permission
+// built for the given Relation
+func (pol *Policy) GetManagementPermissionName(relation string) string {
+    return ManagementPermissionPrefix + relation
 }

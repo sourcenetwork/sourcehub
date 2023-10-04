@@ -164,3 +164,59 @@ func (c *RegisterObjectCommand) unarchiveRelationship(ctx context.Context, engin
 	_, err := engine.SetRelationship(ctx, c.Policy, record)
 	return err
 }
+
+type SetRelationshipCommand struct {
+    Policy *types.Policy
+    CreationTs   *prototypes.Timestamp
+    Creator string
+    Relationship *types.Relationship
+}
+
+func (c *SetRelationshipCommand) Execute(ctx context.Context, engine auth_engine.AuthEngine) (types.SetRelationshipResult, error) {
+    err := c.validate()
+    if err != nil {
+        return types.SetRelationshipResult_SetRelNoOp, err
+    }
+
+    authorizer := NewRelationshipAuthorizer(engine)
+    creatorActor := types.Actor{
+        Id: c.Creator,
+    }
+    authorized, err := authorizer.IsAuthorized(ctx, c.Policy, c.Relationship, &creatorActor)
+    if err != nil {
+        return types.SetRelationshipResult_SetRelNoOp, err
+    }
+    if !authorized {
+        return types.SetRelationshipResult_SetRelDenied, nil
+    }
+
+    record, err := engine.GetRelationship(ctx, c.Policy, c.Relationship)
+    if err != nil {
+        return types.SetRelationshipResult_SetRelNoOp, err
+    }
+    if record != nil {
+        return types.SetRelationshipResult_SetRelNoOp, nil
+    }
+
+    record = &types.RelationshipRecord{
+        PolicyId: c.Policy.Id,
+        Relationship: c.Relationship,
+        CreationTime: c.CreationTs,
+        Creator: c.Creator,
+        Archived: false,
+    }
+    _, err = engine.SetRelationship(ctx, c.Policy, record)
+    if err != nil {
+        return types.SetRelationshipResult_SetRelNoOp, err
+    }
+
+    return types.SetRelationshipResult_SetRelCreated, nil
+}
+
+func (c *SetRelationshipCommand) validate() error {
+    if c.Relationship.Relation == policy.OwnerRelation {
+        return ErrCannotSetOwnerRelationship
+    }
+
+    return nil
+}

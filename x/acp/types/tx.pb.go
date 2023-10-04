@@ -28,6 +28,39 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// SetRelationshipResult indicates the outcome of a Set Relationship Tx
+type SetRelationshipResult int32
+
+const (
+	// Indicates no change in the system were made
+	// Either an error ocurred or the Relationship already existed - likely created by a different actor.
+	SetRelationshipResult_SetRelNoOp SetRelationshipResult = 0
+	// Created indicates a new Relationship was created
+	SetRelationshipResult_SetRelCreated SetRelationshipResult = 1
+	// Denied indicates the Actor was not allowed to create the Relationship
+	SetRelationshipResult_SetRelDenied SetRelationshipResult = 2
+)
+
+var SetRelationshipResult_name = map[int32]string{
+	0: "SetRelNoOp",
+	1: "SetRelCreated",
+	2: "SetRelDenied",
+}
+
+var SetRelationshipResult_value = map[string]int32{
+	"SetRelNoOp":    0,
+	"SetRelCreated": 1,
+	"SetRelDenied":  2,
+}
+
+func (x SetRelationshipResult) String() string {
+	return proto.EnumName(SetRelationshipResult_name, int32(x))
+}
+
+func (SetRelationshipResult) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_9f6ed370b5178d9e, []int{0}
+}
+
 type MsgCreatePolicy struct {
 	Creator      string               `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Policy       string               `protobuf:"bytes,2,opt,name=policy,proto3" json:"policy,omitempty"`
@@ -140,27 +173,25 @@ func (m *MsgCreatePolicyResponse) GetPolicy() *Policy {
 	return nil
 }
 
-type MsgCreateRelationship struct {
+type MsgSetRelationship struct {
 	Creator      string           `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	PolicyId     string           `protobuf:"bytes,2,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
-	Object       *Object          `protobuf:"bytes,3,opt,name=object,proto3" json:"object,omitempty"`
-	Relation     string           `protobuf:"bytes,4,opt,name=relation,proto3" json:"relation,omitempty"`
-	Subject      *Subject         `protobuf:"bytes,5,opt,name=subject,proto3" json:"subject,omitempty"`
-	CreationTime *types.Timestamp `protobuf:"bytes,6,opt,name=creation_time,json=creationTime,proto3" json:"creation_time,omitempty"`
+	CreationTime *types.Timestamp `protobuf:"bytes,3,opt,name=creation_time,json=creationTime,proto3" json:"creation_time,omitempty"`
+	Relationship *Relationship    `protobuf:"bytes,4,opt,name=relationship,proto3" json:"relationship,omitempty"`
 }
 
-func (m *MsgCreateRelationship) Reset()         { *m = MsgCreateRelationship{} }
-func (m *MsgCreateRelationship) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateRelationship) ProtoMessage()    {}
-func (*MsgCreateRelationship) Descriptor() ([]byte, []int) {
+func (m *MsgSetRelationship) Reset()         { *m = MsgSetRelationship{} }
+func (m *MsgSetRelationship) String() string { return proto.CompactTextString(m) }
+func (*MsgSetRelationship) ProtoMessage()    {}
+func (*MsgSetRelationship) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f6ed370b5178d9e, []int{2}
 }
-func (m *MsgCreateRelationship) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetRelationship) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreateRelationship) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetRelationship) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreateRelationship.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetRelationship.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -170,76 +201,62 @@ func (m *MsgCreateRelationship) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *MsgCreateRelationship) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateRelationship.Merge(m, src)
+func (m *MsgSetRelationship) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetRelationship.Merge(m, src)
 }
-func (m *MsgCreateRelationship) XXX_Size() int {
+func (m *MsgSetRelationship) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreateRelationship) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateRelationship.DiscardUnknown(m)
+func (m *MsgSetRelationship) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetRelationship.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreateRelationship proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetRelationship proto.InternalMessageInfo
 
-func (m *MsgCreateRelationship) GetCreator() string {
+func (m *MsgSetRelationship) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgCreateRelationship) GetPolicyId() string {
+func (m *MsgSetRelationship) GetPolicyId() string {
 	if m != nil {
 		return m.PolicyId
 	}
 	return ""
 }
 
-func (m *MsgCreateRelationship) GetObject() *Object {
-	if m != nil {
-		return m.Object
-	}
-	return nil
-}
-
-func (m *MsgCreateRelationship) GetRelation() string {
-	if m != nil {
-		return m.Relation
-	}
-	return ""
-}
-
-func (m *MsgCreateRelationship) GetSubject() *Subject {
-	if m != nil {
-		return m.Subject
-	}
-	return nil
-}
-
-func (m *MsgCreateRelationship) GetCreationTime() *types.Timestamp {
+func (m *MsgSetRelationship) GetCreationTime() *types.Timestamp {
 	if m != nil {
 		return m.CreationTime
 	}
 	return nil
 }
 
-type MsgCreateRelationshipResponse struct {
-	Created bool `protobuf:"varint,1,opt,name=created,proto3" json:"created,omitempty"`
+func (m *MsgSetRelationship) GetRelationship() *Relationship {
+	if m != nil {
+		return m.Relationship
+	}
+	return nil
 }
 
-func (m *MsgCreateRelationshipResponse) Reset()         { *m = MsgCreateRelationshipResponse{} }
-func (m *MsgCreateRelationshipResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateRelationshipResponse) ProtoMessage()    {}
-func (*MsgCreateRelationshipResponse) Descriptor() ([]byte, []int) {
+type MsgSetRelationshipResponse struct {
+	Result SetRelationshipResult `protobuf:"varint,1,opt,name=result,proto3,enum=sourcenetwork.sourcehub.acp.SetRelationshipResult" json:"result,omitempty"`
+}
+
+func (m *MsgSetRelationshipResponse) Reset()         { *m = MsgSetRelationshipResponse{} }
+func (m *MsgSetRelationshipResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetRelationshipResponse) ProtoMessage()    {}
+func (*MsgSetRelationshipResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f6ed370b5178d9e, []int{3}
 }
-func (m *MsgCreateRelationshipResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetRelationshipResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreateRelationshipResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetRelationshipResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreateRelationshipResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetRelationshipResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -249,23 +266,23 @@ func (m *MsgCreateRelationshipResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *MsgCreateRelationshipResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateRelationshipResponse.Merge(m, src)
+func (m *MsgSetRelationshipResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetRelationshipResponse.Merge(m, src)
 }
-func (m *MsgCreateRelationshipResponse) XXX_Size() int {
+func (m *MsgSetRelationshipResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreateRelationshipResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateRelationshipResponse.DiscardUnknown(m)
+func (m *MsgSetRelationshipResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetRelationshipResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreateRelationshipResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetRelationshipResponse proto.InternalMessageInfo
 
-func (m *MsgCreateRelationshipResponse) GetCreated() bool {
+func (m *MsgSetRelationshipResponse) GetResult() SetRelationshipResult {
 	if m != nil {
-		return m.Created
+		return m.Result
 	}
-	return false
+	return SetRelationshipResult_SetRelNoOp
 }
 
 type MsgDeleteRelationship struct {
@@ -605,10 +622,11 @@ func (m *MsgUnregisterObjectResponse) GetFound() bool {
 }
 
 func init() {
+	proto.RegisterEnum("sourcenetwork.sourcehub.acp.SetRelationshipResult", SetRelationshipResult_name, SetRelationshipResult_value)
 	proto.RegisterType((*MsgCreatePolicy)(nil), "sourcenetwork.sourcehub.acp.MsgCreatePolicy")
 	proto.RegisterType((*MsgCreatePolicyResponse)(nil), "sourcenetwork.sourcehub.acp.MsgCreatePolicyResponse")
-	proto.RegisterType((*MsgCreateRelationship)(nil), "sourcenetwork.sourcehub.acp.MsgCreateRelationship")
-	proto.RegisterType((*MsgCreateRelationshipResponse)(nil), "sourcenetwork.sourcehub.acp.MsgCreateRelationshipResponse")
+	proto.RegisterType((*MsgSetRelationship)(nil), "sourcenetwork.sourcehub.acp.MsgSetRelationship")
+	proto.RegisterType((*MsgSetRelationshipResponse)(nil), "sourcenetwork.sourcehub.acp.MsgSetRelationshipResponse")
 	proto.RegisterType((*MsgDeleteRelationship)(nil), "sourcenetwork.sourcehub.acp.MsgDeleteRelationship")
 	proto.RegisterType((*MsgDeleteRelationshipResponse)(nil), "sourcenetwork.sourcehub.acp.MsgDeleteRelationshipResponse")
 	proto.RegisterType((*MsgRegisterObject)(nil), "sourcenetwork.sourcehub.acp.MsgRegisterObject")
@@ -622,48 +640,52 @@ func init() {
 }
 
 var fileDescriptor_9f6ed370b5178d9e = []byte{
-	// 655 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x56, 0xcd, 0x6e, 0xd3, 0x4c,
-	0x14, 0xed, 0xb4, 0x5f, 0xd2, 0x76, 0x9a, 0xaf, 0x80, 0xf9, 0x0b, 0xae, 0x30, 0x95, 0xe9, 0x22,
-	0x48, 0xc8, 0x06, 0x17, 0x10, 0x3f, 0x12, 0x48, 0x80, 0x04, 0x2c, 0x2c, 0xd0, 0x50, 0x58, 0xb0,
-	0xa9, 0x1c, 0x67, 0xea, 0x1a, 0x1c, 0x8f, 0x35, 0x33, 0x16, 0xc9, 0x06, 0x09, 0x89, 0x0d, 0x3b,
-	0x1e, 0x83, 0x47, 0x61, 0xd9, 0x25, 0x62, 0x85, 0x92, 0x05, 0xaf, 0x81, 0x3c, 0x63, 0x5b, 0x49,
-	0x1c, 0xec, 0x18, 0x58, 0xb1, 0xbc, 0xc9, 0x3d, 0xe7, 0x9e, 0x73, 0xe6, 0xce, 0xc8, 0x70, 0x87,
-	0x91, 0x98, 0xba, 0x38, 0xc4, 0xfc, 0x2d, 0xa1, 0x6f, 0x4c, 0x59, 0x1d, 0xc6, 0x5d, 0xd3, 0x71,
-	0x23, 0x93, 0x0f, 0x8c, 0x88, 0x12, 0x4e, 0x94, 0xad, 0xa9, 0x2e, 0x23, 0xef, 0x32, 0x1c, 0x37,
-	0x52, 0x8d, 0x32, 0x0a, 0x8a, 0x03, 0x87, 0xfb, 0x24, 0x64, 0x87, 0x7e, 0x24, 0xc9, 0x54, 0xab,
-	0xac, 0x3f, 0x22, 0x81, 0xef, 0x0e, 0xf7, 0xfb, 0x0e, 0x65, 0x87, 0x4e, 0x80, 0x7b, 0x29, 0xa6,
-	0x53, 0x8d, 0x49, 0x3b, 0x2f, 0x78, 0x84, 0x78, 0x01, 0x36, 0x45, 0xd5, 0x8d, 0x0f, 0x4c, 0xee,
-	0xf7, 0x31, 0xe3, 0x4e, 0x3f, 0x1d, 0xaf, 0x7f, 0x03, 0xf0, 0x98, 0xcd, 0xbc, 0x07, 0x14, 0x3b,
-	0x1c, 0x3f, 0x13, 0x50, 0xa5, 0x0d, 0x57, 0xdd, 0xa4, 0x26, 0xb4, 0x0d, 0xb6, 0x41, 0x67, 0x1d,
-	0x65, 0xa5, 0x72, 0x06, 0x36, 0x25, 0x7d, 0x7b, 0x59, 0xfc, 0x91, 0x56, 0xca, 0x1e, 0x6c, 0xa5,
-	0x1a, 0xf7, 0xf9, 0x30, 0xc2, 0xed, 0x95, 0x6d, 0xd0, 0xd9, 0xb4, 0xae, 0x1a, 0x25, 0x41, 0x19,
-	0x72, 0x98, 0x2d, 0x61, 0x7e, 0xe8, 0xed, 0x0d, 0x23, 0x8c, 0x36, 0x52, 0x9a, 0xa4, 0x50, 0xee,
-	0xc1, 0xff, 0xc5, 0x60, 0x9f, 0x84, 0xfb, 0x89, 0xee, 0xf6, 0x7f, 0xdb, 0xa0, 0xb3, 0x61, 0xa9,
-	0x86, 0x34, 0x65, 0x64, 0xa6, 0x8c, 0xbd, 0xcc, 0x14, 0x6a, 0x65, 0x80, 0xe4, 0x27, 0xfd, 0x25,
-	0x3c, 0x3b, 0xe3, 0x0d, 0x61, 0x16, 0x91, 0x90, 0x61, 0xe5, 0x4e, 0xee, 0x04, 0x08, 0xd2, 0x8b,
-	0x0b, 0x68, 0xcd, 0xec, 0xea, 0x9f, 0x97, 0xe1, 0xe9, 0x9c, 0x18, 0x4d, 0x9c, 0x69, 0x49, 0x74,
-	0x5b, 0x70, 0x3d, 0x3d, 0x4d, 0xbf, 0x97, 0xa6, 0xb7, 0x26, 0x7f, 0x78, 0xd2, 0x4b, 0xd4, 0x90,
-	0xee, 0x6b, 0xec, 0x72, 0x91, 0x5c, 0x95, 0x9a, 0xa7, 0xa2, 0x15, 0xa5, 0x10, 0x45, 0x85, 0x6b,
-	0xd9, 0x5e, 0x89, 0x84, 0xd6, 0x51, 0x5e, 0x2b, 0x77, 0xe1, 0x2a, 0x8b, 0x25, 0x73, 0x43, 0x30,
-	0xef, 0x94, 0x32, 0x3f, 0x97, 0xbd, 0x28, 0x03, 0x15, 0x8f, 0xa0, 0x59, 0xf3, 0x08, 0x6e, 0xc1,
-	0xf3, 0x73, 0x93, 0xca, 0x0f, 0x22, 0x4b, 0x0c, 0xf7, 0x44, 0x62, 0x6b, 0x28, 0x2b, 0xf5, 0x1f,
-	0x40, 0xa4, 0xfc, 0x10, 0x07, 0xf8, 0xdf, 0x4e, 0x59, 0xbf, 0x2e, 0x42, 0x2a, 0x1a, 0xcd, 0x43,
-	0x3a, 0x05, 0x1b, 0x07, 0x24, 0x0e, 0xb3, 0x88, 0x64, 0x91, 0xdc, 0xdd, 0x13, 0x36, 0xf3, 0x10,
-	0xf6, 0x7c, 0xc6, 0x31, 0x95, 0x82, 0x7f, 0x37, 0x1c, 0x1b, 0xb6, 0xa8, 0x20, 0xa2, 0xd2, 0xa3,
-	0x8c, 0xe8, 0x52, 0xa9, 0x11, 0x34, 0x01, 0x40, 0x53, 0xf0, 0xe2, 0xe2, 0x34, 0x6a, 0x2e, 0x4e,
-	0x0f, 0x9e, 0x2b, 0x78, 0xcb, 0xf3, 0x78, 0x04, 0x9b, 0x14, 0xb3, 0x38, 0xe0, 0xc2, 0xe2, 0xa6,
-	0x65, 0x2e, 0x2e, 0x53, 0xc0, 0x50, 0x0a, 0xd7, 0x3f, 0x02, 0x78, 0xd2, 0x66, 0xde, 0x8b, 0x90,
-	0xfe, 0x95, 0x10, 0xff, 0x64, 0xc3, 0xf4, 0x5d, 0xb8, 0x35, 0x47, 0x4a, 0xf9, 0x0e, 0x58, 0xef,
-	0x1b, 0x70, 0xc5, 0x66, 0x9e, 0x42, 0x61, 0x6b, 0xea, 0x0d, 0xbf, 0x5c, 0x3a, 0x79, 0xe6, 0x55,
-	0x54, 0xaf, 0xd5, 0xe9, 0xce, 0x15, 0x7d, 0x00, 0x50, 0x99, 0xf3, 0x06, 0x5a, 0x8b, 0x91, 0x4d,
-	0x62, 0xd4, 0xdb, 0xf5, 0x31, 0x53, 0x32, 0xe6, 0x3c, 0x12, 0x95, 0x32, 0x8a, 0x98, 0x6a, 0x19,
-	0x25, 0x77, 0x74, 0x00, 0x37, 0x67, 0x6e, 0xa2, 0x51, 0xc5, 0x36, 0xdd, 0xaf, 0xde, 0xa8, 0xd7,
-	0x9f, 0x4f, 0x7e, 0x07, 0x8f, 0x17, 0x16, 0xf8, 0x4a, 0x15, 0xd7, 0x2c, 0x42, 0xbd, 0x59, 0x17,
-	0x91, 0xcd, 0xbf, 0xff, 0xf8, 0xcb, 0x48, 0x03, 0x47, 0x23, 0x0d, 0x7c, 0x1f, 0x69, 0xe0, 0xd3,
-	0x58, 0x5b, 0x3a, 0x1a, 0x6b, 0x4b, 0x5f, 0xc7, 0xda, 0xd2, 0x2b, 0xc3, 0xf3, 0x79, 0xc2, 0xe0,
-	0x92, 0xbe, 0xf9, 0xab, 0x6f, 0x96, 0x81, 0xfc, 0xb8, 0x1a, 0x46, 0x98, 0x75, 0x9b, 0xe2, 0x59,
-	0xd8, 0xfd, 0x19, 0x00, 0x00, 0xff, 0xff, 0xbf, 0xf6, 0xb6, 0xa1, 0x88, 0x09, 0x00, 0x00,
+	// 718 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0x4d, 0x6f, 0xd3, 0x4a,
+	0x14, 0xcd, 0x34, 0x6d, 0xda, 0xde, 0xa6, 0x69, 0x3a, 0xef, 0xf5, 0xbd, 0xe0, 0x8a, 0x50, 0x85,
+	0x2e, 0x02, 0x42, 0x36, 0xa4, 0x7c, 0x89, 0x4a, 0x20, 0x41, 0x25, 0x3e, 0x84, 0x29, 0x32, 0x85,
+	0x05, 0x9b, 0x2a, 0xb1, 0xa7, 0x8e, 0xc1, 0xf1, 0x58, 0x9e, 0xb1, 0x68, 0x84, 0xc4, 0x8a, 0x0d,
+	0x3b, 0x7e, 0x16, 0xcb, 0x2e, 0x11, 0x6c, 0x50, 0xbb, 0xe0, 0x27, 0xb0, 0x45, 0xf6, 0xd8, 0xa6,
+	0xb1, 0x83, 0x53, 0x43, 0x97, 0x77, 0x7c, 0xcf, 0xb9, 0xf7, 0x9c, 0xb9, 0x73, 0x65, 0x58, 0x67,
+	0xd4, 0xf7, 0x74, 0xe2, 0x10, 0xfe, 0x86, 0x7a, 0xaf, 0x15, 0x11, 0xf5, 0xfd, 0x9e, 0xd2, 0xd5,
+	0x5d, 0x85, 0xef, 0xcb, 0xae, 0x47, 0x39, 0xc5, 0xab, 0x23, 0x59, 0x72, 0x92, 0x25, 0x77, 0x75,
+	0x57, 0x92, 0xf3, 0x28, 0x3c, 0x62, 0x77, 0xb9, 0x45, 0x1d, 0xd6, 0xb7, 0x5c, 0x41, 0x26, 0x75,
+	0xf2, 0xf2, 0x5d, 0x6a, 0x5b, 0xfa, 0x70, 0x77, 0xd0, 0xf5, 0x58, 0xbf, 0x6b, 0x13, 0x23, 0xc2,
+	0xb4, 0x27, 0x63, 0xa2, 0xcc, 0x73, 0x26, 0xa5, 0xa6, 0x4d, 0x94, 0x30, 0xea, 0xf9, 0x7b, 0x0a,
+	0xb7, 0x06, 0x84, 0xf1, 0xee, 0x20, 0x2a, 0xdf, 0xfa, 0x82, 0x60, 0x49, 0x65, 0xe6, 0x3d, 0x8f,
+	0x74, 0x39, 0x79, 0x1a, 0x42, 0x71, 0x03, 0x66, 0xf5, 0x20, 0xa6, 0x5e, 0x03, 0xad, 0xa1, 0xf6,
+	0xbc, 0x16, 0x87, 0xf8, 0x3f, 0xa8, 0x08, 0xfa, 0xc6, 0x54, 0xf8, 0x21, 0x8a, 0xf0, 0x0e, 0x54,
+	0xa3, 0x1e, 0x77, 0xf9, 0xd0, 0x25, 0x8d, 0xf2, 0x1a, 0x6a, 0xd7, 0x3a, 0x57, 0xe4, 0x1c, 0xa3,
+	0x64, 0x51, 0x4c, 0x15, 0x30, 0xcb, 0x31, 0x77, 0x86, 0x2e, 0xd1, 0x16, 0x22, 0x9a, 0x20, 0xc0,
+	0x77, 0x60, 0x31, 0x2c, 0x6c, 0x51, 0x67, 0x37, 0xe8, 0xbb, 0x31, 0xbd, 0x86, 0xda, 0x0b, 0x1d,
+	0x49, 0x16, 0xa2, 0xe4, 0x58, 0x94, 0xbc, 0x13, 0x8b, 0xd2, 0xaa, 0x31, 0x20, 0x38, 0x6a, 0xbd,
+	0x80, 0xff, 0x53, 0xda, 0x34, 0xc2, 0x5c, 0xea, 0x30, 0x82, 0x37, 0x13, 0x25, 0x28, 0x24, 0x3d,
+	0x7f, 0x82, 0x5e, 0x63, 0xb9, 0xad, 0xaf, 0x08, 0xb0, 0xca, 0xcc, 0x67, 0x84, 0x6b, 0xc7, 0x2e,
+	0x34, 0xc7, 0xb7, 0x55, 0x98, 0x8f, 0xae, 0xd2, 0x32, 0x22, 0xeb, 0xe6, 0xc4, 0xc1, 0x43, 0x23,
+	0x2b, 0xb3, 0x5c, 0x4c, 0x26, 0x56, 0xa1, 0x7a, 0x7c, 0xb0, 0x22, 0x9b, 0x2e, 0xe4, 0x2a, 0x3a,
+	0xde, 0xb8, 0x36, 0x02, 0x6f, 0xf5, 0x41, 0xca, 0x8a, 0x4b, 0x8c, 0x7b, 0x04, 0x15, 0x8f, 0x30,
+	0xdf, 0xe6, 0xa1, 0xc6, 0x5a, 0xa7, 0x93, 0x5b, 0x26, 0xcb, 0xe2, 0xdb, 0x5c, 0x8b, 0x18, 0x5a,
+	0xdf, 0x11, 0xac, 0xa8, 0xcc, 0xdc, 0x22, 0x36, 0xe1, 0xe4, 0x34, 0xac, 0xdc, 0x84, 0x0a, 0xed,
+	0xbd, 0x22, 0x3a, 0x8f, 0x3c, 0xcc, 0xbf, 0xd5, 0xed, 0x30, 0x55, 0x8b, 0x20, 0x58, 0x82, 0xb9,
+	0xd8, 0x87, 0xd0, 0xc2, 0x79, 0x2d, 0x89, 0xf1, 0x6d, 0x98, 0x65, 0xbe, 0x60, 0x9e, 0x09, 0x99,
+	0xd7, 0xf3, 0x65, 0x8b, 0x5c, 0x2d, 0x06, 0xb5, 0xae, 0xc1, 0xd9, 0xb1, 0x42, 0x13, 0x5b, 0xff,
+	0x85, 0x99, 0x3d, 0xea, 0x3b, 0x46, 0x28, 0x77, 0x4e, 0x13, 0x41, 0xf0, 0x3a, 0x97, 0x55, 0x66,
+	0x6a, 0xc4, 0xb4, 0x18, 0x27, 0x9e, 0x68, 0xf8, 0x4f, 0xcd, 0x09, 0xc7, 0x24, 0x20, 0xf2, 0x84,
+	0xc6, 0xf2, 0x89, 0xc6, 0xe4, 0x17, 0x40, 0x1b, 0x81, 0x67, 0xc7, 0x76, 0xa6, 0xe0, 0xeb, 0x34,
+	0xe0, 0x4c, 0x46, 0x5b, 0xe2, 0xc7, 0xfd, 0xd4, 0x98, 0x29, 0x27, 0x6f, 0x73, 0x74, 0xc6, 0x3e,
+	0x20, 0xf8, 0x47, 0x65, 0xe6, 0x73, 0xc7, 0x3b, 0x15, 0x13, 0xff, 0x66, 0xc2, 0x5a, 0x1b, 0xb0,
+	0x3a, 0xa6, 0x95, 0xfc, 0x19, 0xb8, 0xf8, 0x18, 0x56, 0xc6, 0xbe, 0x22, 0x5c, 0x03, 0x10, 0x1f,
+	0x9e, 0xd0, 0x6d, 0xb7, 0x5e, 0xc2, 0xcb, 0xb0, 0x28, 0x62, 0xb1, 0xf0, 0x8c, 0x3a, 0xc2, 0x75,
+	0xa8, 0x8a, 0xa3, 0x2d, 0xe2, 0x58, 0xc4, 0xa8, 0x4f, 0x75, 0x7e, 0x4c, 0x43, 0x59, 0x65, 0x26,
+	0xf6, 0xa0, 0x3a, 0xb2, 0xf3, 0x2f, 0xe5, 0xea, 0x48, 0x6d, 0x51, 0xe9, 0x6a, 0x91, 0xec, 0x44,
+	0xdf, 0x5b, 0x58, 0x4a, 0xaf, 0x4c, 0x65, 0x12, 0x51, 0x0a, 0x20, 0xdd, 0x28, 0x08, 0x48, 0x8a,
+	0xbf, 0x47, 0x80, 0xc7, 0x2c, 0x9a, 0xce, 0x24, 0xbe, 0x2c, 0x46, 0xba, 0x55, 0x1c, 0x93, 0xb4,
+	0xb1, 0x0f, 0xb5, 0xd4, 0x6b, 0x96, 0x27, 0xb1, 0x8d, 0xe6, 0x4b, 0xd7, 0x8b, 0xe5, 0x27, 0x95,
+	0xdf, 0x41, 0x3d, 0xf3, 0x08, 0x2e, 0x4f, 0xe2, 0x4a, 0x23, 0xa4, 0x9b, 0x45, 0x11, 0x71, 0xfd,
+	0xbb, 0x0f, 0x3e, 0x1d, 0x36, 0xd1, 0xc1, 0x61, 0x13, 0x7d, 0x3b, 0x6c, 0xa2, 0x8f, 0x47, 0xcd,
+	0xd2, 0xc1, 0x51, 0xb3, 0xf4, 0xf9, 0xa8, 0x59, 0x7a, 0x29, 0x9b, 0x16, 0x0f, 0x18, 0x74, 0x3a,
+	0x50, 0x7e, 0xf7, 0x67, 0xb3, 0x2f, 0x7e, 0xc1, 0x86, 0x2e, 0x61, 0xbd, 0x4a, 0xb8, 0x5a, 0x36,
+	0x7e, 0x06, 0x00, 0x00, 0xff, 0xff, 0xb8, 0x7a, 0xb2, 0xa0, 0xae, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -679,7 +701,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	CreatePolicy(ctx context.Context, in *MsgCreatePolicy, opts ...grpc.CallOption) (*MsgCreatePolicyResponse, error)
-	CreateRelationship(ctx context.Context, in *MsgCreateRelationship, opts ...grpc.CallOption) (*MsgCreateRelationshipResponse, error)
+	SetRelationship(ctx context.Context, in *MsgSetRelationship, opts ...grpc.CallOption) (*MsgSetRelationshipResponse, error)
 	DeleteRelationship(ctx context.Context, in *MsgDeleteRelationship, opts ...grpc.CallOption) (*MsgDeleteRelationshipResponse, error)
 	RegisterObject(ctx context.Context, in *MsgRegisterObject, opts ...grpc.CallOption) (*MsgRegisterObjectResponse, error)
 	UnregisterObject(ctx context.Context, in *MsgUnregisterObject, opts ...grpc.CallOption) (*MsgUnregisterObjectResponse, error)
@@ -702,9 +724,9 @@ func (c *msgClient) CreatePolicy(ctx context.Context, in *MsgCreatePolicy, opts 
 	return out, nil
 }
 
-func (c *msgClient) CreateRelationship(ctx context.Context, in *MsgCreateRelationship, opts ...grpc.CallOption) (*MsgCreateRelationshipResponse, error) {
-	out := new(MsgCreateRelationshipResponse)
-	err := c.cc.Invoke(ctx, "/sourcenetwork.sourcehub.acp.Msg/CreateRelationship", in, out, opts...)
+func (c *msgClient) SetRelationship(ctx context.Context, in *MsgSetRelationship, opts ...grpc.CallOption) (*MsgSetRelationshipResponse, error) {
+	out := new(MsgSetRelationshipResponse)
+	err := c.cc.Invoke(ctx, "/sourcenetwork.sourcehub.acp.Msg/SetRelationship", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -741,7 +763,7 @@ func (c *msgClient) UnregisterObject(ctx context.Context, in *MsgUnregisterObjec
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	CreatePolicy(context.Context, *MsgCreatePolicy) (*MsgCreatePolicyResponse, error)
-	CreateRelationship(context.Context, *MsgCreateRelationship) (*MsgCreateRelationshipResponse, error)
+	SetRelationship(context.Context, *MsgSetRelationship) (*MsgSetRelationshipResponse, error)
 	DeleteRelationship(context.Context, *MsgDeleteRelationship) (*MsgDeleteRelationshipResponse, error)
 	RegisterObject(context.Context, *MsgRegisterObject) (*MsgRegisterObjectResponse, error)
 	UnregisterObject(context.Context, *MsgUnregisterObject) (*MsgUnregisterObjectResponse, error)
@@ -754,8 +776,8 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) CreatePolicy(ctx context.Context, req *MsgCreatePolicy) (*MsgCreatePolicyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePolicy not implemented")
 }
-func (*UnimplementedMsgServer) CreateRelationship(ctx context.Context, req *MsgCreateRelationship) (*MsgCreateRelationshipResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateRelationship not implemented")
+func (*UnimplementedMsgServer) SetRelationship(ctx context.Context, req *MsgSetRelationship) (*MsgSetRelationshipResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetRelationship not implemented")
 }
 func (*UnimplementedMsgServer) DeleteRelationship(ctx context.Context, req *MsgDeleteRelationship) (*MsgDeleteRelationshipResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteRelationship not implemented")
@@ -789,20 +811,20 @@ func _Msg_CreatePolicy_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CreateRelationship_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCreateRelationship)
+func _Msg_SetRelationship_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetRelationship)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CreateRelationship(ctx, in)
+		return srv.(MsgServer).SetRelationship(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sourcenetwork.sourcehub.acp.Msg/CreateRelationship",
+		FullMethod: "/sourcenetwork.sourcehub.acp.Msg/SetRelationship",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CreateRelationship(ctx, req.(*MsgCreateRelationship))
+		return srv.(MsgServer).SetRelationship(ctx, req.(*MsgSetRelationship))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -870,8 +892,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_CreatePolicy_Handler,
 		},
 		{
-			MethodName: "CreateRelationship",
-			Handler:    _Msg_CreateRelationship_Handler,
+			MethodName: "SetRelationship",
+			Handler:    _Msg_SetRelationship_Handler,
 		},
 		{
 			MethodName: "DeleteRelationship",
@@ -979,7 +1001,7 @@ func (m *MsgCreatePolicyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCreateRelationship) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetRelationship) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -989,50 +1011,31 @@ func (m *MsgCreateRelationship) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreateRelationship) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetRelationship) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreateRelationship) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetRelationship) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.CreationTime != nil {
+	if m.Relationship != nil {
 		{
-			size, err := m.CreationTime.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.Relationship.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
 			i -= size
 			i = encodeVarintTx(dAtA, i, uint64(size))
 		}
-		i--
-		dAtA[i] = 0x32
-	}
-	if m.Subject != nil {
-		{
-			size, err := m.Subject.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x2a
-	}
-	if len(m.Relation) > 0 {
-		i -= len(m.Relation)
-		copy(dAtA[i:], m.Relation)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Relation)))
 		i--
 		dAtA[i] = 0x22
 	}
-	if m.Object != nil {
+	if m.CreationTime != nil {
 		{
-			size, err := m.Object.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.CreationTime.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -1059,7 +1062,7 @@ func (m *MsgCreateRelationship) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCreateRelationshipResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetRelationshipResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1069,23 +1072,18 @@ func (m *MsgCreateRelationshipResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreateRelationshipResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetRelationshipResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreateRelationshipResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetRelationshipResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Created {
-		i--
-		if m.Created {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
+	if m.Result != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Result))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -1412,7 +1410,7 @@ func (m *MsgCreatePolicyResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgCreateRelationship) Size() (n int) {
+func (m *MsgSetRelationship) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1426,33 +1424,25 @@ func (m *MsgCreateRelationship) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Object != nil {
-		l = m.Object.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Relation)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	if m.Subject != nil {
-		l = m.Subject.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
 	if m.CreationTime != nil {
 		l = m.CreationTime.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Relationship != nil {
+		l = m.Relationship.Size()
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
 }
 
-func (m *MsgCreateRelationshipResponse) Size() (n int) {
+func (m *MsgSetRelationshipResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Created {
-		n += 2
+	if m.Result != 0 {
+		n += 1 + sovTx(uint64(m.Result))
 	}
 	return n
 }
@@ -1829,7 +1819,7 @@ func (m *MsgCreatePolicyResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCreateRelationship) Unmarshal(dAtA []byte) error {
+func (m *MsgSetRelationship) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1852,10 +1842,10 @@ func (m *MsgCreateRelationship) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreateRelationship: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetRelationship: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreateRelationship: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetRelationship: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1924,110 +1914,6 @@ func (m *MsgCreateRelationship) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Object", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Object == nil {
-				m.Object = &Object{}
-			}
-			if err := m.Object.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Relation", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Relation = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Subject == nil {
-				m.Subject = &Subject{}
-			}
-			if err := m.Subject.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field CreationTime", wireType)
 			}
 			var msglen int
@@ -2062,6 +1948,42 @@ func (m *MsgCreateRelationship) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Relationship", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Relationship == nil {
+				m.Relationship = &Relationship{}
+			}
+			if err := m.Relationship.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -2083,7 +2005,7 @@ func (m *MsgCreateRelationship) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCreateRelationshipResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgSetRelationshipResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2106,17 +2028,17 @@ func (m *MsgCreateRelationshipResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreateRelationshipResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetRelationshipResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreateRelationshipResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetRelationshipResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Created", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Result", wireType)
 			}
-			var v int
+			m.Result = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2126,12 +2048,11 @@ func (m *MsgCreateRelationshipResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= int(b&0x7F) << shift
+				m.Result |= SetRelationshipResult(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			m.Created = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

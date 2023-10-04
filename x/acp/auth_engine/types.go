@@ -26,4 +26,6 @@ type AuthEngine interface {
 
 	// SetPolicy stores a new Policy with the given Id
 	SetPolicy(ctx context.Context, pol *types.PolicyRecord) error
+
+        Check(ctx context.Context, policy *types.Policy, request *types.AuthorizationRequest, actor *types.Actor) (bool, error)
 }

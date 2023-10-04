@@ -7,13 +7,13 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/sourcenetwork/sourcehub/testutil"
 	authengineutil "github.com/sourcenetwork/sourcehub/testutil/auth_engine"
 	"github.com/sourcenetwork/sourcehub/x/acp/auth_engine"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
+	acptestutil "github.com/sourcenetwork/sourcehub/x/acp/testutil"
 )
 
 var creatorStr = "cosmos1gue5de6a8fdff0jut08vw5sg9pk6rr00cstakj"
@@ -22,26 +22,17 @@ var sequence uint64 = 1
 var timestamp = testutil.MustDateTimeToProto("2023-07-26 14:08:30")
 var marshalType = types.PolicyMarshalingType_SHORT_YAML
 
-type accountKeeperStub struct{}
-
-func (s *accountKeeperStub) GetAccount(ctx sdk.Context, address sdk.AccAddress) authtypes.AccountI {
-	return &authtypes.BaseAccount{
-		Address:  string(address),
-		Sequence: 1,
-	}
-}
-
 func setup(t *testing.T) (context.Context, auth_engine.AuthEngine, types.AccountKeeper) {
 	engine, store := authengineutil.GetTestAuthEngine(t)
 	ctx := sdk.NewContext(store, tmproto.Header{}, false, log.NewNopLogger())
-	keeper := &accountKeeperStub{}
+	keeper := &acptestutil.AccountKeeperStub{}
 	return ctx, engine, keeper
 }
 
 func TestCreatePolicy_ValidPolicyIsCreated(t *testing.T) {
 	ctx, engine, keeper := setup(t)
 
-	policy := `
+	policyStr := `
 name: policy
 description: ok
 resources:
@@ -65,17 +56,19 @@ actor:
   name: actor-resource
   doc: my actor
           `
+          policy, err := Unmarshal(policyStr, types.PolicyMarshalingType_SHORT_YAML)
+          require.Nil(t, err)
+
 	cmd := CreatePolicyCommand{
 		CreatorAddr:  creator,
 		Policy:       policy,
-		MarshalType:  marshalType,
 		CreationTime: timestamp,
 	}
 	got, err := cmd.Execute(ctx, keeper, engine)
 
 	require.Nil(t, err)
 	require.Equal(t, got, &types.Policy{
-		Id:           "d011372c7e2cd34fd63777c513bb5eb16713834b855f424158474b77c1800410",
+		Id:           "4f4bb16253a15448c1a3a2a67fdb4f4652f3ebf90c4326db53200b8d50c89ba6",
 		Name:         "policy",
 		Description:  "ok",
 		CreationTime: timestamp,

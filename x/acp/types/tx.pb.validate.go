@@ -301,22 +301,22 @@ var _ interface {
 	ErrorName() string
 } = MsgCreatePolicyResponseValidationError{}
 
-// Validate checks the field values on MsgCreateRelationship with the rules
+// Validate checks the field values on MsgSetRelationship with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *MsgCreateRelationship) Validate() error {
+func (m *MsgSetRelationship) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on MsgCreateRelationship with the rules
+// ValidateAll checks the field values on MsgSetRelationship with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// MsgCreateRelationshipMultiError, or nil if none found.
-func (m *MsgCreateRelationship) ValidateAll() error {
+// MsgSetRelationshipMultiError, or nil if none found.
+func (m *MsgSetRelationship) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *MsgCreateRelationship) validate(all bool) error {
+func (m *MsgSetRelationship) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -328,70 +328,10 @@ func (m *MsgCreateRelationship) validate(all bool) error {
 	// no validation rules for PolicyId
 
 	if all {
-		switch v := interface{}(m.GetObject()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, MsgCreateRelationshipValidationError{
-					field:  "Object",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, MsgCreateRelationshipValidationError{
-					field:  "Object",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetObject()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return MsgCreateRelationshipValidationError{
-				field:  "Object",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	// no validation rules for Relation
-
-	if all {
-		switch v := interface{}(m.GetSubject()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, MsgCreateRelationshipValidationError{
-					field:  "Subject",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, MsgCreateRelationshipValidationError{
-					field:  "Subject",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetSubject()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return MsgCreateRelationshipValidationError{
-				field:  "Subject",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	if all {
 		switch v := interface{}(m.GetCreationTime()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, MsgCreateRelationshipValidationError{
+				errors = append(errors, MsgSetRelationshipValidationError{
 					field:  "CreationTime",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -399,7 +339,7 @@ func (m *MsgCreateRelationship) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, MsgCreateRelationshipValidationError{
+				errors = append(errors, MsgSetRelationshipValidationError{
 					field:  "CreationTime",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -408,7 +348,7 @@ func (m *MsgCreateRelationship) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetCreationTime()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return MsgCreateRelationshipValidationError{
+			return MsgSetRelationshipValidationError{
 				field:  "CreationTime",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -416,20 +356,49 @@ func (m *MsgCreateRelationship) validate(all bool) error {
 		}
 	}
 
+	if all {
+		switch v := interface{}(m.GetRelationship()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, MsgSetRelationshipValidationError{
+					field:  "Relationship",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, MsgSetRelationshipValidationError{
+					field:  "Relationship",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetRelationship()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return MsgSetRelationshipValidationError{
+				field:  "Relationship",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	if len(errors) > 0 {
-		return MsgCreateRelationshipMultiError(errors)
+		return MsgSetRelationshipMultiError(errors)
 	}
 
 	return nil
 }
 
-// MsgCreateRelationshipMultiError is an error wrapping multiple validation
-// errors returned by MsgCreateRelationship.ValidateAll() if the designated
-// constraints aren't met.
-type MsgCreateRelationshipMultiError []error
+// MsgSetRelationshipMultiError is an error wrapping multiple validation errors
+// returned by MsgSetRelationship.ValidateAll() if the designated constraints
+// aren't met.
+type MsgSetRelationshipMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m MsgCreateRelationshipMultiError) Error() string {
+func (m MsgSetRelationshipMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -438,11 +407,11 @@ func (m MsgCreateRelationshipMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m MsgCreateRelationshipMultiError) AllErrors() []error { return m }
+func (m MsgSetRelationshipMultiError) AllErrors() []error { return m }
 
-// MsgCreateRelationshipValidationError is the validation error returned by
-// MsgCreateRelationship.Validate if the designated constraints aren't met.
-type MsgCreateRelationshipValidationError struct {
+// MsgSetRelationshipValidationError is the validation error returned by
+// MsgSetRelationship.Validate if the designated constraints aren't met.
+type MsgSetRelationshipValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -450,24 +419,24 @@ type MsgCreateRelationshipValidationError struct {
 }
 
 // Field function returns field value.
-func (e MsgCreateRelationshipValidationError) Field() string { return e.field }
+func (e MsgSetRelationshipValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e MsgCreateRelationshipValidationError) Reason() string { return e.reason }
+func (e MsgSetRelationshipValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e MsgCreateRelationshipValidationError) Cause() error { return e.cause }
+func (e MsgSetRelationshipValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e MsgCreateRelationshipValidationError) Key() bool { return e.key }
+func (e MsgSetRelationshipValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e MsgCreateRelationshipValidationError) ErrorName() string {
-	return "MsgCreateRelationshipValidationError"
+func (e MsgSetRelationshipValidationError) ErrorName() string {
+	return "MsgSetRelationshipValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e MsgCreateRelationshipValidationError) Error() string {
+func (e MsgSetRelationshipValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -479,14 +448,14 @@ func (e MsgCreateRelationshipValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sMsgCreateRelationship.%s: %s%s",
+		"invalid %sMsgSetRelationship.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = MsgCreateRelationshipValidationError{}
+var _ error = MsgSetRelationshipValidationError{}
 
 var _ interface {
 	Field() string
@@ -494,46 +463,46 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = MsgCreateRelationshipValidationError{}
+} = MsgSetRelationshipValidationError{}
 
-// Validate checks the field values on MsgCreateRelationshipResponse with the
+// Validate checks the field values on MsgSetRelationshipResponse with the
 // rules defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *MsgCreateRelationshipResponse) Validate() error {
+func (m *MsgSetRelationshipResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on MsgCreateRelationshipResponse with
-// the rules defined in the proto definition for this message. If any rules
-// are violated, the result is a list of violation errors wrapped in
-// MsgCreateRelationshipResponseMultiError, or nil if none found.
-func (m *MsgCreateRelationshipResponse) ValidateAll() error {
+// ValidateAll checks the field values on MsgSetRelationshipResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// MsgSetRelationshipResponseMultiError, or nil if none found.
+func (m *MsgSetRelationshipResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *MsgCreateRelationshipResponse) validate(all bool) error {
+func (m *MsgSetRelationshipResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
-	// no validation rules for Created
+	// no validation rules for Result
 
 	if len(errors) > 0 {
-		return MsgCreateRelationshipResponseMultiError(errors)
+		return MsgSetRelationshipResponseMultiError(errors)
 	}
 
 	return nil
 }
 
-// MsgCreateRelationshipResponseMultiError is an error wrapping multiple
-// validation errors returned by MsgCreateRelationshipResponse.ValidateAll()
-// if the designated constraints aren't met.
-type MsgCreateRelationshipResponseMultiError []error
+// MsgSetRelationshipResponseMultiError is an error wrapping multiple
+// validation errors returned by MsgSetRelationshipResponse.ValidateAll() if
+// the designated constraints aren't met.
+type MsgSetRelationshipResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m MsgCreateRelationshipResponseMultiError) Error() string {
+func (m MsgSetRelationshipResponseMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -542,12 +511,11 @@ func (m MsgCreateRelationshipResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m MsgCreateRelationshipResponseMultiError) AllErrors() []error { return m }
+func (m MsgSetRelationshipResponseMultiError) AllErrors() []error { return m }
 
-// MsgCreateRelationshipResponseValidationError is the validation error
-// returned by MsgCreateRelationshipResponse.Validate if the designated
-// constraints aren't met.
-type MsgCreateRelationshipResponseValidationError struct {
+// MsgSetRelationshipResponseValidationError is the validation error returned
+// by MsgSetRelationshipResponse.Validate if the designated constraints aren't met.
+type MsgSetRelationshipResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -555,24 +523,24 @@ type MsgCreateRelationshipResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e MsgCreateRelationshipResponseValidationError) Field() string { return e.field }
+func (e MsgSetRelationshipResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e MsgCreateRelationshipResponseValidationError) Reason() string { return e.reason }
+func (e MsgSetRelationshipResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e MsgCreateRelationshipResponseValidationError) Cause() error { return e.cause }
+func (e MsgSetRelationshipResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e MsgCreateRelationshipResponseValidationError) Key() bool { return e.key }
+func (e MsgSetRelationshipResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e MsgCreateRelationshipResponseValidationError) ErrorName() string {
-	return "MsgCreateRelationshipResponseValidationError"
+func (e MsgSetRelationshipResponseValidationError) ErrorName() string {
+	return "MsgSetRelationshipResponseValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e MsgCreateRelationshipResponseValidationError) Error() string {
+func (e MsgSetRelationshipResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -584,14 +552,14 @@ func (e MsgCreateRelationshipResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sMsgCreateRelationshipResponse.%s: %s%s",
+		"invalid %sMsgSetRelationshipResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = MsgCreateRelationshipResponseValidationError{}
+var _ error = MsgSetRelationshipResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -599,7 +567,7 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = MsgCreateRelationshipResponseValidationError{}
+} = MsgSetRelationshipResponseValidationError{}
 
 // Validate checks the field values on MsgDeleteRelationship with the rules
 // defined in the proto definition for this message. If any rules are

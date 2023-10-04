@@ -9,7 +9,7 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreatePolicy{}, "acp/CreatePolicy", nil)
-	cdc.RegisterConcrete(&MsgCreateRelationship{}, "acp/CreateRelationship", nil)
+	cdc.RegisterConcrete(&MsgSetRelationship{}, "acp/SetRelationship", nil)
 	cdc.RegisterConcrete(&MsgDeleteRelationship{}, "acp/DeleteRelationship", nil)
 	cdc.RegisterConcrete(&MsgRegisterObject{}, "acp/RegisterObject", nil)
 	cdc.RegisterConcrete(&MsgUnregisterObject{}, "acp/UnregisterObject", nil)
@@ -21,7 +21,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgCreatePolicy{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreateRelationship{},
+		&MsgSetRelationship{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgDeleteRelationship{},

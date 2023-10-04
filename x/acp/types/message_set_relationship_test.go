@@ -8,21 +8,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgCreateRelationship_ValidateBasic(t *testing.T) {
+func TestMsgSetRelationship_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCreateRelationship
+		msg  MsgSetRelationship
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCreateRelationship{
+			msg: MsgSetRelationship{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgCreateRelationship{
+			msg: MsgSetRelationship{
 				Creator: sample.AccAddress(),
 			},
 		},

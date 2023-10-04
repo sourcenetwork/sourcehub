@@ -1,0 +1,14 @@
+syntax = "proto3";
+package sourcenetwork.sourcehub.acp;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "sourcenetwork/sourcehub/acp/relationship.proto";
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+// AuthorizationRequest
+message AuthorizationRequest {
+    Object object = 1;
+    string relation = 2;
+}

@@ -9,6 +9,7 @@ import (
 	rcdb "github.com/sourcenetwork/raccoondb"
 	"github.com/sourcenetwork/zanzi"
 	"github.com/sourcenetwork/zanzi/pkg/api"
+	"github.com/sourcenetwork/zanzi/pkg/domain"
 
 	"github.com/sourcenetwork/sourcehub/utils"
 	"github.com/sourcenetwork/sourcehub/x/acp/auth_engine"
@@ -162,4 +163,27 @@ func (z *Zanzi) FilterRelationships(ctx context.Context, policy *types.Policy, s
 	}
 
 	return records, nil
+}
+
+func (z *Zanzi) Check(ctx context.Context, policy *types.Policy, request *types.AuthorizationRequest, actor *types.Actor) (bool, error) {
+    service  := z.zanzi.GetRelationGraphService()
+    mapper := newRelationshipMapper(policy.ActorResource.Name)
+
+    req := &api.CheckRequest{
+        PolicyId: policy.Id,
+        AccessRequest: &domain.AccessRequest{
+            Object: mapper.MapObject(request.Object),
+            Relation: request.Relation,
+            Subject: &domain.Entity{
+                Resource: policy.ActorResource.Name,
+                Id: actor.Id,
+            },
+        },
+    }
+    response, err := service.Check(ctx, req)
+    if err != nil {
+        return false, fmt.Errorf("Check: %w", err)
+    }
+
+    return response.Result.Authorized, nil
 }

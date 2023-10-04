@@ -21,13 +21,13 @@ type relationshipMapper struct {
 
 func (m *relationshipMapper) ToZanziRelationship(relationship *types.Relationship) *domain.Relationship {
 	return &domain.Relationship{
-		Object:   m.mapObject(relationship.Object),
+		Object:   m.MapObject(relationship.Object),
 		Relation: relationship.Relation,
 		Subject:  m.MapSubject(relationship.Subject),
 	}
 }
 
-func (m *relationshipMapper) mapObject(object *types.Object) *domain.Entity {
+func (m *relationshipMapper) MapObject(object *types.Object) *domain.Entity {
 	return &domain.Entity{
 		Resource: object.Resource,
 		Id:       object.Id,
@@ -41,7 +41,7 @@ func (m *relationshipMapper) MapSubject(subject *types.Subject) *domain.Subject 
 	case *types.Subject_ActorSet:
 		result.Subject = &domain.Subject_EntitySet{
 			EntitySet: &domain.EntitySet{
-				Entity:   m.mapObject(s.ActorSet.Object),
+				Entity:   m.MapObject(s.ActorSet.Object),
 				Relation: s.ActorSet.Relation,
 			},
 		}
@@ -58,6 +58,10 @@ func (m *relationshipMapper) MapSubject(subject *types.Subject) *domain.Subject 
 				ResourceName: m.actorResource,
 			},
 		}
+            case *types.Subject_Object:
+                result.Subject = &domain.Subject_Entity{
+                    Entity: m.MapObject(s.Object),
+                }
 	}
 
 	return result
@@ -249,7 +253,7 @@ type selectorMapper struct {
 
 // ToZanziSelector maps a selector to Zanzi's representation
 func (m *selectorMapper) ToZanziSelector(selector *types.RelationshipSelector) (*domain.RelationshipSelector, error) {
-	objSelector, err := m.mapObjectSelector(selector.ObjectSelector)
+	objSelector, err := m.MapObjectSelector(selector.ObjectSelector)
 	if err != nil {
 		return nil, err
 	}
@@ -271,7 +275,7 @@ func (m *selectorMapper) ToZanziSelector(selector *types.RelationshipSelector) (
 	}, nil
 }
 
-func (m *selectorMapper) mapObjectSelector(selector *types.ObjectSelector) (*domain.ObjectSelector, error) {
+func (m *selectorMapper) MapObjectSelector(selector *types.ObjectSelector) (*domain.ObjectSelector, error) {
 	zanziSelector := &domain.ObjectSelector{}
 
 	switch selectorType := selector.Selector.(type) {

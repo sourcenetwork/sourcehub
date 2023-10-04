@@ -16,11 +16,8 @@ type CreatePolicyCommand struct {
 	// Cosmos Address of the Policy Creator
 	CreatorAddr sdk.AccAddress
 
-	// Marshaled Policy definition
-	Policy string
-
-	// Policy Marshaling format
-	MarshalType types.PolicyMarshalingType
+        // Policy Intermediary Representation
+	Policy PolicyIR
 
 	// Timestamp for Policy creation
 	CreationTime *prototypes.Timestamp
@@ -35,8 +32,7 @@ func (c *CreatePolicyCommand) Execute(ctx context.Context, accountKeeper types.A
 		return nil, fmt.Errorf("CreatePolicyCommand: %w", err)
 	}
 
-	record, err := factory.Create(c.Policy, c.MarshalType, string(c.CreatorAddr),
-		sequence, c.CreationTime)
+	record, err := factory.Create(c.Policy, string(c.CreatorAddr), sequence, c.CreationTime)
 	if err != nil {
 		return nil, types.ErrPolicyInput.Wrapf("failed to create policy: %v", err)
 	}
