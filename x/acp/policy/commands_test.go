@@ -12,8 +12,8 @@ import (
 	"github.com/sourcenetwork/sourcehub/testutil"
 	authengineutil "github.com/sourcenetwork/sourcehub/testutil/auth_engine"
 	"github.com/sourcenetwork/sourcehub/x/acp/auth_engine"
-	"github.com/sourcenetwork/sourcehub/x/acp/types"
 	acptestutil "github.com/sourcenetwork/sourcehub/x/acp/testutil"
+	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
 var creatorStr = "cosmos1gue5de6a8fdff0jut08vw5sg9pk6rr00cstakj"
@@ -56,8 +56,8 @@ actor:
   name: actor-resource
   doc: my actor
           `
-          policy, err := Unmarshal(policyStr, types.PolicyMarshalingType_SHORT_YAML)
-          require.Nil(t, err)
+	policy, err := Unmarshal(policyStr, types.PolicyMarshalingType_SHORT_YAML)
+	require.Nil(t, err)
 
 	cmd := CreatePolicyCommand{
 		CreatorAddr:  creator,

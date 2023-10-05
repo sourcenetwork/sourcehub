@@ -15,27 +15,26 @@ type validPolicySpec struct{}
 // The ACP module can delegate most of the Policy validation to Zanzi itself.
 // The exception is the Manage Graph which is local to the acp system.
 func (v *validPolicySpec) Satisfies(pol *types.Policy) error {
-
 	// TODO maybe add limit to number of resources in policy
 	err := pol.Validate()
 	if err != nil {
-		return fmt.Errorf("%w: %w", ErrInvalidPolicy, err)
+		return fmt.Errorf("%v: %w", err, ErrInvalidPolicy)
 	}
 
 	g := buildManagementGraph(pol)
 	err = g.IsWellFormed()
 	if err != nil {
-		return fmt.Errorf("%w: %w: %v", ErrInvalidPolicy, ErrMalformedGraph, err)
+		return fmt.Errorf("%w: %w", ErrMalformedGraph, err)
 	}
 
 	_, err = sdk.AccAddressFromBech32(pol.Creator)
 	if err != nil {
-		return fmt.Errorf("%w: %w: %w", ErrInvalidPolicy, ErrInvalidCreator, err)
+		return fmt.Errorf("%w: %v", ErrInvalidCreator, err)
 	}
 
 	err = v.resourcesContainOwner(pol)
 	if err != nil {
-		return fmt.Errorf("%w: %w", ErrInvalidPolicy, err)
+		return err
 	}
 
 	return nil

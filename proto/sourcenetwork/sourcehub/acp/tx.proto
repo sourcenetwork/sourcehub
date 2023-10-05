@@ -36,22 +36,9 @@ message MsgSetRelationship {
     Relationship relationship = 4;
 }
 
-// SetRelationshipResult indicates the outcome of a Set Relationship Tx
-enum SetRelationshipResult {
-
-    // Indicates no change in the system were made
-    // Either an error ocurred or the Relationship already existed - likely created by a different actor.
-    SetRelNoOp = 0; 
-
-    // Created indicates a new Relationship was created
-    SetRelCreated = 1;
-
-    // Denied indicates the Actor was not allowed to create the Relationship
-    SetRelDenied = 2;
-}
-
 message MsgSetRelationshipResponse {
-    SetRelationshipResult result = 1;
+    // Indicates whether the given Relationship previously existed, ie the Tx was a no op
+    bool record_existed = 1;
 }
 
 message MsgDeleteRelationship {
@@ -63,7 +50,7 @@ message MsgDeleteRelationship {
 }
 
 message MsgDeleteRelationshipResponse {
-    bool found = 1;
+    bool record_found = 1;
 }
 
 message MsgRegisterObject {

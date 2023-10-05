@@ -5,18 +5,18 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"github.com/sourcenetwork/sourcehub/utils"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
-        "github.com/sourcenetwork/sourcehub/utils"
 )
 
 // PolicyIR is an intermediary representation of a Policy which marshaled representations
 // must unmarshall to.
 type PolicyIR struct {
-    Name string
-    Description string
-    Attributes map[string]string
-    Resources []*types.Resource
-    ActorResource *types.ActorResource
+	Name          string
+	Description   string
+	Attributes    map[string]string
+	Resources     []*types.Resource
+	ActorResource *types.ActorResource
 }
 
 // sort performs an in place sorting of resources, relations and permissions in a policy

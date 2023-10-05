@@ -1,8 +1,8 @@
 package keeper
 
 import (
-    "fmt"
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -21,10 +21,10 @@ func (k msgServer) CreatePolicy(goCtx context.Context, msg *types.MsgCreatePolic
 	// antee handler would've errored out
 	addr := sdk.MustAccAddressFromBech32(msg.Creator)
 
-        ir, err := policy.Unmarshal(msg.Policy, msg.MarshalType)
-        if err != nil {
-            return nil, fmt.Errorf("CreatePolicy: %w", err)
-        }
+	ir, err := policy.Unmarshal(msg.Policy, msg.MarshalType)
+	if err != nil {
+		return nil, fmt.Errorf("CreatePolicy: %w", err)
+	}
 
 	cmd := policy.CreatePolicyCommand{
 		CreatorAddr:  addr,

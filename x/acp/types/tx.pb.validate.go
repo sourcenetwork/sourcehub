@@ -487,7 +487,7 @@ func (m *MsgSetRelationshipResponse) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Result
+	// no validation rules for RecordUpdated
 
 	if len(errors) > 0 {
 		return MsgSetRelationshipResponseMultiError(errors)
@@ -757,7 +757,7 @@ func (m *MsgDeleteRelationshipResponse) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Found
+	// no validation rules for RecordFound
 
 	if len(errors) > 0 {
 		return MsgDeleteRelationshipResponseMultiError(errors)

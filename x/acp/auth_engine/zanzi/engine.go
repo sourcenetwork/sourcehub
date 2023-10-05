@@ -166,24 +166,40 @@ func (z *Zanzi) FilterRelationships(ctx context.Context, policy *types.Policy, s
 }
 
 func (z *Zanzi) Check(ctx context.Context, policy *types.Policy, request *types.AuthorizationRequest, actor *types.Actor) (bool, error) {
-    service  := z.zanzi.GetRelationGraphService()
-    mapper := newRelationshipMapper(policy.ActorResource.Name)
+	service := z.zanzi.GetRelationGraphService()
+	mapper := newRelationshipMapper(policy.ActorResource.Name)
 
-    req := &api.CheckRequest{
-        PolicyId: policy.Id,
-        AccessRequest: &domain.AccessRequest{
-            Object: mapper.MapObject(request.Object),
-            Relation: request.Relation,
-            Subject: &domain.Entity{
-                Resource: policy.ActorResource.Name,
-                Id: actor.Id,
-            },
-        },
-    }
-    response, err := service.Check(ctx, req)
-    if err != nil {
-        return false, fmt.Errorf("Check: %w", err)
-    }
+	req := &api.CheckRequest{
+		PolicyId: policy.Id,
+		AccessRequest: &domain.AccessRequest{
+			Object:   mapper.MapObject(request.Object),
+			Relation: request.Relation,
+			Subject: &domain.Entity{
+				Resource: policy.ActorResource.Name,
+				Id:       actor.Id,
+			},
+		},
+	}
+	response, err := service.Check(ctx, req)
+	if err != nil {
+		return false, fmt.Errorf("Check: %w", err)
+	}
 
-    return response.Result.Authorized, nil
+	return response.Result.Authorized, nil
+}
+
+func (z *Zanzi) DeleteRelationship(ctx context.Context, policy *types.Policy, relationship *types.Relationship) (RecordFound, error) {
+	service := z.zanzi.GetPolicyService()
+	mapper := newRelationshipMapper(policy.ActorResource.Name)
+
+	req := api.DeleteRelationshipRequest{
+		PolicyId:     policy.Id,
+		Relationship: mapper.ToZanziRelationship(relationship),
+	}
+	response, err := service.DeleteRelationship(ctx, &req)
+	if err != nil {
+		return false, err
+	}
+
+	return RecordFound(response.Found), nil
 }

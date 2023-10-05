@@ -24,5 +24,5 @@ func (pol *Policy) Sort() {
 // GetManagementPermissionName returns the name of the Management Permission
 // built for the given Relation
 func (pol *Policy) GetManagementPermissionName(relation string) string {
-    return ManagementPermissionPrefix + relation
+	return ManagementPermissionPrefix + relation
 }

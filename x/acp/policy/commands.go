@@ -16,7 +16,7 @@ type CreatePolicyCommand struct {
 	// Cosmos Address of the Policy Creator
 	CreatorAddr sdk.AccAddress
 
-        // Policy Intermediary Representation
+	// Policy Intermediary Representation
 	Policy PolicyIR
 
 	// Timestamp for Policy creation
@@ -34,18 +34,18 @@ func (c *CreatePolicyCommand) Execute(ctx context.Context, accountKeeper types.A
 
 	record, err := factory.Create(c.Policy, string(c.CreatorAddr), sequence, c.CreationTime)
 	if err != nil {
-		return nil, types.ErrPolicyInput.Wrapf("failed to create policy: %v", err)
+		return nil, fmt.Errorf("CreatePolicyCommand: %w", err)
 	}
 
 	spec := validPolicySpec{}
 	err = spec.Satisfies(record.Policy)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("CreatePolicyCommand: %w", err)
 	}
 
 	err = engine.SetPolicy(ctx, record)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("CreatePolicyCommand: %w", err)
 	}
 
 	return record.Policy, nil
@@ -56,7 +56,7 @@ func (c *CreatePolicyCommand) getAccountSequenceNumber(ctx context.Context, acco
 
 	acc := accountKeeper.GetAccount(sdkCtx, c.CreatorAddr)
 	if acc == nil {
-		return 0, fmt.Errorf("account not found %v", c.CreatorAddr)
+		return 0, fmt.Errorf("account %v: %w", c.CreatorAddr, types.ErrAccNotFound)
 	}
 
 	return acc.GetSequence(), nil

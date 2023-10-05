@@ -23,27 +23,27 @@ func CmdCreateRelationship() *cobra.Command {
 				return err
 			}
 
-                        policyId := args[0]
-                        resource := args[1]
-                        objId := args[2]
-                        relation := args[3]
-                        subjResource := args[4]
-                        subjId := args[5]
-                        subjRel := args[6]
+			policyId := args[0]
+			resource := args[1]
+			objId := args[2]
+			relation := args[3]
+			subjResource := args[4]
+			subjId := args[5]
+			subjRel := args[6]
 
-                        var relationship *types.Relationship
+			var relationship *types.Relationship
 
-                        if subjRel == "" {
-                            relationship = types.NewRelationship(resource, objId, relation, subjResource, subjId)
-                        } else {
-                            relationship = types.NewActorSetRelationship(resource, objId, relation, subjResource, subjId, subjRel)
+			if subjRel == "" {
+				relationship = types.NewRelationship(resource, objId, relation, subjResource, subjId)
+			} else {
+				relationship = types.NewActorSetRelationship(resource, objId, relation, subjResource, subjId, subjRel)
 
-                        }
+			}
 
 			msg := types.NewMsgSetRelationship(
 				clientCtx.GetFromAddress().String(),
-                                policyId,
-                                relationship,
+				policyId,
+				relationship,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

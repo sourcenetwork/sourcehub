@@ -1,6 +1,10 @@
 package relationship
 
-import "errors"
+import (
+	"github.com/sourcenetwork/sourcehub/x/acp/types"
+)
 
-var ErrRegisterObject = errors.New("register object")
-var ErrCannotSetOwnerRelationship = errors.New("cannot create Relationship for owner relation")
+var (
+	ErrDeleteOwnerRel = types.ErrAcpProtocolViolation.Wrapf("cannot delete an owner relationship")
+	ErrSetOwnerRel    = types.ErrAcpProtocolViolation.Wrapf("cannot set an owner relationship")
+)

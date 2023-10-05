@@ -1,12 +1,19 @@
 package policy
 
 import (
-	"errors"
+	"fmt"
+
+	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
-var ErrInvalidPolicy = errors.New("invalid policy")
-var ErrUnknownMarshalingType = errors.New("unknown marshaling type")
-var ErrMalformedGraph = errors.New("malformed management graph")
-var ErrInvalidCreator = errors.New("invalid creator")
-var ErrUnmarshaling = errors.New("unmarshaling error")
-var ErrResourceMissingOwnerRelation = errors.New("resource missing owner relation")
+var (
+	ErrInvalidPolicy = types.ErrAcpInput.Wrap("invalid policy")
+
+	ErrUnknownMarshalingType = types.ErrAcpInput.Wrap("unknown marshaling type")
+	ErrUnmarshaling          = types.ErrAcpInput.Wrap("unmarshaling error")
+
+	ErrInvalidShortPolicy           = fmt.Errorf("invalid short policy: %w", ErrInvalidPolicy)
+	ErrInvalidCreator               = fmt.Errorf("invalid creator: %w", ErrInvalidPolicy)
+	ErrResourceMissingOwnerRelation = fmt.Errorf("resource missing owner relation: %w", ErrInvalidPolicy)
+	ErrMalformedGraph               = fmt.Errorf("malformed management graph: %w", ErrInvalidPolicy)
+)

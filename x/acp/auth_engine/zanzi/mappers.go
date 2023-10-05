@@ -58,10 +58,10 @@ func (m *relationshipMapper) MapSubject(subject *types.Subject) *domain.Subject 
 				ResourceName: m.actorResource,
 			},
 		}
-            case *types.Subject_Object:
-                result.Subject = &domain.Subject_Entity{
-                    Entity: m.MapObject(s.Object),
-                }
+	case *types.Subject_Object:
+		result.Subject = &domain.Subject_Entity{
+			Entity: m.MapObject(s.Object),
+		}
 	}
 
 	return result

@@ -11,9 +11,9 @@ var _ sdk.Msg = &MsgSetRelationship{}
 
 func NewMsgSetRelationship(creator string, policyId string, relationship *Relationship) *MsgSetRelationship {
 	return &MsgSetRelationship{
-		Creator:  creator,
-		PolicyId: policyId,
-                Relationship: relationship,
+		Creator:      creator,
+		PolicyId:     policyId,
+		Relationship: relationship,
 	}
 }
 

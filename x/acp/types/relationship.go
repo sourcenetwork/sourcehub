@@ -23,8 +23,8 @@ func NewRelationship(resource, objId, relation, subjResource, subjId string) *Re
 		Subject: &Subject{
 			Subject: &Subject_Object{
 				Object: &Object{
-                                    Resource: subjResource,
-					Id: subjId,
+					Resource: subjResource,
+					Id:       subjId,
 				},
 			},
 		},

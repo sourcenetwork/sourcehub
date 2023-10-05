@@ -1,8 +1,8 @@
 package policy
 
 import (
-    "fmt"
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"sigs.k8s.io/yaml"
@@ -17,10 +17,10 @@ func Unmarshal(pol string, t types.PolicyMarshalingType) (PolicyIR, error) {
 
 	switch t {
 	case types.PolicyMarshalingType_SHORT_YAML:
-                unmarshaler := shortUnmarshaler{}
+		unmarshaler := shortUnmarshaler{}
 		policy, err = unmarshaler.UnmarshalYAML(pol)
 	case types.PolicyMarshalingType_SHORT_JSON:
-                unmarshaler := shortUnmarshaler{}
+		unmarshaler := shortUnmarshaler{}
 		policy, err = unmarshaler.UnmarshalJSON(pol)
 	default:
 		err = ErrUnknownMarshalingType
@@ -31,7 +31,6 @@ func Unmarshal(pol string, t types.PolicyMarshalingType) (PolicyIR, error) {
 
 	return policy, nil
 }
-
 
 // shortUnmarshaler is a container type for unmarshaling
 // short policy definitions into acp's Policy type.
@@ -44,7 +43,7 @@ func (u *shortUnmarshaler) UnmarshalYAML(pol string) (PolicyIR, error) {
 	// Strict returns error if any key is duplicated
 	polBytes, err := yaml.YAMLToJSONStrict([]byte(pol))
 	if err != nil {
-		return PolicyIR{}, types.ErrPolicyInput.Wrapf("short yaml: %v", err)
+		return PolicyIR{}, fmt.Errorf("%w: %v", ErrInvalidShortPolicy, err)
 	}
 
 	return u.UnmarshalJSON(string(polBytes))
@@ -56,7 +55,7 @@ func (u *shortUnmarshaler) UnmarshalJSON(pol string) (PolicyIR, error) {
 
 	err := json.Unmarshal([]byte(pol), &polShort)
 	if err != nil {
-		return PolicyIR{}, types.ErrPolicyInput.Wrapf("short json: %v", err)
+		return PolicyIR{}, fmt.Errorf("%w: %v", ErrInvalidShortPolicy, err)
 	}
 
 	return u.mapPolShort(&polShort), nil
