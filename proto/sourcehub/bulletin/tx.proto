@@ -13,24 +13,28 @@ option go_package = "github.com/sourcenetwork/sourcehub/x/bulletin/types";
 // Msg defines the Msg service.
 service Msg {
   option (cosmos.msg.v1.service) = true;
-  
+
   // UpdateParams defines a (governance) operation for updating the module
   // parameters. The authority defaults to the x/gov module account.
-  rpc UpdateParams (MsgUpdateParams) returns (MsgUpdateParamsResponse);
-  rpc CreatePost   (MsgCreatePost  ) returns (MsgCreatePostResponse  );
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc CreatePost(MsgCreatePost) returns (MsgCreatePostResponse);
 }
+
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
-  option (cosmos.msg.v1.signer) =                            "authority";
-  option           (amino.name) = "sourcehub/x/bulletin/MsgUpdateParams";
-  
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "sourcehub/x/bulletin/MsgUpdateParams";
+
   // authority is the address that controls the module (defaults to x/gov unless overwritten).
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // params defines the module parameters to update.
-  
+
   // NOTE: All parameters must be supplied.
-  Params params = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  Params params = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 // MsgUpdateParamsResponse defines the response structure for executing a
@@ -39,11 +43,10 @@ message MsgUpdateParamsResponse {}
 
 message MsgCreatePost {
   option (cosmos.msg.v1.signer) = "creator";
-  string creator   = 1;
+  string creator = 1;
   string namespace = 2;
-  string payload   = 3;
-  string proof     = 4;
+  bytes payload = 3;
+  bytes proof = 4;
 }
 
 message MsgCreatePostResponse {}
-
