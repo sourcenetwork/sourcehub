@@ -4,9 +4,10 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sourcenetwork/sourcehub/x/bulletin/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/sourcenetwork/sourcehub/x/bulletin/types"
 )
 
 func (k Keeper) ReadPost(goCtx context.Context, req *types.QueryReadPostRequest) (*types.QueryReadPostResponse, error) {
@@ -16,8 +17,10 @@ func (k Keeper) ReadPost(goCtx context.Context, req *types.QueryReadPostRequest)
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Process the query
-	_ = ctx
+	post, found := k.GetPost(ctx, req.Namespace)
+	if !found {
+		return nil, status.Error(codes.InvalidArgument, "not found")
+	}
 
-	return &types.QueryReadPostResponse{}, nil
+	return &types.QueryReadPostResponse{Post: &post}, nil
 }

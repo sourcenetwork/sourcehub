@@ -9,6 +9,8 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_bulletin"
+
+	PostKey = "Post/Value/"
 )
 
 var (

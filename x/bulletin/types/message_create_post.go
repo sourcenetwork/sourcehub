@@ -8,7 +8,7 @@ import (
 
 var _ sdk.Msg = &MsgCreatePost{}
 
-func NewMsgCreatePost(creator string, namespace string, payload string, proof string) *MsgCreatePost {
+func NewMsgCreatePost(creator string, namespace string, payload []byte, proof []byte) *MsgCreatePost {
 	return &MsgCreatePost{
 		Creator:   creator,
 		Namespace: namespace,
