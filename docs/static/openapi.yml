@@ -19239,6 +19239,50 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /sourcenetwork/sourcehub/bulletin/read_post/{namespace}:
+    get:
+      summary: Queries a list of ReadPost items.
+      operationId: SourcehubBulletinQuery_ReadPost
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              post:
+                type: object
+                properties:
+                  namespace:
+                    type: string
+                  payload:
+                    type: string
+                  proof:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /sourcehub.bulletin.Msg/CreatePost:
     post:
       operationId: SourcehubBulletinMsg_CreatePost
@@ -27053,6 +27097,15 @@ definitions:
   sourcehub.bulletin.Params:
     type: object
     description: Params defines the parameters for the module.
+  sourcehub.bulletin.Post:
+    type: object
+    properties:
+      namespace:
+        type: string
+      payload:
+        type: string
+      proof:
+        type: string
   sourcehub.bulletin.QueryParamsResponse:
     type: object
     properties:
@@ -27060,6 +27113,18 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  sourcehub.bulletin.QueryReadPostResponse:
+    type: object
+    properties:
+      post:
+        type: object
+        properties:
+          namespace:
+            type: string
+          payload:
+            type: string
+          proof:
+            type: string
   sourcehub.bulletin.MsgCreatePost:
     type: object
     properties:
