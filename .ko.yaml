@@ -1,0 +1,15 @@
+defaultBaseImage: debian:bullseye-slim
+defaultPlatforms:
+  - linux/arm64
+  - linux/amd64
+
+builds:
+  - main: ./cmd/sourcehubd
+    ldflags:
+      - -s -w
+      - -buildid=
+    env:
+      - CGO_ENABLED=0
+    flas:
+      - -trimpath
+    mod_timestamp: "{{ .CommitTimestamp }}"
