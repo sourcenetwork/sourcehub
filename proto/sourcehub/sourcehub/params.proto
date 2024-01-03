@@ -1,0 +1,15 @@
+syntax = "proto3";
+package sourcehub.sourcehub;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/sourcehub/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "sourcehub/x/sourcehub/Params";
+  option (gogoproto.equal) = true;
+
+  
+}
