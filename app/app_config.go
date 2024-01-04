@@ -71,7 +71,10 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	"google.golang.org/protobuf/types/known/durationpb"
 
+	acpmodulev1 "github.com/sourcenetwork/sourcehub/api/sourcehub/acp/module"
 	sourcehubmodulev1 "github.com/sourcenetwork/sourcehub/api/sourcehub/sourcehub/module"
+	_ "github.com/sourcenetwork/sourcehub/x/acp/module" // import for side-effects
+	acpmoduletypes "github.com/sourcenetwork/sourcehub/x/acp/types"
 	_ "github.com/sourcenetwork/sourcehub/x/sourcehub/module" // import for side-effects
 	sourcehubmoduletypes "github.com/sourcenetwork/sourcehub/x/sourcehub/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
@@ -112,6 +115,7 @@ var (
 		circuittypes.ModuleName,
 		// chain modules
 		sourcehubmoduletypes.ModuleName,
+		acpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -137,6 +141,7 @@ var (
 		ibcfeetypes.ModuleName,
 		// chain modules
 		sourcehubmoduletypes.ModuleName,
+		acpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -156,6 +161,7 @@ var (
 		ibcfeetypes.ModuleName,
 		// chain modules
 		sourcehubmoduletypes.ModuleName,
+		acpmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -308,6 +314,10 @@ var (
 			{
 				Name:   sourcehubmoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&sourcehubmodulev1.Module{}),
+			},
+			{
+				Name:   acpmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&acpmodulev1.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},
