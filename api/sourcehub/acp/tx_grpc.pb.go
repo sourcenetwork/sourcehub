@@ -24,6 +24,7 @@ const (
 	Msg_SetRelationship_FullMethodName    = "/sourcehub.acp.Msg/SetRelationship"
 	Msg_DeleteRelationship_FullMethodName = "/sourcehub.acp.Msg/DeleteRelationship"
 	Msg_RegisterObject_FullMethodName     = "/sourcehub.acp.Msg/RegisterObject"
+	Msg_UnregisterObject_FullMethodName   = "/sourcehub.acp.Msg/UnregisterObject"
 )
 
 // MsgClient is the client API for Msg service.
@@ -37,6 +38,7 @@ type MsgClient interface {
 	SetRelationship(ctx context.Context, in *MsgSetRelationship, opts ...grpc.CallOption) (*MsgSetRelationshipResponse, error)
 	DeleteRelationship(ctx context.Context, in *MsgDeleteRelationship, opts ...grpc.CallOption) (*MsgDeleteRelationshipResponse, error)
 	RegisterObject(ctx context.Context, in *MsgRegisterObject, opts ...grpc.CallOption) (*MsgRegisterObjectResponse, error)
+	UnregisterObject(ctx context.Context, in *MsgUnregisterObject, opts ...grpc.CallOption) (*MsgUnregisterObjectResponse, error)
 }
 
 type msgClient struct {
@@ -92,6 +94,15 @@ func (c *msgClient) RegisterObject(ctx context.Context, in *MsgRegisterObject, o
 	return out, nil
 }
 
+func (c *msgClient) UnregisterObject(ctx context.Context, in *MsgUnregisterObject, opts ...grpc.CallOption) (*MsgUnregisterObjectResponse, error) {
+	out := new(MsgUnregisterObjectResponse)
+	err := c.cc.Invoke(ctx, Msg_UnregisterObject_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -103,6 +114,7 @@ type MsgServer interface {
 	SetRelationship(context.Context, *MsgSetRelationship) (*MsgSetRelationshipResponse, error)
 	DeleteRelationship(context.Context, *MsgDeleteRelationship) (*MsgDeleteRelationshipResponse, error)
 	RegisterObject(context.Context, *MsgRegisterObject) (*MsgRegisterObjectResponse, error)
+	UnregisterObject(context.Context, *MsgUnregisterObject) (*MsgUnregisterObjectResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -124,6 +136,9 @@ func (UnimplementedMsgServer) DeleteRelationship(context.Context, *MsgDeleteRela
 }
 func (UnimplementedMsgServer) RegisterObject(context.Context, *MsgRegisterObject) (*MsgRegisterObjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterObject not implemented")
+}
+func (UnimplementedMsgServer) UnregisterObject(context.Context, *MsgUnregisterObject) (*MsgUnregisterObjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnregisterObject not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -228,6 +243,24 @@ func _Msg_RegisterObject_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UnregisterObject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUnregisterObject)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UnregisterObject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UnregisterObject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UnregisterObject(ctx, req.(*MsgUnregisterObject))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -254,6 +287,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterObject",
 			Handler:    _Msg_RegisterObject_Handler,
+		},
+		{
+			MethodName: "UnregisterObject",
+			Handler:    _Msg_UnregisterObject_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
