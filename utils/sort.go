@@ -7,13 +7,13 @@ import (
 var _ sort.Interface = (*Sortable[any])(nil)
 
 type Ordered interface {
-    ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~float32 | ~float64 | ~string | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
+	~int | ~int8 | ~int16 | ~int32 | ~int64 | ~float32 | ~float64 | ~string | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
 }
 
 // Sortable wraps a slice of values with a type that implements sort.Interface.
 type Sortable[T any] struct {
-	ts        []T
-        comparator Comparator[T]
+	ts         []T
+	comparator Comparator[T]
 }
 
 // Extractor extracts an Ordered value from a type T
@@ -30,21 +30,21 @@ type Comparator[T any] func(left, right T) bool
 // func (p *Person) string { return p.Name }
 // would be used to sort all Persons in the slice by their Name.
 func FromExtractor[T any, K Ordered](vals []T, extractor Extractor[T, K]) Sortable[T] {
-    comparator := func(left, right T) bool {
-        return extractor(left) < extractor(right)
-    }
+	comparator := func(left, right T) bool {
+		return extractor(left) < extractor(right)
+	}
 
-    return Sortable[T]{
-        ts:        vals,
-        comparator: comparator,
-    }
+	return Sortable[T]{
+		ts:         vals,
+		comparator: comparator,
+	}
 }
 
 // FromComparator creates a Sortable from a comparator function which takes two instances of T and returns
 // whether left is less than right
 func FromComparator[T any](vals []T, comparator Comparator[T]) Sortable[T] {
 	return Sortable[T]{
-		ts:        vals,
+		ts:         vals,
 		comparator: comparator,
 	}
 }
@@ -58,8 +58,8 @@ func (s *Sortable[T]) Swap(i, j int) {
 }
 
 func (s *Sortable[T]) Less(i, j int) bool {
-    ti, tj := s.ts[i], s.ts[j]
-    return s.comparator(ti, tj)
+	ti, tj := s.ts[i], s.ts[j]
+	return s.comparator(ti, tj)
 }
 
 // SortInPlace sorts the original slice supplied when the Sortable was initialized
@@ -69,12 +69,12 @@ func (s Sortable[T]) SortInPlace() {
 
 // Sort returns a sorted slice of the elements given originally
 func (s Sortable[T]) Sort() []T {
-    vals := make([]T, 0, len(s.ts))
-    copy(vals, s.ts)
-    sortable := Sortable[T] {
-        ts: vals,
-        comparator: s.comparator,
-    }
-    sortable.SortInPlace()
-    return vals
+	vals := make([]T, 0, len(s.ts))
+	copy(vals, s.ts)
+	sortable := Sortable[T]{
+		ts:         vals,
+		comparator: s.comparator,
+	}
+	sortable.SortInPlace()
+	return vals
 }

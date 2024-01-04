@@ -28,6 +28,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "UpdateParams",
 					Skip:      true, // skipped because authority gated
 				},
+				{
+					RpcMethod:      "CreatePolicy",
+					Use:            "create-policy [policy]",
+					Short:          "Send a CreatePolicy tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policy"}},
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},
