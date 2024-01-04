@@ -27,6 +27,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCreatePolicy int = 100
 
+	opWeightMsgSetRelationship = "op_weight_msg_set_relationship"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgSetRelationship int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -66,6 +70,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		acpsimulation.SimulateMsgCreatePolicy(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
+	var weightMsgSetRelationship int
+	simState.AppParams.GetOrGenerate(opWeightMsgSetRelationship, &weightMsgSetRelationship, nil,
+		func(_ *rand.Rand) {
+			weightMsgSetRelationship = defaultWeightMsgSetRelationship
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgSetRelationship,
+		acpsimulation.SimulateMsgSetRelationship(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -79,6 +94,14 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			defaultWeightMsgCreatePolicy,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				acpsimulation.SimulateMsgCreatePolicy(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgSetRelationship,
+			defaultWeightMsgSetRelationship,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				acpsimulation.SimulateMsgSetRelationship(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),

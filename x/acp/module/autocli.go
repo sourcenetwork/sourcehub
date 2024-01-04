@@ -34,6 +34,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Send a CreatePolicy tx",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policy"}},
 				},
+				{
+					RpcMethod:      "SetRelationship",
+					Use:            "set-relationship [policy]",
+					Short:          "Send a SetRelationship tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policy"}},
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},
