@@ -18910,6 +18910,45 @@ paths:
               parameters.
       tags:
         - Msg
+  /sourcehub.acp.Msg/CheckAccess:
+    post:
+      operationId: SourcehubAcpMsg_CheckAccess
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              policyId:
+                type: string
+      tags:
+        - Msg
   /sourcehub.acp.Msg/CreatePolicy:
     post:
       operationId: SourcehubAcpMsg_CreatePolicy
@@ -26885,6 +26924,15 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  sourcehub.acp.MsgCheckAccess:
+    type: object
+    properties:
+      creator:
+        type: string
+      policyId:
+        type: string
+  sourcehub.acp.MsgCheckAccessResponse:
+    type: object
   sourcehub.acp.MsgCreatePolicy:
     type: object
     properties:

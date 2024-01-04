@@ -43,6 +43,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgUnregisterObject int = 100
 
+	opWeightMsgCheckAccess = "op_weight_msg_check_access"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCheckAccess int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -126,6 +130,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		acpsimulation.SimulateMsgUnregisterObject(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
+	var weightMsgCheckAccess int
+	simState.AppParams.GetOrGenerate(opWeightMsgCheckAccess, &weightMsgCheckAccess, nil,
+		func(_ *rand.Rand) {
+			weightMsgCheckAccess = defaultWeightMsgCheckAccess
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCheckAccess,
+		acpsimulation.SimulateMsgCheckAccess(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -171,6 +186,14 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			defaultWeightMsgUnregisterObject,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				acpsimulation.SimulateMsgUnregisterObject(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCheckAccess,
+			defaultWeightMsgCheckAccess,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				acpsimulation.SimulateMsgCheckAccess(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),

@@ -58,6 +58,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Send a UnregisterObject tx",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policyId"}},
 				},
+				{
+					RpcMethod:      "CheckAccess",
+					Use:            "check-access [policy-id]",
+					Short:          "Send a CheckAccess tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policyId"}},
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},
