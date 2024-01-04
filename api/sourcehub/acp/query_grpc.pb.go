@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName = "/sourcehub.acp.Query/Params"
-	Query_Policy_FullMethodName = "/sourcehub.acp.Query/Policy"
+	Query_Params_FullMethodName    = "/sourcehub.acp.Query/Params"
+	Query_Policy_FullMethodName    = "/sourcehub.acp.Query/Policy"
+	Query_PolicyIds_FullMethodName = "/sourcehub.acp.Query/PolicyIds"
 )
 
 // QueryClient is the client API for Query service.
@@ -31,6 +32,8 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a list of Policy items.
 	Policy(ctx context.Context, in *QueryPolicyRequest, opts ...grpc.CallOption) (*QueryPolicyResponse, error)
+	// Queries a list of PolicyIds items.
+	PolicyIds(ctx context.Context, in *QueryPolicyIdsRequest, opts ...grpc.CallOption) (*QueryPolicyIdsResponse, error)
 }
 
 type queryClient struct {
@@ -59,6 +62,15 @@ func (c *queryClient) Policy(ctx context.Context, in *QueryPolicyRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) PolicyIds(ctx context.Context, in *QueryPolicyIdsRequest, opts ...grpc.CallOption) (*QueryPolicyIdsResponse, error) {
+	out := new(QueryPolicyIdsResponse)
+	err := c.cc.Invoke(ctx, Query_PolicyIds_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -67,6 +79,8 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a list of Policy items.
 	Policy(context.Context, *QueryPolicyRequest) (*QueryPolicyResponse, error)
+	// Queries a list of PolicyIds items.
+	PolicyIds(context.Context, *QueryPolicyIdsRequest) (*QueryPolicyIdsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -79,6 +93,9 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 }
 func (UnimplementedQueryServer) Policy(context.Context, *QueryPolicyRequest) (*QueryPolicyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Policy not implemented")
+}
+func (UnimplementedQueryServer) PolicyIds(context.Context, *QueryPolicyIdsRequest) (*QueryPolicyIdsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PolicyIds not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -129,6 +146,24 @@ func _Query_Policy_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_PolicyIds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryPolicyIdsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).PolicyIds(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_PolicyIds_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).PolicyIds(ctx, req.(*QueryPolicyIdsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -143,6 +178,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Policy",
 			Handler:    _Query_Policy_Handler,
+		},
+		{
+			MethodName: "PolicyIds",
+			Handler:    _Query_PolicyIds_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

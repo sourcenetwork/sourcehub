@@ -24,6 +24,12 @@ service Query {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/policy/{id}";
   
   }
+  
+  // Queries a list of PolicyIds items.
+  rpc PolicyIds (QueryPolicyIdsRequest) returns (QueryPolicyIdsResponse) {
+    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/policy_i_ds";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -40,4 +46,12 @@ message QueryPolicyRequest {
 }
 
 message QueryPolicyResponse {}
+
+message QueryPolicyIdsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryPolicyIdsResponse {
+  cosmos.base.query.v1beta1.PageResponse pagination = 1;
+}
 
