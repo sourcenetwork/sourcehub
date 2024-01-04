@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package sourcehub.acp;
 
 import "amino/amino.proto";
@@ -11,20 +12,32 @@ option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/params";
+  
+  }
+  
+  // Queries a list of Policy items.
+  rpc Policy (QueryPolicyRequest) returns (QueryPolicyResponse) {
+    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/policy/{id}";
+  
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
-  Params params = 1 [
-    (gogoproto.nullable) = false,
-    (amino.dont_omitempty) = true
-  ];
+  Params params = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
 }
+
+message QueryPolicyRequest {
+  string id = 1;
+}
+
+message QueryPolicyResponse {}
+
