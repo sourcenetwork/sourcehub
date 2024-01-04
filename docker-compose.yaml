@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  sourcehub:
+    build:
+      target: builder
+    ports:
+      - 9090
+    volumes:
+      - .:/app

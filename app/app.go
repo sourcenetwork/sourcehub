@@ -61,7 +61,7 @@ import (
 )
 
 const (
-	AccountAddressPrefix = "cosmos"
+	AccountAddressPrefix = "source"
 	Name                 = "sourcehub"
 )
 
