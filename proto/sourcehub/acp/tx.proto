@@ -20,6 +20,7 @@ service Msg {
   rpc CreatePolicy       (MsgCreatePolicy      ) returns (MsgCreatePolicyResponse      );
   rpc SetRelationship    (MsgSetRelationship   ) returns (MsgSetRelationshipResponse   );
   rpc DeleteRelationship (MsgDeleteRelationship) returns (MsgDeleteRelationshipResponse);
+  rpc RegisterObject     (MsgRegisterObject    ) returns (MsgRegisterObjectResponse    );
 }
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
@@ -62,4 +63,12 @@ message MsgDeleteRelationship {
 }
 
 message MsgDeleteRelationshipResponse {}
+
+message MsgRegisterObject {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator  = 1;
+  string policyId = 2;
+}
+
+message MsgRegisterObjectResponse {}
 

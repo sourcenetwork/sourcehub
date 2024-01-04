@@ -46,6 +46,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Send a DeleteRelationship tx",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policyId"}},
 				},
+				{
+					RpcMethod:      "RegisterObject",
+					Use:            "register-object [policy-id]",
+					Short:          "Send a RegisterObject tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policyId"}},
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},
