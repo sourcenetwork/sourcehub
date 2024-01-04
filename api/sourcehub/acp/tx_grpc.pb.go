@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_UpdateParams_FullMethodName    = "/sourcehub.acp.Msg/UpdateParams"
-	Msg_CreatePolicy_FullMethodName    = "/sourcehub.acp.Msg/CreatePolicy"
-	Msg_SetRelationship_FullMethodName = "/sourcehub.acp.Msg/SetRelationship"
+	Msg_UpdateParams_FullMethodName       = "/sourcehub.acp.Msg/UpdateParams"
+	Msg_CreatePolicy_FullMethodName       = "/sourcehub.acp.Msg/CreatePolicy"
+	Msg_SetRelationship_FullMethodName    = "/sourcehub.acp.Msg/SetRelationship"
+	Msg_DeleteRelationship_FullMethodName = "/sourcehub.acp.Msg/DeleteRelationship"
 )
 
 // MsgClient is the client API for Msg service.
@@ -33,6 +34,7 @@ type MsgClient interface {
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	CreatePolicy(ctx context.Context, in *MsgCreatePolicy, opts ...grpc.CallOption) (*MsgCreatePolicyResponse, error)
 	SetRelationship(ctx context.Context, in *MsgSetRelationship, opts ...grpc.CallOption) (*MsgSetRelationshipResponse, error)
+	DeleteRelationship(ctx context.Context, in *MsgDeleteRelationship, opts ...grpc.CallOption) (*MsgDeleteRelationshipResponse, error)
 }
 
 type msgClient struct {
@@ -70,6 +72,15 @@ func (c *msgClient) SetRelationship(ctx context.Context, in *MsgSetRelationship,
 	return out, nil
 }
 
+func (c *msgClient) DeleteRelationship(ctx context.Context, in *MsgDeleteRelationship, opts ...grpc.CallOption) (*MsgDeleteRelationshipResponse, error) {
+	out := new(MsgDeleteRelationshipResponse)
+	err := c.cc.Invoke(ctx, Msg_DeleteRelationship_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -79,6 +90,7 @@ type MsgServer interface {
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	CreatePolicy(context.Context, *MsgCreatePolicy) (*MsgCreatePolicyResponse, error)
 	SetRelationship(context.Context, *MsgSetRelationship) (*MsgSetRelationshipResponse, error)
+	DeleteRelationship(context.Context, *MsgDeleteRelationship) (*MsgDeleteRelationshipResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -94,6 +106,9 @@ func (UnimplementedMsgServer) CreatePolicy(context.Context, *MsgCreatePolicy) (*
 }
 func (UnimplementedMsgServer) SetRelationship(context.Context, *MsgSetRelationship) (*MsgSetRelationshipResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetRelationship not implemented")
+}
+func (UnimplementedMsgServer) DeleteRelationship(context.Context, *MsgDeleteRelationship) (*MsgDeleteRelationshipResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteRelationship not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -162,6 +177,24 @@ func _Msg_SetRelationship_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_DeleteRelationship_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeleteRelationship)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DeleteRelationship(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_DeleteRelationship_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DeleteRelationship(ctx, req.(*MsgDeleteRelationship))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -180,6 +213,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetRelationship",
 			Handler:    _Msg_SetRelationship_Handler,
+		},
+		{
+			MethodName: "DeleteRelationship",
+			Handler:    _Msg_DeleteRelationship_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
