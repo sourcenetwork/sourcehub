@@ -38,6 +38,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policyId"}},
 				},
 
+				{
+					RpcMethod:      "VerifyAccessRequest",
+					Use:            "verify-access-request [policy-id]",
+					Short:          "Verifies if an AccessRequest is authorized by the system",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policyId"}},
+				},
+
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},

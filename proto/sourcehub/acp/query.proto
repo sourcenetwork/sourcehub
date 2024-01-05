@@ -36,6 +36,12 @@ service Query {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/filter_relationships/{policyId}";
   
   }
+  
+  // Queries a list of VerifyAccessRequest items.
+  rpc VerifyAccessRequest (QueryVerifyAccessRequestRequest) returns (QueryVerifyAccessRequestResponse) {
+    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/verify_access_request/{policyId}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -66,4 +72,10 @@ message QueryFilterRelationshipsRequest {
 }
 
 message QueryFilterRelationshipsResponse {}
+
+message QueryVerifyAccessRequestRequest {
+  string policyId = 1;
+}
+
+message QueryVerifyAccessRequestResponse {}
 

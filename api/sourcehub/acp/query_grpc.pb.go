@@ -23,6 +23,7 @@ const (
 	Query_Policy_FullMethodName              = "/sourcehub.acp.Query/Policy"
 	Query_PolicyIds_FullMethodName           = "/sourcehub.acp.Query/PolicyIds"
 	Query_FilterRelationships_FullMethodName = "/sourcehub.acp.Query/FilterRelationships"
+	Query_VerifyAccessRequest_FullMethodName = "/sourcehub.acp.Query/VerifyAccessRequest"
 )
 
 // QueryClient is the client API for Query service.
@@ -37,6 +38,8 @@ type QueryClient interface {
 	PolicyIds(ctx context.Context, in *QueryPolicyIdsRequest, opts ...grpc.CallOption) (*QueryPolicyIdsResponse, error)
 	// Queries a list of FilterRelationships items.
 	FilterRelationships(ctx context.Context, in *QueryFilterRelationshipsRequest, opts ...grpc.CallOption) (*QueryFilterRelationshipsResponse, error)
+	// Queries a list of VerifyAccessRequest items.
+	VerifyAccessRequest(ctx context.Context, in *QueryVerifyAccessRequestRequest, opts ...grpc.CallOption) (*QueryVerifyAccessRequestResponse, error)
 }
 
 type queryClient struct {
@@ -83,6 +86,15 @@ func (c *queryClient) FilterRelationships(ctx context.Context, in *QueryFilterRe
 	return out, nil
 }
 
+func (c *queryClient) VerifyAccessRequest(ctx context.Context, in *QueryVerifyAccessRequestRequest, opts ...grpc.CallOption) (*QueryVerifyAccessRequestResponse, error) {
+	out := new(QueryVerifyAccessRequestResponse)
+	err := c.cc.Invoke(ctx, Query_VerifyAccessRequest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -95,6 +107,8 @@ type QueryServer interface {
 	PolicyIds(context.Context, *QueryPolicyIdsRequest) (*QueryPolicyIdsResponse, error)
 	// Queries a list of FilterRelationships items.
 	FilterRelationships(context.Context, *QueryFilterRelationshipsRequest) (*QueryFilterRelationshipsResponse, error)
+	// Queries a list of VerifyAccessRequest items.
+	VerifyAccessRequest(context.Context, *QueryVerifyAccessRequestRequest) (*QueryVerifyAccessRequestResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -113,6 +127,9 @@ func (UnimplementedQueryServer) PolicyIds(context.Context, *QueryPolicyIdsReques
 }
 func (UnimplementedQueryServer) FilterRelationships(context.Context, *QueryFilterRelationshipsRequest) (*QueryFilterRelationshipsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FilterRelationships not implemented")
+}
+func (UnimplementedQueryServer) VerifyAccessRequest(context.Context, *QueryVerifyAccessRequestRequest) (*QueryVerifyAccessRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyAccessRequest not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -199,6 +216,24 @@ func _Query_FilterRelationships_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_VerifyAccessRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryVerifyAccessRequestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).VerifyAccessRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_VerifyAccessRequest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).VerifyAccessRequest(ctx, req.(*QueryVerifyAccessRequestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -221,6 +256,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FilterRelationships",
 			Handler:    _Query_FilterRelationships_Handler,
+		},
+		{
+			MethodName: "VerifyAccessRequest",
+			Handler:    _Query_VerifyAccessRequest_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
