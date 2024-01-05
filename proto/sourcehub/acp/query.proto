@@ -42,6 +42,12 @@ service Query {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/verify_access_request/{policyId}";
   
   }
+  
+  // Queries a list of ValidatePolicy items.
+  rpc ValidatePolicy (QueryValidatePolicyRequest) returns (QueryValidatePolicyResponse) {
+    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/validate_policy/{policy}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -78,4 +84,10 @@ message QueryVerifyAccessRequestRequest {
 }
 
 message QueryVerifyAccessRequestResponse {}
+
+message QueryValidatePolicyRequest {
+  string policy = 1;
+}
+
+message QueryValidatePolicyResponse {}
 

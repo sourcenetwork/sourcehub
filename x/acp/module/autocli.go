@@ -45,6 +45,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policyId"}},
 				},
 
+				{
+					RpcMethod:      "ValidatePolicy",
+					Use:            "validate-policy [policy]",
+					Short:          "Validates the Payload of a Policy",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policy"}},
+				},
+
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},

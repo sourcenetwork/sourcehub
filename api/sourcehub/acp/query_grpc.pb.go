@@ -24,6 +24,7 @@ const (
 	Query_PolicyIds_FullMethodName           = "/sourcehub.acp.Query/PolicyIds"
 	Query_FilterRelationships_FullMethodName = "/sourcehub.acp.Query/FilterRelationships"
 	Query_VerifyAccessRequest_FullMethodName = "/sourcehub.acp.Query/VerifyAccessRequest"
+	Query_ValidatePolicy_FullMethodName      = "/sourcehub.acp.Query/ValidatePolicy"
 )
 
 // QueryClient is the client API for Query service.
@@ -40,6 +41,8 @@ type QueryClient interface {
 	FilterRelationships(ctx context.Context, in *QueryFilterRelationshipsRequest, opts ...grpc.CallOption) (*QueryFilterRelationshipsResponse, error)
 	// Queries a list of VerifyAccessRequest items.
 	VerifyAccessRequest(ctx context.Context, in *QueryVerifyAccessRequestRequest, opts ...grpc.CallOption) (*QueryVerifyAccessRequestResponse, error)
+	// Queries a list of ValidatePolicy items.
+	ValidatePolicy(ctx context.Context, in *QueryValidatePolicyRequest, opts ...grpc.CallOption) (*QueryValidatePolicyResponse, error)
 }
 
 type queryClient struct {
@@ -95,6 +98,15 @@ func (c *queryClient) VerifyAccessRequest(ctx context.Context, in *QueryVerifyAc
 	return out, nil
 }
 
+func (c *queryClient) ValidatePolicy(ctx context.Context, in *QueryValidatePolicyRequest, opts ...grpc.CallOption) (*QueryValidatePolicyResponse, error) {
+	out := new(QueryValidatePolicyResponse)
+	err := c.cc.Invoke(ctx, Query_ValidatePolicy_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -109,6 +121,8 @@ type QueryServer interface {
 	FilterRelationships(context.Context, *QueryFilterRelationshipsRequest) (*QueryFilterRelationshipsResponse, error)
 	// Queries a list of VerifyAccessRequest items.
 	VerifyAccessRequest(context.Context, *QueryVerifyAccessRequestRequest) (*QueryVerifyAccessRequestResponse, error)
+	// Queries a list of ValidatePolicy items.
+	ValidatePolicy(context.Context, *QueryValidatePolicyRequest) (*QueryValidatePolicyResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -130,6 +144,9 @@ func (UnimplementedQueryServer) FilterRelationships(context.Context, *QueryFilte
 }
 func (UnimplementedQueryServer) VerifyAccessRequest(context.Context, *QueryVerifyAccessRequestRequest) (*QueryVerifyAccessRequestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyAccessRequest not implemented")
+}
+func (UnimplementedQueryServer) ValidatePolicy(context.Context, *QueryValidatePolicyRequest) (*QueryValidatePolicyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidatePolicy not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -234,6 +251,24 @@ func _Query_VerifyAccessRequest_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_ValidatePolicy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryValidatePolicyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ValidatePolicy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ValidatePolicy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ValidatePolicy(ctx, req.(*QueryValidatePolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -260,6 +295,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyAccessRequest",
 			Handler:    _Query_VerifyAccessRequest_Handler,
+		},
+		{
+			MethodName: "ValidatePolicy",
+			Handler:    _Query_ValidatePolicy_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
