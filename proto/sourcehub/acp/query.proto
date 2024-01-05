@@ -30,6 +30,12 @@ service Query {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/policy_i_ds";
   
   }
+  
+  // Queries a list of FilterRelationships items.
+  rpc FilterRelationships (QueryFilterRelationshipsRequest) returns (QueryFilterRelationshipsResponse) {
+    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/filter_relationships/{policyId}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -54,4 +60,10 @@ message QueryPolicyIdsRequest {
 message QueryPolicyIdsResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 1;
 }
+
+message QueryFilterRelationshipsRequest {
+  string policyId = 1;
+}
+
+message QueryFilterRelationshipsResponse {}
 

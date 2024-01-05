@@ -31,6 +31,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{},
 				},
 
+				{
+					RpcMethod:      "FilterRelationships",
+					Use:            "filter-relationships [policy-id]",
+					Short:          "Filters Relationships within a Policy",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policyId"}},
+				},
+
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},

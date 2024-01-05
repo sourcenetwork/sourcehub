@@ -19197,6 +19197,40 @@ paths:
             description: MsgUpdateParams is the Msg/UpdateParams request type.
       tags:
         - Msg
+  /sourcenetwork/sourcehub/acp/filter_relationships/{policyId}:
+    get:
+      summary: Queries a list of FilterRelationships items.
+      operationId: SourcehubAcpQuery_FilterRelationships
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: policyId
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /sourcenetwork/sourcehub/acp/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -27224,6 +27258,8 @@ definitions:
                repeated Bar results = 1;
                PageResponse page = 2;
        }
+  sourcehub.acp.QueryFilterRelationshipsResponse:
+    type: object
   sourcehub.acp.QueryParamsResponse:
     type: object
     properties:
