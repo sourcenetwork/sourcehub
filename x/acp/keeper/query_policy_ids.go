@@ -13,11 +13,19 @@ func (k Keeper) PolicyIds(goCtx context.Context, req *types.QueryPolicyIdsReques
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Process the query
-	_ = ctx
+	engine, err := k.GetZanziEngine(ctx)
+	if err != nil {
+		return nil, err
+	}
 
-	return &types.QueryPolicyIdsResponse{}, nil
+	ids, err := engine.ListPolicyIds(goCtx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryPolicyIdsResponse{
+		Ids: ids,
+	}, nil
 }

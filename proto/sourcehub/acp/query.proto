@@ -3,91 +3,116 @@ syntax = "proto3";
 package sourcehub.acp;
 
 import "amino/amino.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
+import "sourcehub/acp/access_decision.proto";
 import "sourcehub/acp/params.proto";
+import "sourcehub/acp/policy.proto";
+import "sourcehub/acp/policy_short.proto";
+import "sourcehub/acp/relationship.proto";
+import "sourcehub/acp/relationship_selector.proto";
 
 option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
   // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/params";
-  
   }
-  
+
   // Queries a list of Policy items.
-  rpc Policy (QueryPolicyRequest) returns (QueryPolicyResponse) {
+  rpc Policy(QueryPolicyRequest) returns (QueryPolicyResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/policy/{id}";
-  
   }
-  
+
   // Queries a list of PolicyIds items.
-  rpc PolicyIds (QueryPolicyIdsRequest) returns (QueryPolicyIdsResponse) {
-    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/policy_i_ds";
-  
+  rpc PolicyIds(QueryPolicyIdsRequest) returns (QueryPolicyIdsResponse) {
+    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/policy_ids";
   }
-  
+
   // Queries a list of FilterRelationships items.
-  rpc FilterRelationships (QueryFilterRelationshipsRequest) returns (QueryFilterRelationshipsResponse) {
-    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/filter_relationships/{policyId}";
-  
+  rpc FilterRelationships(QueryFilterRelationshipsRequest) returns (QueryFilterRelationshipsResponse) {
+    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/filter_relationships/{policy_id}";
   }
-  
+
   // Queries a list of VerifyAccessRequest items.
-  rpc VerifyAccessRequest (QueryVerifyAccessRequestRequest) returns (QueryVerifyAccessRequestResponse) {
-    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/verify_access_request/{policyId}";
-  
+  rpc VerifyAccessRequest(QueryVerifyAccessRequestRequest) returns (QueryVerifyAccessRequestResponse) {
+    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/verify_access_request/{policy_id}";
   }
-  
+
   // Queries a list of ValidatePolicy items.
-  rpc ValidatePolicy (QueryValidatePolicyRequest) returns (QueryValidatePolicyResponse) {
+  rpc ValidatePolicy(QueryValidatePolicyRequest) returns (QueryValidatePolicyResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/validate_policy/{policy}";
-  
+  }
+
+  // Queries a list of AccessDecision items.
+  rpc AccessDecision(QueryAccessDecisionRequest) returns (QueryAccessDecisionResponse) {
+    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/access_decision/{id}";
   }
 }
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 message QueryPolicyRequest {
   string id = 1;
 }
 
-message QueryPolicyResponse {}
+message QueryPolicyResponse {
+  Policy policy = 1;
+}
 
 message QueryPolicyIdsRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  //cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 message QueryPolicyIdsResponse {
-  cosmos.base.query.v1beta1.PageResponse pagination = 1;
+  //cosmos.base.query.v1beta1.PageResponse pagination = 1;
+  repeated string ids = 1;
 }
 
 message QueryFilterRelationshipsRequest {
-  string policyId = 1;
+  string policy_id = 1;
+  RelationshipSelector selector = 2;
 }
 
-message QueryFilterRelationshipsResponse {}
+message QueryFilterRelationshipsResponse {
+  repeated RelationshipRecord records = 1;
+}
 
 message QueryVerifyAccessRequestRequest {
-  string policyId = 1;
+  string policy_id = 1;
+  AccessRequest access_request = 2;
 }
 
-message QueryVerifyAccessRequestResponse {}
+message QueryVerifyAccessRequestResponse {
+  bool valid = 1;
+}
 
 message QueryValidatePolicyRequest {
   string policy = 1;
+  PolicyMarshalingType marshal_type = 3;
 }
 
-message QueryValidatePolicyResponse {}
+message QueryValidatePolicyResponse {
+  bool valid = 1;
+}
 
+message QueryAccessDecisionRequest {
+  string id = 1;
+}
+
+message QueryAccessDecisionResponse {
+  AccessDecision decision = 1;
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package sourcehub.acp;
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+message EventPolicyCreated {
+  string creator = 1;
+  string policy_id = 2;
+  string policy_name = 3;
+}
+
+message EventAccessDecisionCreated {
+  string creator = 1;
+  string policy_id = 2;
+  string decision_id = 3;
+  string actor = 4;
+  string actor_did = 5;
+}

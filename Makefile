@@ -1,13 +1,13 @@
 IGNITE_RUN = docker run --rm -ti --volume $(PWD):/apps ignitehq/cli:latest
 UID := $(shell id --user)
 GID := $(shell id --group)
-BIN = sourcehubd
+BIN = build/sourcehubd
 DEMO_SRC = cmd/token-protocol-demo/main.go
 DEMO_BIN = build/token-protocol-demo
 
 .PHONY: build
 build:
-	ignite chain build
+	go build -o ${BIN} cmd/sourcehubd/main.go
 
 .PHONY: proto
 proto:
@@ -25,7 +25,12 @@ simulate:
 .PHONY: fmt
 fmt:
 	gofmt -w .
+	buf format --write
 
 .PHONY: run
 run:
 	${BIN} start
+
+.PHONY: docs
+docs:
+	pkgsite -http 0.0.0.0:8080

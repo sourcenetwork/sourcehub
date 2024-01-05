@@ -9,6 +9,9 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_acp"
+
+	// AccessDecisionRepositoryKey defines the namespace for Access Decisions
+	AccessDecisionRepositoryKey = "access_decision"
 )
 
 var (

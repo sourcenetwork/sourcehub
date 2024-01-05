@@ -1,0 +1,20 @@
+resources:
+
+  notes:
+    relations:
+      owner:
+        types: 
+          - actor
+      reader:
+        types: 
+          - actor
+    permissions:
+      read: 
+        expr: owner + reader
+      edit: 
+        expr: owner
+      delete: 
+        expr: owner
+
+actor:
+   name: actor

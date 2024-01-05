@@ -1,0 +1,16 @@
+syntax = "proto3";
+package sourcehub.acp;
+
+import "sourcehub/acp/policy.proto";
+import "sourcehub/acp/policy_short.proto";
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+// PolicyDefinition represents a Policy defined either as a raw
+// Policy type or a shortened and marshaled version
+message PolicyDefinition {
+  oneof definition {
+    MarshaledPolicy marshaled_policy = 1;
+    Policy policy = 2;
+  }
+}

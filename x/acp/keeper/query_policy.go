@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
@@ -13,11 +14,22 @@ func (k Keeper) Policy(goCtx context.Context, req *types.QueryPolicyRequest) (*t
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Process the query
-	_ = ctx
+	engine, err := k.GetZanziEngine(ctx)
+	if err != nil {
+		return nil, err
+	}
 
-	return &types.QueryPolicyResponse{}, nil
+	rec, err := engine.GetPolicy(goCtx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	if rec == nil {
+		return nil, fmt.Errorf("id %v: %w", req.Id, types.ErrPolicyNotFound)
+	}
+
+	return &types.QueryPolicyResponse{
+		Policy: rec.Policy,
+	}, nil
 }

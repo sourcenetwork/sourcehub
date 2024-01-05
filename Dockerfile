@@ -25,7 +25,7 @@ RUN go mod download
 # Build
 COPY . /app
 ENV GOFLAGS='-buildvcs=false'
-RUN --mount=type=cache,target=/root/.cache ignite chain build && ignite chain init
+RUN --mount=type=cache,target=/root/.cache ignite chain build --skip-proto && ignite chain init --skip-proto
 
 # Dev image entrypoint
 ENTRYPOINT ["scripts/dev-entrypoint.sh"]

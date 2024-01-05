@@ -18910,14 +18910,703 @@ paths:
               parameters.
       tags:
         - Msg
+  /sourcenetwork/sourcehub/acp/access_decision/{id}:
+    get:
+      summary: Queries a list of AccessDecision items.
+      operationId: SourcehubAcpQuery_AccessDecision
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              decision:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  policy_id:
+                    type: string
+                    title: used as part of id generation
+                  creator:
+                    type: string
+                    title: used as part of id generation
+                  creator_acc_sequence:
+                    type: string
+                    format: uint64
+                    title: used as part of id generation
+                  operations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        object:
+                          title: target object for operation
+                          type: object
+                          properties:
+                            resource:
+                              type: string
+                            id:
+                              type: string
+                          description: >-
+                            Object represents an entity which must be access
+                            controlled within a Policy.
+                        permission:
+                          type: string
+                          title: permission required to perform operation
+                      description: Operation represents an action over an object.
+                    title: used as part of id generation
+                  actor_did:
+                    type: string
+                    title: used as part of id generation
+                  actor:
+                    type: string
+                    title: used as part of id generation
+                  params:
+                    title: used as part of id generation
+                    type: object
+                    properties:
+                      decision_expiration_delta:
+                        type: string
+                        format: uint64
+                        title: number of blocks a Decision is valid for
+                      proof_expiration_delta:
+                        type: string
+                        format: uint64
+                        title: number of blocks a DecisionProof is valid for
+                      ticket_expiration_delta:
+                        type: string
+                        format: uint64
+                        title: number of blocks an AccessTicket is valid for
+                  creation_time:
+                    type: string
+                    format: date-time
+                  issued_height:
+                    type: string
+                    format: uint64
+                    title: >-
+                      issued_height stores the block height when the Decision
+                      was evaluated
+                title: >-
+                  AccessDecision models the result of evaluating a set of
+                  AccessRequests for an Actor
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sourcenetwork/sourcehub/acp/filter_relationships/{policy_id}:
+    get:
+      summary: Queries a list of FilterRelationships items.
+      operationId: SourcehubAcpQuery_FilterRelationships
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              records:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    creation_time:
+                      type: string
+                      format: date-time
+                    creator:
+                      type: string
+                    policy_id:
+                      type: string
+                    relationship:
+                      type: object
+                      properties:
+                        object:
+                          type: object
+                          properties:
+                            resource:
+                              type: string
+                            id:
+                              type: string
+                          description: >-
+                            Object represents an entity which must be access
+                            controlled within a Policy.
+                        relation:
+                          type: string
+                        subject:
+                          type: object
+                          properties:
+                            actor:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                              description: >-
+                                Actor represents an entity which makes access
+                                requests to a Policy.
+                            actor_set:
+                              type: object
+                              properties:
+                                object:
+                                  type: object
+                                  properties:
+                                    resource:
+                                      type: string
+                                    id:
+                                      type: string
+                                  description: >-
+                                    Object represents an entity which must be
+                                    access controlled within a Policy.
+                                relation:
+                                  type: string
+                              description: >-
+                                ActorSet represents a set of Actors in a Policy.
+
+                                It is specified through an Object, Relation
+                                pair, which represents
+
+                                all actors which have a relationship with given
+                                obj-rel pair.
+
+                                This expansion is recursive.
+                            all_actors:
+                              type: object
+                              description: >-
+                                AllActors models a special Relationship Subject
+                                which indicates
+
+                                that all Actors in the Policy are included.
+                            object:
+                              type: object
+                              properties:
+                                resource:
+                                  type: string
+                                id:
+                                  type: string
+                              description: >-
+                                Object represents an entity which must be access
+                                controlled within a Policy.
+                          description: Subject specifies the target of a Relationship.
+                      description: >-
+                        Relationship models an access control rule.
+
+                        It states that the given subject has relation with
+                        object.
+                    archived:
+                      type: boolean
+                  description: >-
+                    RelationshipRecord represents a document contained a
+                    Relationship and additional data.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: policy_id
+          in: path
+          required: true
+          type: string
+        - name: selector.object_selector.object.resource
+          in: query
+          required: false
+          type: string
+        - name: selector.object_selector.object.id
+          in: query
+          required: false
+          type: string
+        - name: selector.relation_selector.relation
+          description: >-
+            relation specifies a relation name which must exactly match the
+            Relationship's
+          in: query
+          required: false
+          type: string
+        - name: selector.subject_selector.subject.actor.id
+          in: query
+          required: false
+          type: string
+        - name: selector.subject_selector.subject.actor_set.object.resource
+          in: query
+          required: false
+          type: string
+        - name: selector.subject_selector.subject.actor_set.object.id
+          in: query
+          required: false
+          type: string
+        - name: selector.subject_selector.subject.actor_set.relation
+          in: query
+          required: false
+          type: string
+        - name: selector.subject_selector.subject.object.resource
+          in: query
+          required: false
+          type: string
+        - name: selector.subject_selector.subject.object.id
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /sourcenetwork/sourcehub/acp/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: SourcehubAcpQuery_Params
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /sourcenetwork/sourcehub/acp/policy/{id}:
+    get:
+      summary: Queries a list of Policy items.
+      operationId: SourcehubAcpQuery_Policy
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              policy:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  creation_time:
+                    type: string
+                    format: date-time
+                  attributes:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  resources:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        doc:
+                          type: string
+                        permissions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              doc:
+                                type: string
+                              expression:
+                                type: string
+                            description: >-
+                              Permission models a special type of Relation which
+                              is evaluated at runtime.
+
+                              A permission often maps to an operation defined
+                              for a resource which an actor may attempt.
+                        relations:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              doc:
+                                type: string
+                              manages:
+                                type: array
+                                items:
+                                  type: string
+                                title: >-
+                                  list of relations managed by the current
+                                  relation
+                              vr_types:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    resource_name:
+                                      type: string
+                                      title: >-
+                                        resource_name scopes permissible actors
+                                        resource
+                                    relation_name:
+                                      type: string
+                                      title: >-
+                                        relation_name scopes permissible actors
+                                        relation
+                                  description: >-
+                                    Restriction models a specification which a
+                                    Relationship's actor
+
+                                    should meet.
+                                title: value restriction types
+                      description: >-
+                        Resource models a namespace for objects in a Policy.
+
+                        Appications will have multiple entities which they must
+                        manage such as files or groups.
+
+                        A Resource represents a set of entities of a certain
+                        type.
+                  actor_resource:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      doc:
+                        type: string
+                      relations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            doc:
+                              type: string
+                            manages:
+                              type: array
+                              items:
+                                type: string
+                              title: >-
+                                list of relations managed by the current
+                                relation
+                            vr_types:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  resource_name:
+                                    type: string
+                                    title: >-
+                                      resource_name scopes permissible actors
+                                      resource
+                                  relation_name:
+                                    type: string
+                                    title: >-
+                                      relation_name scopes permissible actors
+                                      relation
+                                description: >-
+                                  Restriction models a specification which a
+                                  Relationship's actor
+
+                                  should meet.
+                              title: value restriction types
+                    description: >-
+                      ActorResource represents a special Resource which is
+                      reserved for Policy actors.
+                  creator:
+                    type: string
+                description: >-
+                  Policy represents an ACP module Policy definition.
+
+                  Each Policy defines a set of high level rules over how the
+                  acces control system
+
+                  should behave.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sourcenetwork/sourcehub/acp/policy_ids:
+    get:
+      summary: Queries a list of PolicyIds items.
+      operationId: SourcehubAcpQuery_PolicyIds
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ids:
+                type: array
+                items:
+                  type: string
+                title: cosmos.base.query.v1beta1.PageResponse pagination = 1;
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /sourcenetwork/sourcehub/acp/validate_policy/{policy}:
+    get:
+      summary: Queries a list of ValidatePolicy items.
+      operationId: SourcehubAcpQuery_ValidatePolicy
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: policy
+          in: path
+          required: true
+          type: string
+        - name: marshal_type
+          description: |2-
+             - UNKNOWN: Fallback value for a missing Marshaling Type
+             - SHORT_YAML: Policy Marshaled as a YAML Short Policy definition
+             - SHORT_JSON: Policy Marshaled as a JSON Short Policy definition
+          in: query
+          required: false
+          type: string
+          enum:
+            - UNKNOWN
+            - SHORT_YAML
+            - SHORT_JSON
+          default: UNKNOWN
+      tags:
+        - Query
+  /sourcenetwork/sourcehub/acp/verify_access_request/{policy_id}:
+    get:
+      summary: Queries a list of VerifyAccessRequest items.
+      operationId: SourcehubAcpQuery_VerifyAccessRequest
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: policy_id
+          in: path
+          required: true
+          type: string
+        - name: access_request.actor.id
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /sourcehub.acp.Msg/CheckAccess:
     post:
+      summary: >-
+        CheckAccess executes an Access Request for an User and stores the result
+        of the evaluation in SourceHub.
+      description: >-
+        The resulting evaluation is used to generate a cryptographic proof that
+        the given Access Request 
+
+        was valid at a particular block height.
       operationId: SourcehubAcpMsg_CheckAccess
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
+            properties:
+              decision:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  policy_id:
+                    type: string
+                    title: used as part of id generation
+                  creator:
+                    type: string
+                    title: used as part of id generation
+                  creator_acc_sequence:
+                    type: string
+                    format: uint64
+                    title: used as part of id generation
+                  operations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        object:
+                          title: target object for operation
+                          type: object
+                          properties:
+                            resource:
+                              type: string
+                            id:
+                              type: string
+                          description: >-
+                            Object represents an entity which must be access
+                            controlled within a Policy.
+                        permission:
+                          type: string
+                          title: permission required to perform operation
+                      description: Operation represents an action over an object.
+                    title: used as part of id generation
+                  actor_did:
+                    type: string
+                    title: used as part of id generation
+                  actor:
+                    type: string
+                    title: used as part of id generation
+                  params:
+                    title: used as part of id generation
+                    type: object
+                    properties:
+                      decision_expiration_delta:
+                        type: string
+                        format: uint64
+                        title: number of blocks a Decision is valid for
+                      proof_expiration_delta:
+                        type: string
+                        format: uint64
+                        title: number of blocks a DecisionProof is valid for
+                      ticket_expiration_delta:
+                        type: string
+                        format: uint64
+                        title: number of blocks an AccessTicket is valid for
+                  creation_time:
+                    type: string
+                    format: date-time
+                  issued_height:
+                    type: string
+                    format: uint64
+                    title: >-
+                      issued_height stores the block height when the Decision
+                      was evaluated
+                title: >-
+                  AccessDecision models the result of evaluating a set of
+                  AccessRequests for an Actor
         default:
           description: An unexpected error response.
           schema:
@@ -18945,18 +19634,203 @@ paths:
             properties:
               creator:
                 type: string
-              policyId:
+              policy_id:
                 type: string
+              creation_time:
+                type: string
+                format: date-time
+              access_request:
+                type: object
+                properties:
+                  operations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        object:
+                          title: target object for operation
+                          type: object
+                          properties:
+                            resource:
+                              type: string
+                            id:
+                              type: string
+                          description: >-
+                            Object represents an entity which must be access
+                            controlled within a Policy.
+                        permission:
+                          type: string
+                          title: permission required to perform operation
+                      description: Operation represents an action over an object.
+                  actor:
+                    title: actor requesting operations
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                    description: >-
+                      Actor represents an entity which makes access requests to
+                      a Policy.
+                title: >-
+                  AccessRequest represents the wish to perform a set of
+                  operations by an actor
       tags:
         - Msg
   /sourcehub.acp.Msg/CreatePolicy:
     post:
+      summary: |-
+        CreatePolicy adds a new Policy to SourceHub.
+        The Policy models an aplication's high level access control rules.
       operationId: SourcehubAcpMsg_CreatePolicy
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
+            properties:
+              policy:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  creation_time:
+                    type: string
+                    format: date-time
+                  attributes:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  resources:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        doc:
+                          type: string
+                        permissions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              doc:
+                                type: string
+                              expression:
+                                type: string
+                            description: >-
+                              Permission models a special type of Relation which
+                              is evaluated at runtime.
+
+                              A permission often maps to an operation defined
+                              for a resource which an actor may attempt.
+                        relations:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              doc:
+                                type: string
+                              manages:
+                                type: array
+                                items:
+                                  type: string
+                                title: >-
+                                  list of relations managed by the current
+                                  relation
+                              vr_types:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    resource_name:
+                                      type: string
+                                      title: >-
+                                        resource_name scopes permissible actors
+                                        resource
+                                    relation_name:
+                                      type: string
+                                      title: >-
+                                        relation_name scopes permissible actors
+                                        relation
+                                  description: >-
+                                    Restriction models a specification which a
+                                    Relationship's actor
+
+                                    should meet.
+                                title: value restriction types
+                      description: >-
+                        Resource models a namespace for objects in a Policy.
+
+                        Appications will have multiple entities which they must
+                        manage such as files or groups.
+
+                        A Resource represents a set of entities of a certain
+                        type.
+                  actor_resource:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      doc:
+                        type: string
+                      relations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            doc:
+                              type: string
+                            manages:
+                              type: array
+                              items:
+                                type: string
+                              title: >-
+                                list of relations managed by the current
+                                relation
+                            vr_types:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  resource_name:
+                                    type: string
+                                    title: >-
+                                      resource_name scopes permissible actors
+                                      resource
+                                  relation_name:
+                                    type: string
+                                    title: >-
+                                      relation_name scopes permissible actors
+                                      relation
+                                description: >-
+                                  Restriction models a specification which a
+                                  Relationship's actor
+
+                                  should meet.
+                              title: value restriction types
+                    description: >-
+                      ActorResource represents a special Resource which is
+                      reserved for Policy actors.
+                  creator:
+                    type: string
+                description: >-
+                  Policy represents an ACP module Policy definition.
+
+                  Each Policy defines a set of high level rules over how the
+                  acces control system
+
+                  should behave.
         default:
           description: An unexpected error response.
           schema:
@@ -18986,16 +19860,39 @@ paths:
                 type: string
               policy:
                 type: string
+              marshal_type:
+                type: string
+                enum:
+                  - UNKNOWN
+                  - SHORT_YAML
+                  - SHORT_JSON
+                default: UNKNOWN
+                description: >-
+                  PolicyEncodingType enumerates supported marshaling types for
+                  policies.
+
+                   - UNKNOWN: Fallback value for a missing Marshaling Type
+                   - SHORT_YAML: Policy Marshaled as a YAML Short Policy definition
+                   - SHORT_JSON: Policy Marshaled as a JSON Short Policy definition
+              creation_time:
+                type: string
+                format: date-time
       tags:
         - Msg
   /sourcehub.acp.Msg/DeleteRelationship:
     post:
+      summary: |-
+        DelereRelationship removes a Relationship from a Policy.
+        If the Relationship was not found in a Policy, this Msg is a no-op.
       operationId: SourcehubAcpMsg_DeleteRelationship
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
+            properties:
+              record_found:
+                type: boolean
         default:
           description: An unexpected error response.
           schema:
@@ -19023,18 +19920,122 @@ paths:
             properties:
               creator:
                 type: string
-              policyId:
+              policy_id:
                 type: string
+              relationship:
+                type: object
+                properties:
+                  object:
+                    type: object
+                    properties:
+                      resource:
+                        type: string
+                      id:
+                        type: string
+                    description: >-
+                      Object represents an entity which must be access
+                      controlled within a Policy.
+                  relation:
+                    type: string
+                  subject:
+                    type: object
+                    properties:
+                      actor:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                        description: >-
+                          Actor represents an entity which makes access requests
+                          to a Policy.
+                      actor_set:
+                        type: object
+                        properties:
+                          object:
+                            type: object
+                            properties:
+                              resource:
+                                type: string
+                              id:
+                                type: string
+                            description: >-
+                              Object represents an entity which must be access
+                              controlled within a Policy.
+                          relation:
+                            type: string
+                        description: >-
+                          ActorSet represents a set of Actors in a Policy.
+
+                          It is specified through an Object, Relation pair,
+                          which represents
+
+                          all actors which have a relationship with given
+                          obj-rel pair.
+
+                          This expansion is recursive.
+                      all_actors:
+                        type: object
+                        description: >-
+                          AllActors models a special Relationship Subject which
+                          indicates
+
+                          that all Actors in the Policy are included.
+                      object:
+                        type: object
+                        properties:
+                          resource:
+                            type: string
+                          id:
+                            type: string
+                        description: >-
+                          Object represents an entity which must be access
+                          controlled within a Policy.
+                    description: Subject specifies the target of a Relationship.
+                description: |-
+                  Relationship models an access control rule.
+                  It states that the given subject has relation with object.
       tags:
         - Msg
   /sourcehub.acp.Msg/RegisterObject:
     post:
+      summary: >-
+        RegisterObject creates a special kind of Relationship within a Policy
+        which ties
+
+        the msg's Actor as the owner of the msg's Object.
+
+        The Owner has complete control over the set of subjects that are related
+        to their Object,
+
+        giving them autonomy to share the object and revoke acces to the object,
+
+        much like owners in a Discretionary Access Control model.
+      description: |-
+        Attempting to register a previously registered Object is an error,
+        Object IDs are therefore assumed to be unique within a Policy.
       operationId: SourcehubAcpMsg_RegisterObject
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
+            properties:
+              result:
+                type: string
+                enum:
+                  - NoOp
+                  - Registered
+                  - Unarchived
+                default: NoOp
+                description: >-
+                  - NoOp: NoOp indicates no action was take. The operation
+                  failed or the Object already existed and was active
+                   - Registered: Registered indicates the Object was sucessfuly registered to the Actor.
+                   - Unarchived: Unarchived indicates that a previously deleted Object is active again.
+                  Only the original owners can Unarchive an object.
+                title: >-
+                  RegistrationResult encodes the possible result set from
+                  Registering an Object
         default:
           description: An unexpected error response.
           schema:
@@ -19062,18 +20063,45 @@ paths:
             properties:
               creator:
                 type: string
-              policyId:
+              policy_id:
                 type: string
+              object:
+                type: object
+                properties:
+                  resource:
+                    type: string
+                  id:
+                    type: string
+                description: >-
+                  Object represents an entity which must be access controlled
+                  within a Policy.
+              creation_time:
+                type: string
+                format: date-time
       tags:
         - Msg
   /sourcehub.acp.Msg/SetRelationship:
     post:
+      summary: >-
+        SetRelationship creates or updates a Relationship within a Policy
+
+        A Relationship is a statement which ties together an object and a
+        subjecto with a "relation",
+
+        which means the set of high level rules defined in the Policy will apply
+        to these entities.
       operationId: SourcehubAcpMsg_SetRelationship
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
+            properties:
+              record_existed:
+                type: boolean
+                title: >-
+                  Indicates whether the given Relationship previously existed,
+                  ie the Tx was a no op
         default:
           description: An unexpected error response.
           schema:
@@ -19101,18 +20129,123 @@ paths:
             properties:
               creator:
                 type: string
-              policy:
+              policy_id:
                 type: string
+              creation_time:
+                type: string
+                format: date-time
+              relationship:
+                type: object
+                properties:
+                  object:
+                    type: object
+                    properties:
+                      resource:
+                        type: string
+                      id:
+                        type: string
+                    description: >-
+                      Object represents an entity which must be access
+                      controlled within a Policy.
+                  relation:
+                    type: string
+                  subject:
+                    type: object
+                    properties:
+                      actor:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                        description: >-
+                          Actor represents an entity which makes access requests
+                          to a Policy.
+                      actor_set:
+                        type: object
+                        properties:
+                          object:
+                            type: object
+                            properties:
+                              resource:
+                                type: string
+                              id:
+                                type: string
+                            description: >-
+                              Object represents an entity which must be access
+                              controlled within a Policy.
+                          relation:
+                            type: string
+                        description: >-
+                          ActorSet represents a set of Actors in a Policy.
+
+                          It is specified through an Object, Relation pair,
+                          which represents
+
+                          all actors which have a relationship with given
+                          obj-rel pair.
+
+                          This expansion is recursive.
+                      all_actors:
+                        type: object
+                        description: >-
+                          AllActors models a special Relationship Subject which
+                          indicates
+
+                          that all Actors in the Policy are included.
+                      object:
+                        type: object
+                        properties:
+                          resource:
+                            type: string
+                          id:
+                            type: string
+                        description: >-
+                          Object represents an entity which must be access
+                          controlled within a Policy.
+                    description: Subject specifies the target of a Relationship.
+                description: |-
+                  Relationship models an access control rule.
+                  It states that the given subject has relation with object.
       tags:
         - Msg
   /sourcehub.acp.Msg/UnregisterObject:
     post:
+      summary: >-
+        UnregisterObject let's an Object's Owner effectively "unshare" their
+        Object.
+
+        This method wipes all Relationships referencing the given Object.
+      description: >-
+        A caveat is that after removing the Relationships, a record of the
+        original Object owner
+
+        is maintained to prevent an "ownership hijack" attack.
+
+
+        Suppose Bob owns object Foo, which is shared with Bob but not Eve.
+
+        Eve wants to access Foo but was not given permission to, they could
+        "hijack" Bob's object by waiting for Bob to Unregister Foo,
+
+        then submitting a RegisterObject Msg, effectively becoming Foo's new
+        owner.
+
+        If Charlie has a copy of the object, Eve could convince Charlie to share
+        his copy, granting Eve access to Foo.
+
+        The previous scenario where an unauthorized user is able to claim
+        ownership to data previously unaccessible to them
+
+        is an "ownership hijack".
       operationId: SourcehubAcpMsg_UnregisterObject
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
+            properties:
+              found:
+                type: boolean
         default:
           description: An unexpected error response.
           schema:
@@ -19140,8 +20273,18 @@ paths:
             properties:
               creator:
                 type: string
-              policyId:
+              policy_id:
                 type: string
+              object:
+                type: object
+                properties:
+                  resource:
+                    type: string
+                  id:
+                    type: string
+                description: >-
+                  Object represents an entity which must be access controlled
+                  within a Policy.
       tags:
         - Msg
   /sourcehub.acp.Msg/UpdateParams:
@@ -19197,293 +20340,6 @@ paths:
             description: MsgUpdateParams is the Msg/UpdateParams request type.
       tags:
         - Msg
-  /sourcenetwork/sourcehub/acp/filter_relationships/{policyId}:
-    get:
-      summary: Queries a list of FilterRelationships items.
-      operationId: SourcehubAcpQuery_FilterRelationships
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: policyId
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sourcenetwork/sourcehub/acp/params:
-    get:
-      summary: Parameters queries the parameters of the module.
-      operationId: SourcehubAcpQuery_Params
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /sourcenetwork/sourcehub/acp/policy/{id}:
-    get:
-      summary: Queries a list of Policy items.
-      operationId: SourcehubAcpQuery_Policy
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sourcenetwork/sourcehub/acp/policy_i_ds:
-    get:
-      summary: Queries a list of PolicyIds items.
-      operationId: SourcehubAcpQuery_PolicyIds
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    description: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently. It will be empty if
-                      there are no more results.
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /sourcenetwork/sourcehub/acp/validate_policy/{policy}:
-    get:
-      summary: Queries a list of ValidatePolicy items.
-      operationId: SourcehubAcpQuery_ValidatePolicy
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: policy
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sourcenetwork/sourcehub/acp/verify_access_request/{policyId}:
-    get:
-      summary: Queries a list of VerifyAccessRequest items.
-      operationId: SourcehubAcpQuery_VerifyAccessRequest
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: policyId
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
   /sourcehub.sourcehub.Msg/UpdateParams:
     post:
       summary: |-
@@ -19540,6 +20396,42 @@ paths:
             description: MsgUpdateParams is the Msg/UpdateParams request type.
       tags:
         - Msg
+  /sourcenetwork/sourcehub/sourcehub/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: SourcehubSourcehubQuery_Params
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
 definitions:
   cosmos.auth.v1beta1.MsgUpdateParams:
     type: object
@@ -27175,15 +28067,1315 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  sourcehub.acp.AccessDecision:
+    type: object
+    properties:
+      id:
+        type: string
+      policy_id:
+        type: string
+        title: used as part of id generation
+      creator:
+        type: string
+        title: used as part of id generation
+      creator_acc_sequence:
+        type: string
+        format: uint64
+        title: used as part of id generation
+      operations:
+        type: array
+        items:
+          type: object
+          properties:
+            object:
+              title: target object for operation
+              type: object
+              properties:
+                resource:
+                  type: string
+                id:
+                  type: string
+              description: >-
+                Object represents an entity which must be access controlled
+                within a Policy.
+            permission:
+              type: string
+              title: permission required to perform operation
+          description: Operation represents an action over an object.
+        title: used as part of id generation
+      actor_did:
+        type: string
+        title: used as part of id generation
+      actor:
+        type: string
+        title: used as part of id generation
+      params:
+        title: used as part of id generation
+        type: object
+        properties:
+          decision_expiration_delta:
+            type: string
+            format: uint64
+            title: number of blocks a Decision is valid for
+          proof_expiration_delta:
+            type: string
+            format: uint64
+            title: number of blocks a DecisionProof is valid for
+          ticket_expiration_delta:
+            type: string
+            format: uint64
+            title: number of blocks an AccessTicket is valid for
+      creation_time:
+        type: string
+        format: date-time
+      issued_height:
+        type: string
+        format: uint64
+        title: issued_height stores the block height when the Decision was evaluated
+    title: >-
+      AccessDecision models the result of evaluating a set of AccessRequests for
+      an Actor
+  sourcehub.acp.AccessRequest:
+    type: object
+    properties:
+      operations:
+        type: array
+        items:
+          type: object
+          properties:
+            object:
+              title: target object for operation
+              type: object
+              properties:
+                resource:
+                  type: string
+                id:
+                  type: string
+              description: >-
+                Object represents an entity which must be access controlled
+                within a Policy.
+            permission:
+              type: string
+              title: permission required to perform operation
+          description: Operation represents an action over an object.
+      actor:
+        type: object
+        properties:
+          id:
+            type: string
+        description: Actor represents an entity which makes access requests to a Policy.
+        title: actor requesting operations
+    title: >-
+      AccessRequest represents the wish to perform a set of operations by an
+      actor
+  sourcehub.acp.Actor:
+    type: object
+    properties:
+      id:
+        type: string
+    description: Actor represents an entity which makes access requests to a Policy.
+  sourcehub.acp.ActorResource:
+    type: object
+    properties:
+      name:
+        type: string
+      doc:
+        type: string
+      relations:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            doc:
+              type: string
+            manages:
+              type: array
+              items:
+                type: string
+              title: list of relations managed by the current relation
+            vr_types:
+              type: array
+              items:
+                type: object
+                properties:
+                  resource_name:
+                    type: string
+                    title: resource_name scopes permissible actors resource
+                  relation_name:
+                    type: string
+                    title: relation_name scopes permissible actors relation
+                description: >-
+                  Restriction models a specification which a Relationship's
+                  actor
+
+                  should meet.
+              title: value restriction types
+    description: >-
+      ActorResource represents a special Resource which is reserved for Policy
+      actors.
+  sourcehub.acp.ActorSet:
+    type: object
+    properties:
+      object:
+        type: object
+        properties:
+          resource:
+            type: string
+          id:
+            type: string
+        description: >-
+          Object represents an entity which must be access controlled within a
+          Policy.
+      relation:
+        type: string
+    description: |-
+      ActorSet represents a set of Actors in a Policy.
+      It is specified through an Object, Relation pair, which represents
+      all actors which have a relationship with given obj-rel pair.
+      This expansion is recursive.
+  sourcehub.acp.AllActors:
+    type: object
+    description: |-
+      AllActors models a special Relationship Subject which indicates
+      that all Actors in the Policy are included.
+  sourcehub.acp.DecisionParams:
+    type: object
+    properties:
+      decision_expiration_delta:
+        type: string
+        format: uint64
+        title: number of blocks a Decision is valid for
+      proof_expiration_delta:
+        type: string
+        format: uint64
+        title: number of blocks a DecisionProof is valid for
+      ticket_expiration_delta:
+        type: string
+        format: uint64
+        title: number of blocks an AccessTicket is valid for
+    title: >-
+      DecisionParams stores auxiliary information regarding the validity of a
+      decision
+  sourcehub.acp.Object:
+    type: object
+    properties:
+      resource:
+        type: string
+      id:
+        type: string
+    description: >-
+      Object represents an entity which must be access controlled within a
+      Policy.
+  sourcehub.acp.ObjectSelector:
+    type: object
+    properties:
+      object:
+        type: object
+        properties:
+          resource:
+            type: string
+          id:
+            type: string
+        description: >-
+          Object represents an entity which must be access controlled within a
+          Policy.
+        title: object specifies an object which the Relationship must contain
+      wildcard:
+        title: wildcard matches any object
+        type: object
+    title: ObjectSelector models a filter for Relationship Objects
+  sourcehub.acp.Operation:
+    type: object
+    properties:
+      object:
+        title: target object for operation
+        type: object
+        properties:
+          resource:
+            type: string
+          id:
+            type: string
+        description: >-
+          Object represents an entity which must be access controlled within a
+          Policy.
+      permission:
+        type: string
+        title: permission required to perform operation
+    description: Operation represents an action over an object.
+  sourcehub.acp.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  sourcehub.acp.Permission:
+    type: object
+    properties:
+      name:
+        type: string
+      doc:
+        type: string
+      expression:
+        type: string
+    description: >-
+      Permission models a special type of Relation which is evaluated at
+      runtime.
+
+      A permission often maps to an operation defined for a resource which an
+      actor may attempt.
+  sourcehub.acp.Policy:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      creation_time:
+        type: string
+        format: date-time
+      attributes:
+        type: object
+        additionalProperties:
+          type: string
+      resources:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            doc:
+              type: string
+            permissions:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  doc:
+                    type: string
+                  expression:
+                    type: string
+                description: >-
+                  Permission models a special type of Relation which is
+                  evaluated at runtime.
+
+                  A permission often maps to an operation defined for a resource
+                  which an actor may attempt.
+            relations:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  doc:
+                    type: string
+                  manages:
+                    type: array
+                    items:
+                      type: string
+                    title: list of relations managed by the current relation
+                  vr_types:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        resource_name:
+                          type: string
+                          title: resource_name scopes permissible actors resource
+                        relation_name:
+                          type: string
+                          title: relation_name scopes permissible actors relation
+                      description: >-
+                        Restriction models a specification which a
+                        Relationship's actor
+
+                        should meet.
+                    title: value restriction types
+          description: >-
+            Resource models a namespace for objects in a Policy.
+
+            Appications will have multiple entities which they must manage such
+            as files or groups.
+
+            A Resource represents a set of entities of a certain type.
+      actor_resource:
+        type: object
+        properties:
+          name:
+            type: string
+          doc:
+            type: string
+          relations:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                doc:
+                  type: string
+                manages:
+                  type: array
+                  items:
+                    type: string
+                  title: list of relations managed by the current relation
+                vr_types:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      resource_name:
+                        type: string
+                        title: resource_name scopes permissible actors resource
+                      relation_name:
+                        type: string
+                        title: relation_name scopes permissible actors relation
+                    description: >-
+                      Restriction models a specification which a Relationship's
+                      actor
+
+                      should meet.
+                  title: value restriction types
+        description: >-
+          ActorResource represents a special Resource which is reserved for
+          Policy actors.
+      creator:
+        type: string
+    description: >-
+      Policy represents an ACP module Policy definition.
+
+      Each Policy defines a set of high level rules over how the acces control
+      system
+
+      should behave.
+  sourcehub.acp.PolicyMarshalingType:
+    type: string
+    enum:
+      - UNKNOWN
+      - SHORT_YAML
+      - SHORT_JSON
+    default: UNKNOWN
+    description: |-
+      PolicyEncodingType enumerates supported marshaling types for policies.
+
+       - UNKNOWN: Fallback value for a missing Marshaling Type
+       - SHORT_YAML: Policy Marshaled as a YAML Short Policy definition
+       - SHORT_JSON: Policy Marshaled as a JSON Short Policy definition
+  sourcehub.acp.QueryAccessDecisionResponse:
+    type: object
+    properties:
+      decision:
+        type: object
+        properties:
+          id:
+            type: string
+          policy_id:
+            type: string
+            title: used as part of id generation
+          creator:
+            type: string
+            title: used as part of id generation
+          creator_acc_sequence:
+            type: string
+            format: uint64
+            title: used as part of id generation
+          operations:
+            type: array
+            items:
+              type: object
+              properties:
+                object:
+                  title: target object for operation
+                  type: object
+                  properties:
+                    resource:
+                      type: string
+                    id:
+                      type: string
+                  description: >-
+                    Object represents an entity which must be access controlled
+                    within a Policy.
+                permission:
+                  type: string
+                  title: permission required to perform operation
+              description: Operation represents an action over an object.
+            title: used as part of id generation
+          actor_did:
+            type: string
+            title: used as part of id generation
+          actor:
+            type: string
+            title: used as part of id generation
+          params:
+            title: used as part of id generation
+            type: object
+            properties:
+              decision_expiration_delta:
+                type: string
+                format: uint64
+                title: number of blocks a Decision is valid for
+              proof_expiration_delta:
+                type: string
+                format: uint64
+                title: number of blocks a DecisionProof is valid for
+              ticket_expiration_delta:
+                type: string
+                format: uint64
+                title: number of blocks an AccessTicket is valid for
+          creation_time:
+            type: string
+            format: date-time
+          issued_height:
+            type: string
+            format: uint64
+            title: >-
+              issued_height stores the block height when the Decision was
+              evaluated
+        title: >-
+          AccessDecision models the result of evaluating a set of AccessRequests
+          for an Actor
+  sourcehub.acp.QueryFilterRelationshipsResponse:
+    type: object
+    properties:
+      records:
+        type: array
+        items:
+          type: object
+          properties:
+            creation_time:
+              type: string
+              format: date-time
+            creator:
+              type: string
+            policy_id:
+              type: string
+            relationship:
+              type: object
+              properties:
+                object:
+                  type: object
+                  properties:
+                    resource:
+                      type: string
+                    id:
+                      type: string
+                  description: >-
+                    Object represents an entity which must be access controlled
+                    within a Policy.
+                relation:
+                  type: string
+                subject:
+                  type: object
+                  properties:
+                    actor:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                      description: >-
+                        Actor represents an entity which makes access requests
+                        to a Policy.
+                    actor_set:
+                      type: object
+                      properties:
+                        object:
+                          type: object
+                          properties:
+                            resource:
+                              type: string
+                            id:
+                              type: string
+                          description: >-
+                            Object represents an entity which must be access
+                            controlled within a Policy.
+                        relation:
+                          type: string
+                      description: >-
+                        ActorSet represents a set of Actors in a Policy.
+
+                        It is specified through an Object, Relation pair, which
+                        represents
+
+                        all actors which have a relationship with given obj-rel
+                        pair.
+
+                        This expansion is recursive.
+                    all_actors:
+                      type: object
+                      description: >-
+                        AllActors models a special Relationship Subject which
+                        indicates
+
+                        that all Actors in the Policy are included.
+                    object:
+                      type: object
+                      properties:
+                        resource:
+                          type: string
+                        id:
+                          type: string
+                      description: >-
+                        Object represents an entity which must be access
+                        controlled within a Policy.
+                  description: Subject specifies the target of a Relationship.
+              description: |-
+                Relationship models an access control rule.
+                It states that the given subject has relation with object.
+            archived:
+              type: boolean
+          description: >-
+            RelationshipRecord represents a document contained a Relationship
+            and additional data.
+  sourcehub.acp.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  sourcehub.acp.QueryPolicyIdsResponse:
+    type: object
+    properties:
+      ids:
+        type: array
+        items:
+          type: string
+        title: cosmos.base.query.v1beta1.PageResponse pagination = 1;
+  sourcehub.acp.QueryPolicyResponse:
+    type: object
+    properties:
+      policy:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          description:
+            type: string
+          creation_time:
+            type: string
+            format: date-time
+          attributes:
+            type: object
+            additionalProperties:
+              type: string
+          resources:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                doc:
+                  type: string
+                permissions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      doc:
+                        type: string
+                      expression:
+                        type: string
+                    description: >-
+                      Permission models a special type of Relation which is
+                      evaluated at runtime.
+
+                      A permission often maps to an operation defined for a
+                      resource which an actor may attempt.
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      doc:
+                        type: string
+                      manages:
+                        type: array
+                        items:
+                          type: string
+                        title: list of relations managed by the current relation
+                      vr_types:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            resource_name:
+                              type: string
+                              title: resource_name scopes permissible actors resource
+                            relation_name:
+                              type: string
+                              title: relation_name scopes permissible actors relation
+                          description: >-
+                            Restriction models a specification which a
+                            Relationship's actor
+
+                            should meet.
+                        title: value restriction types
+              description: >-
+                Resource models a namespace for objects in a Policy.
+
+                Appications will have multiple entities which they must manage
+                such as files or groups.
+
+                A Resource represents a set of entities of a certain type.
+          actor_resource:
+            type: object
+            properties:
+              name:
+                type: string
+              doc:
+                type: string
+              relations:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    doc:
+                      type: string
+                    manages:
+                      type: array
+                      items:
+                        type: string
+                      title: list of relations managed by the current relation
+                    vr_types:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          resource_name:
+                            type: string
+                            title: resource_name scopes permissible actors resource
+                          relation_name:
+                            type: string
+                            title: relation_name scopes permissible actors relation
+                        description: >-
+                          Restriction models a specification which a
+                          Relationship's actor
+
+                          should meet.
+                      title: value restriction types
+            description: >-
+              ActorResource represents a special Resource which is reserved for
+              Policy actors.
+          creator:
+            type: string
+        description: >-
+          Policy represents an ACP module Policy definition.
+
+          Each Policy defines a set of high level rules over how the acces
+          control system
+
+          should behave.
+  sourcehub.acp.QueryValidatePolicyResponse:
+    type: object
+    properties:
+      valid:
+        type: boolean
+  sourcehub.acp.QueryVerifyAccessRequestResponse:
+    type: object
+    properties:
+      valid:
+        type: boolean
+  sourcehub.acp.Relation:
+    type: object
+    properties:
+      name:
+        type: string
+      doc:
+        type: string
+      manages:
+        type: array
+        items:
+          type: string
+        title: list of relations managed by the current relation
+      vr_types:
+        type: array
+        items:
+          type: object
+          properties:
+            resource_name:
+              type: string
+              title: resource_name scopes permissible actors resource
+            relation_name:
+              type: string
+              title: relation_name scopes permissible actors relation
+          description: |-
+            Restriction models a specification which a Relationship's actor
+            should meet.
+        title: value restriction types
+  sourcehub.acp.RelationSelector:
+    type: object
+    properties:
+      relation:
+        type: string
+        title: >-
+          relation specifies a relation name which must exactly match the
+          Relationship's
+      wildcard:
+        title: wildcard matches any relation
+        type: object
+    title: RelationsSelector models a filter for Relationship Relations
+  sourcehub.acp.Relationship:
+    type: object
+    properties:
+      object:
+        type: object
+        properties:
+          resource:
+            type: string
+          id:
+            type: string
+        description: >-
+          Object represents an entity which must be access controlled within a
+          Policy.
+      relation:
+        type: string
+      subject:
+        type: object
+        properties:
+          actor:
+            type: object
+            properties:
+              id:
+                type: string
+            description: >-
+              Actor represents an entity which makes access requests to a
+              Policy.
+          actor_set:
+            type: object
+            properties:
+              object:
+                type: object
+                properties:
+                  resource:
+                    type: string
+                  id:
+                    type: string
+                description: >-
+                  Object represents an entity which must be access controlled
+                  within a Policy.
+              relation:
+                type: string
+            description: |-
+              ActorSet represents a set of Actors in a Policy.
+              It is specified through an Object, Relation pair, which represents
+              all actors which have a relationship with given obj-rel pair.
+              This expansion is recursive.
+          all_actors:
+            type: object
+            description: |-
+              AllActors models a special Relationship Subject which indicates
+              that all Actors in the Policy are included.
+          object:
+            type: object
+            properties:
+              resource:
+                type: string
+              id:
+                type: string
+            description: >-
+              Object represents an entity which must be access controlled within
+              a Policy.
+        description: Subject specifies the target of a Relationship.
+    description: |-
+      Relationship models an access control rule.
+      It states that the given subject has relation with object.
+  sourcehub.acp.RelationshipRecord:
+    type: object
+    properties:
+      creation_time:
+        type: string
+        format: date-time
+      creator:
+        type: string
+      policy_id:
+        type: string
+      relationship:
+        type: object
+        properties:
+          object:
+            type: object
+            properties:
+              resource:
+                type: string
+              id:
+                type: string
+            description: >-
+              Object represents an entity which must be access controlled within
+              a Policy.
+          relation:
+            type: string
+          subject:
+            type: object
+            properties:
+              actor:
+                type: object
+                properties:
+                  id:
+                    type: string
+                description: >-
+                  Actor represents an entity which makes access requests to a
+                  Policy.
+              actor_set:
+                type: object
+                properties:
+                  object:
+                    type: object
+                    properties:
+                      resource:
+                        type: string
+                      id:
+                        type: string
+                    description: >-
+                      Object represents an entity which must be access
+                      controlled within a Policy.
+                  relation:
+                    type: string
+                description: >-
+                  ActorSet represents a set of Actors in a Policy.
+
+                  It is specified through an Object, Relation pair, which
+                  represents
+
+                  all actors which have a relationship with given obj-rel pair.
+
+                  This expansion is recursive.
+              all_actors:
+                type: object
+                description: >-
+                  AllActors models a special Relationship Subject which
+                  indicates
+
+                  that all Actors in the Policy are included.
+              object:
+                type: object
+                properties:
+                  resource:
+                    type: string
+                  id:
+                    type: string
+                description: >-
+                  Object represents an entity which must be access controlled
+                  within a Policy.
+            description: Subject specifies the target of a Relationship.
+        description: |-
+          Relationship models an access control rule.
+          It states that the given subject has relation with object.
+      archived:
+        type: boolean
+    description: >-
+      RelationshipRecord represents a document contained a Relationship and
+      additional data.
+  sourcehub.acp.RelationshipSelector:
+    type: object
+    properties:
+      object_selector:
+        type: object
+        properties:
+          object:
+            type: object
+            properties:
+              resource:
+                type: string
+              id:
+                type: string
+            description: >-
+              Object represents an entity which must be access controlled within
+              a Policy.
+            title: object specifies an object which the Relationship must contain
+          wildcard:
+            title: wildcard matches any object
+            type: object
+        title: ObjectSelector models a filter for Relationship Objects
+      relation_selector:
+        type: object
+        properties:
+          relation:
+            type: string
+            title: >-
+              relation specifies a relation name which must exactly match the
+              Relationship's
+          wildcard:
+            title: wildcard matches any relation
+            type: object
+        title: RelationsSelector models a filter for Relationship Relations
+      subject_selector:
+        type: object
+        properties:
+          subject:
+            type: object
+            properties:
+              actor:
+                type: object
+                properties:
+                  id:
+                    type: string
+                description: >-
+                  Actor represents an entity which makes access requests to a
+                  Policy.
+              actor_set:
+                type: object
+                properties:
+                  object:
+                    type: object
+                    properties:
+                      resource:
+                        type: string
+                      id:
+                        type: string
+                    description: >-
+                      Object represents an entity which must be access
+                      controlled within a Policy.
+                  relation:
+                    type: string
+                description: >-
+                  ActorSet represents a set of Actors in a Policy.
+
+                  It is specified through an Object, Relation pair, which
+                  represents
+
+                  all actors which have a relationship with given obj-rel pair.
+
+                  This expansion is recursive.
+              all_actors:
+                type: object
+                description: >-
+                  AllActors models a special Relationship Subject which
+                  indicates
+
+                  that all Actors in the Policy are included.
+              object:
+                type: object
+                properties:
+                  resource:
+                    type: string
+                  id:
+                    type: string
+                description: >-
+                  Object represents an entity which must be access controlled
+                  within a Policy.
+            description: Subject specifies the target of a Relationship.
+            title: >-
+              subject requires an exact match between the given subject and a
+              Relationship's subject
+          wildcard:
+            title: wildcard matches any subject in a Relationship
+            type: object
+        title: SubjectSelector models a filter for Relationship Subjects
+    description: >-
+      RelationshipSelector models a set of predicates which are used to filter
+      through
+
+      Relationships in a Policy.
+  sourcehub.acp.Resource:
+    type: object
+    properties:
+      name:
+        type: string
+      doc:
+        type: string
+      permissions:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            doc:
+              type: string
+            expression:
+              type: string
+          description: >-
+            Permission models a special type of Relation which is evaluated at
+            runtime.
+
+            A permission often maps to an operation defined for a resource which
+            an actor may attempt.
+      relations:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            doc:
+              type: string
+            manages:
+              type: array
+              items:
+                type: string
+              title: list of relations managed by the current relation
+            vr_types:
+              type: array
+              items:
+                type: object
+                properties:
+                  resource_name:
+                    type: string
+                    title: resource_name scopes permissible actors resource
+                  relation_name:
+                    type: string
+                    title: relation_name scopes permissible actors relation
+                description: >-
+                  Restriction models a specification which a Relationship's
+                  actor
+
+                  should meet.
+              title: value restriction types
+    description: >-
+      Resource models a namespace for objects in a Policy.
+
+      Appications will have multiple entities which they must manage such as
+      files or groups.
+
+      A Resource represents a set of entities of a certain type.
+  sourcehub.acp.Restriction:
+    type: object
+    properties:
+      resource_name:
+        type: string
+        title: resource_name scopes permissible actors resource
+      relation_name:
+        type: string
+        title: relation_name scopes permissible actors relation
+    description: |-
+      Restriction models a specification which a Relationship's actor
+      should meet.
+  sourcehub.acp.Subject:
+    type: object
+    properties:
+      actor:
+        type: object
+        properties:
+          id:
+            type: string
+        description: Actor represents an entity which makes access requests to a Policy.
+      actor_set:
+        type: object
+        properties:
+          object:
+            type: object
+            properties:
+              resource:
+                type: string
+              id:
+                type: string
+            description: >-
+              Object represents an entity which must be access controlled within
+              a Policy.
+          relation:
+            type: string
+        description: |-
+          ActorSet represents a set of Actors in a Policy.
+          It is specified through an Object, Relation pair, which represents
+          all actors which have a relationship with given obj-rel pair.
+          This expansion is recursive.
+      all_actors:
+        type: object
+        description: |-
+          AllActors models a special Relationship Subject which indicates
+          that all Actors in the Policy are included.
+      object:
+        type: object
+        properties:
+          resource:
+            type: string
+          id:
+            type: string
+        description: >-
+          Object represents an entity which must be access controlled within a
+          Policy.
+    description: Subject specifies the target of a Relationship.
+  sourcehub.acp.SubjectSelector:
+    type: object
+    properties:
+      subject:
+        type: object
+        properties:
+          actor:
+            type: object
+            properties:
+              id:
+                type: string
+            description: >-
+              Actor represents an entity which makes access requests to a
+              Policy.
+          actor_set:
+            type: object
+            properties:
+              object:
+                type: object
+                properties:
+                  resource:
+                    type: string
+                  id:
+                    type: string
+                description: >-
+                  Object represents an entity which must be access controlled
+                  within a Policy.
+              relation:
+                type: string
+            description: |-
+              ActorSet represents a set of Actors in a Policy.
+              It is specified through an Object, Relation pair, which represents
+              all actors which have a relationship with given obj-rel pair.
+              This expansion is recursive.
+          all_actors:
+            type: object
+            description: |-
+              AllActors models a special Relationship Subject which indicates
+              that all Actors in the Policy are included.
+          object:
+            type: object
+            properties:
+              resource:
+                type: string
+              id:
+                type: string
+            description: >-
+              Object represents an entity which must be access controlled within
+              a Policy.
+        description: Subject specifies the target of a Relationship.
+        title: >-
+          subject requires an exact match between the given subject and a
+          Relationship's subject
+      wildcard:
+        title: wildcard matches any subject in a Relationship
+        type: object
+    title: SubjectSelector models a filter for Relationship Subjects
+  sourcehub.acp.WildcardSelector:
+    type: object
+    title: WildcardSelector matches anything in a context
   sourcehub.acp.MsgCheckAccess:
     type: object
     properties:
       creator:
         type: string
-      policyId:
+      policy_id:
         type: string
+      creation_time:
+        type: string
+        format: date-time
+      access_request:
+        type: object
+        properties:
+          operations:
+            type: array
+            items:
+              type: object
+              properties:
+                object:
+                  title: target object for operation
+                  type: object
+                  properties:
+                    resource:
+                      type: string
+                    id:
+                      type: string
+                  description: >-
+                    Object represents an entity which must be access controlled
+                    within a Policy.
+                permission:
+                  type: string
+                  title: permission required to perform operation
+              description: Operation represents an action over an object.
+          actor:
+            title: actor requesting operations
+            type: object
+            properties:
+              id:
+                type: string
+            description: >-
+              Actor represents an entity which makes access requests to a
+              Policy.
+        title: >-
+          AccessRequest represents the wish to perform a set of operations by an
+          actor
   sourcehub.acp.MsgCheckAccessResponse:
     type: object
+    properties:
+      decision:
+        type: object
+        properties:
+          id:
+            type: string
+          policy_id:
+            type: string
+            title: used as part of id generation
+          creator:
+            type: string
+            title: used as part of id generation
+          creator_acc_sequence:
+            type: string
+            format: uint64
+            title: used as part of id generation
+          operations:
+            type: array
+            items:
+              type: object
+              properties:
+                object:
+                  title: target object for operation
+                  type: object
+                  properties:
+                    resource:
+                      type: string
+                    id:
+                      type: string
+                  description: >-
+                    Object represents an entity which must be access controlled
+                    within a Policy.
+                permission:
+                  type: string
+                  title: permission required to perform operation
+              description: Operation represents an action over an object.
+            title: used as part of id generation
+          actor_did:
+            type: string
+            title: used as part of id generation
+          actor:
+            type: string
+            title: used as part of id generation
+          params:
+            title: used as part of id generation
+            type: object
+            properties:
+              decision_expiration_delta:
+                type: string
+                format: uint64
+                title: number of blocks a Decision is valid for
+              proof_expiration_delta:
+                type: string
+                format: uint64
+                title: number of blocks a DecisionProof is valid for
+              ticket_expiration_delta:
+                type: string
+                format: uint64
+                title: number of blocks an AccessTicket is valid for
+          creation_time:
+            type: string
+            format: date-time
+          issued_height:
+            type: string
+            format: uint64
+            title: >-
+              issued_height stores the block height when the Decision was
+              evaluated
+        title: >-
+          AccessDecision models the result of evaluating a set of AccessRequests
+          for an Actor
   sourcehub.acp.MsgCreatePolicy:
     type: object
     properties:
@@ -27191,44 +29383,388 @@ definitions:
         type: string
       policy:
         type: string
+      marshal_type:
+        type: string
+        enum:
+          - UNKNOWN
+          - SHORT_YAML
+          - SHORT_JSON
+        default: UNKNOWN
+        description: |-
+          PolicyEncodingType enumerates supported marshaling types for policies.
+
+           - UNKNOWN: Fallback value for a missing Marshaling Type
+           - SHORT_YAML: Policy Marshaled as a YAML Short Policy definition
+           - SHORT_JSON: Policy Marshaled as a JSON Short Policy definition
+      creation_time:
+        type: string
+        format: date-time
   sourcehub.acp.MsgCreatePolicyResponse:
     type: object
+    properties:
+      policy:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          description:
+            type: string
+          creation_time:
+            type: string
+            format: date-time
+          attributes:
+            type: object
+            additionalProperties:
+              type: string
+          resources:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                doc:
+                  type: string
+                permissions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      doc:
+                        type: string
+                      expression:
+                        type: string
+                    description: >-
+                      Permission models a special type of Relation which is
+                      evaluated at runtime.
+
+                      A permission often maps to an operation defined for a
+                      resource which an actor may attempt.
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      doc:
+                        type: string
+                      manages:
+                        type: array
+                        items:
+                          type: string
+                        title: list of relations managed by the current relation
+                      vr_types:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            resource_name:
+                              type: string
+                              title: resource_name scopes permissible actors resource
+                            relation_name:
+                              type: string
+                              title: relation_name scopes permissible actors relation
+                          description: >-
+                            Restriction models a specification which a
+                            Relationship's actor
+
+                            should meet.
+                        title: value restriction types
+              description: >-
+                Resource models a namespace for objects in a Policy.
+
+                Appications will have multiple entities which they must manage
+                such as files or groups.
+
+                A Resource represents a set of entities of a certain type.
+          actor_resource:
+            type: object
+            properties:
+              name:
+                type: string
+              doc:
+                type: string
+              relations:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    doc:
+                      type: string
+                    manages:
+                      type: array
+                      items:
+                        type: string
+                      title: list of relations managed by the current relation
+                    vr_types:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          resource_name:
+                            type: string
+                            title: resource_name scopes permissible actors resource
+                          relation_name:
+                            type: string
+                            title: relation_name scopes permissible actors relation
+                        description: >-
+                          Restriction models a specification which a
+                          Relationship's actor
+
+                          should meet.
+                      title: value restriction types
+            description: >-
+              ActorResource represents a special Resource which is reserved for
+              Policy actors.
+          creator:
+            type: string
+        description: >-
+          Policy represents an ACP module Policy definition.
+
+          Each Policy defines a set of high level rules over how the acces
+          control system
+
+          should behave.
   sourcehub.acp.MsgDeleteRelationship:
     type: object
     properties:
       creator:
         type: string
-      policyId:
+      policy_id:
         type: string
+      relationship:
+        type: object
+        properties:
+          object:
+            type: object
+            properties:
+              resource:
+                type: string
+              id:
+                type: string
+            description: >-
+              Object represents an entity which must be access controlled within
+              a Policy.
+          relation:
+            type: string
+          subject:
+            type: object
+            properties:
+              actor:
+                type: object
+                properties:
+                  id:
+                    type: string
+                description: >-
+                  Actor represents an entity which makes access requests to a
+                  Policy.
+              actor_set:
+                type: object
+                properties:
+                  object:
+                    type: object
+                    properties:
+                      resource:
+                        type: string
+                      id:
+                        type: string
+                    description: >-
+                      Object represents an entity which must be access
+                      controlled within a Policy.
+                  relation:
+                    type: string
+                description: >-
+                  ActorSet represents a set of Actors in a Policy.
+
+                  It is specified through an Object, Relation pair, which
+                  represents
+
+                  all actors which have a relationship with given obj-rel pair.
+
+                  This expansion is recursive.
+              all_actors:
+                type: object
+                description: >-
+                  AllActors models a special Relationship Subject which
+                  indicates
+
+                  that all Actors in the Policy are included.
+              object:
+                type: object
+                properties:
+                  resource:
+                    type: string
+                  id:
+                    type: string
+                description: >-
+                  Object represents an entity which must be access controlled
+                  within a Policy.
+            description: Subject specifies the target of a Relationship.
+        description: |-
+          Relationship models an access control rule.
+          It states that the given subject has relation with object.
   sourcehub.acp.MsgDeleteRelationshipResponse:
     type: object
+    properties:
+      record_found:
+        type: boolean
   sourcehub.acp.MsgRegisterObject:
     type: object
     properties:
       creator:
         type: string
-      policyId:
+      policy_id:
         type: string
+      object:
+        type: object
+        properties:
+          resource:
+            type: string
+          id:
+            type: string
+        description: >-
+          Object represents an entity which must be access controlled within a
+          Policy.
+      creation_time:
+        type: string
+        format: date-time
   sourcehub.acp.MsgRegisterObjectResponse:
     type: object
+    properties:
+      result:
+        type: string
+        enum:
+          - NoOp
+          - Registered
+          - Unarchived
+        default: NoOp
+        description: >-
+          - NoOp: NoOp indicates no action was take. The operation failed or the
+          Object already existed and was active
+           - Registered: Registered indicates the Object was sucessfuly registered to the Actor.
+           - Unarchived: Unarchived indicates that a previously deleted Object is active again.
+          Only the original owners can Unarchive an object.
+        title: >-
+          RegistrationResult encodes the possible result set from Registering an
+          Object
   sourcehub.acp.MsgSetRelationship:
     type: object
     properties:
       creator:
         type: string
-      policy:
+      policy_id:
         type: string
+      creation_time:
+        type: string
+        format: date-time
+      relationship:
+        type: object
+        properties:
+          object:
+            type: object
+            properties:
+              resource:
+                type: string
+              id:
+                type: string
+            description: >-
+              Object represents an entity which must be access controlled within
+              a Policy.
+          relation:
+            type: string
+          subject:
+            type: object
+            properties:
+              actor:
+                type: object
+                properties:
+                  id:
+                    type: string
+                description: >-
+                  Actor represents an entity which makes access requests to a
+                  Policy.
+              actor_set:
+                type: object
+                properties:
+                  object:
+                    type: object
+                    properties:
+                      resource:
+                        type: string
+                      id:
+                        type: string
+                    description: >-
+                      Object represents an entity which must be access
+                      controlled within a Policy.
+                  relation:
+                    type: string
+                description: >-
+                  ActorSet represents a set of Actors in a Policy.
+
+                  It is specified through an Object, Relation pair, which
+                  represents
+
+                  all actors which have a relationship with given obj-rel pair.
+
+                  This expansion is recursive.
+              all_actors:
+                type: object
+                description: >-
+                  AllActors models a special Relationship Subject which
+                  indicates
+
+                  that all Actors in the Policy are included.
+              object:
+                type: object
+                properties:
+                  resource:
+                    type: string
+                  id:
+                    type: string
+                description: >-
+                  Object represents an entity which must be access controlled
+                  within a Policy.
+            description: Subject specifies the target of a Relationship.
+        description: |-
+          Relationship models an access control rule.
+          It states that the given subject has relation with object.
   sourcehub.acp.MsgSetRelationshipResponse:
     type: object
+    properties:
+      record_existed:
+        type: boolean
+        title: >-
+          Indicates whether the given Relationship previously existed, ie the Tx
+          was a no op
   sourcehub.acp.MsgUnregisterObject:
     type: object
     properties:
       creator:
         type: string
-      policyId:
+      policy_id:
         type: string
+      object:
+        type: object
+        properties:
+          resource:
+            type: string
+          id:
+            type: string
+        description: >-
+          Object represents an entity which must be access controlled within a
+          Policy.
   sourcehub.acp.MsgUnregisterObjectResponse:
     type: object
+    properties:
+      found:
+        type: boolean
   sourcehub.acp.MsgUpdateParams:
     type: object
     properties:
@@ -27246,130 +29782,22 @@ definitions:
     description: |-
       MsgUpdateParamsResponse defines the response structure for executing a
       MsgUpdateParams message.
-  sourcehub.acp.Params:
-    type: object
-    description: Params defines the parameters for the module.
-  cosmos.base.query.v1beta1.PageRequest:
-    type: object
-    properties:
-      key:
-        type: string
-        format: byte
-        description: |-
-          key is a value returned in PageResponse.next_key to begin
-          querying the next page most efficiently. Only one of offset or key
-          should be set.
-      offset:
-        type: string
-        format: uint64
-        description: |-
-          offset is a numeric offset that can be used when key is unavailable.
-          It is less efficient than using key. Only one of offset or key should
-          be set.
-      limit:
-        type: string
-        format: uint64
-        description: >-
-          limit is the total number of results to be returned in the result
-          page.
-
-          If left empty it will default to a value to be set by each app.
-      count_total:
-        type: boolean
-        description: >-
-          count_total is set to true  to indicate that the result set should
-          include
-
-          a count of the total number of items available for pagination in UIs.
-
-          count_total is only respected when offset is used. It is ignored when
-          key
-
-          is set.
-      reverse:
-        type: boolean
-        description: >-
-          reverse is set to true if results are to be returned in the descending
-          order.
-
-
-          Since: cosmos-sdk 0.43
-    description: |-
-      message SomeRequest {
-               Foo some_parameter = 1;
-               PageRequest pagination = 2;
-       }
-    title: |-
-      PageRequest is to be embedded in gRPC request messages for efficient
-      pagination. Ex:
-  cosmos.base.query.v1beta1.PageResponse:
-    type: object
-    properties:
-      next_key:
-        type: string
-        format: byte
-        description: |-
-          next_key is the key to be passed to PageRequest.key to
-          query the next page most efficiently. It will be empty if
-          there are no more results.
-      total:
-        type: string
-        format: uint64
-        title: |-
-          total is total number of results available if PageRequest.count_total
-          was set, its value is undefined otherwise
-    description: |-
-      PageResponse is to be embedded in gRPC response messages where the
-      corresponding request message has used PageRequest.
-
-       message SomeResponse {
-               repeated Bar results = 1;
-               PageResponse page = 2;
-       }
-  sourcehub.acp.QueryFilterRelationshipsResponse:
-    type: object
-  sourcehub.acp.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
-  sourcehub.acp.QueryPolicyIdsResponse:
-    type: object
-    properties:
-      pagination:
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            description: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently. It will be empty if
-              there are no more results.
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
-  sourcehub.acp.QueryPolicyResponse:
-    type: object
-  sourcehub.acp.QueryValidatePolicyResponse:
-    type: object
-  sourcehub.acp.QueryVerifyAccessRequestResponse:
-    type: object
+  sourcehub.acp.RegistrationResult:
+    type: string
+    enum:
+      - NoOp
+      - Registered
+      - Unarchived
+    default: NoOp
+    description: >-
+      - NoOp: NoOp indicates no action was take. The operation failed or the
+      Object already existed and was active
+       - Registered: Registered indicates the Object was sucessfuly registered to the Actor.
+       - Unarchived: Unarchived indicates that a previously deleted Object is active again.
+      Only the original owners can Unarchive an object.
+    title: >-
+      RegistrationResult encodes the possible result set from Registering an
+      Object
   sourcehub.sourcehub.MsgUpdateParams:
     type: object
     properties:
@@ -27393,3 +29821,10 @@ definitions:
   sourcehub.sourcehub.Params:
     type: object
     description: Params defines the parameters for the module.
+  sourcehub.sourcehub.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.

@@ -35,11 +35,42 @@ type MsgClient interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	// CreatePolicy adds a new Policy to SourceHub.
+	// The Policy models an aplication's high level access control rules.
 	CreatePolicy(ctx context.Context, in *MsgCreatePolicy, opts ...grpc.CallOption) (*MsgCreatePolicyResponse, error)
+	// SetRelationship creates or updates a Relationship within a Policy
+	// A Relationship is a statement which ties together an object and a subjecto with a "relation",
+	// which means the set of high level rules defined in the Policy will apply to these entities.
 	SetRelationship(ctx context.Context, in *MsgSetRelationship, opts ...grpc.CallOption) (*MsgSetRelationshipResponse, error)
+	// DelereRelationship removes a Relationship from a Policy.
+	// If the Relationship was not found in a Policy, this Msg is a no-op.
 	DeleteRelationship(ctx context.Context, in *MsgDeleteRelationship, opts ...grpc.CallOption) (*MsgDeleteRelationshipResponse, error)
+	// RegisterObject creates a special kind of Relationship within a Policy which ties
+	// the msg's Actor as the owner of the msg's Object.
+	// The Owner has complete control over the set of subjects that are related to their Object,
+	// giving them autonomy to share the object and revoke acces to the object,
+	// much like owners in a Discretionary Access Control model.
+	//
+	// Attempting to register a previously registered Object is an error,
+	// Object IDs are therefore assumed to be unique within a Policy.
 	RegisterObject(ctx context.Context, in *MsgRegisterObject, opts ...grpc.CallOption) (*MsgRegisterObjectResponse, error)
+	// UnregisterObject let's an Object's Owner effectively "unshare" their Object.
+	// This method wipes all Relationships referencing the given Object.
+	//
+	// A caveat is that after removing the Relationships, a record of the original Object owner
+	// is maintained to prevent an "ownership hijack" attack.
+	//
+	// Suppose Bob owns object Foo, which is shared with Bob but not Eve.
+	// Eve wants to access Foo but was not given permission to, they could "hijack" Bob's object by waiting for Bob to Unregister Foo,
+	// then submitting a RegisterObject Msg, effectively becoming Foo's new owner.
+	// If Charlie has a copy of the object, Eve could convince Charlie to share his copy, granting Eve access to Foo.
+	// The previous scenario where an unauthorized user is able to claim ownership to data previously unaccessible to them
+	// is an "ownership hijack".
 	UnregisterObject(ctx context.Context, in *MsgUnregisterObject, opts ...grpc.CallOption) (*MsgUnregisterObjectResponse, error)
+	// CheckAccess executes an Access Request for an User and stores the result of the evaluation in SourceHub.
+	//
+	// The resulting evaluation is used to generate a cryptographic proof that the given Access Request
+	// was valid at a particular block height.
 	CheckAccess(ctx context.Context, in *MsgCheckAccess, opts ...grpc.CallOption) (*MsgCheckAccessResponse, error)
 }
 
@@ -121,11 +152,42 @@ type MsgServer interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	// CreatePolicy adds a new Policy to SourceHub.
+	// The Policy models an aplication's high level access control rules.
 	CreatePolicy(context.Context, *MsgCreatePolicy) (*MsgCreatePolicyResponse, error)
+	// SetRelationship creates or updates a Relationship within a Policy
+	// A Relationship is a statement which ties together an object and a subjecto with a "relation",
+	// which means the set of high level rules defined in the Policy will apply to these entities.
 	SetRelationship(context.Context, *MsgSetRelationship) (*MsgSetRelationshipResponse, error)
+	// DelereRelationship removes a Relationship from a Policy.
+	// If the Relationship was not found in a Policy, this Msg is a no-op.
 	DeleteRelationship(context.Context, *MsgDeleteRelationship) (*MsgDeleteRelationshipResponse, error)
+	// RegisterObject creates a special kind of Relationship within a Policy which ties
+	// the msg's Actor as the owner of the msg's Object.
+	// The Owner has complete control over the set of subjects that are related to their Object,
+	// giving them autonomy to share the object and revoke acces to the object,
+	// much like owners in a Discretionary Access Control model.
+	//
+	// Attempting to register a previously registered Object is an error,
+	// Object IDs are therefore assumed to be unique within a Policy.
 	RegisterObject(context.Context, *MsgRegisterObject) (*MsgRegisterObjectResponse, error)
+	// UnregisterObject let's an Object's Owner effectively "unshare" their Object.
+	// This method wipes all Relationships referencing the given Object.
+	//
+	// A caveat is that after removing the Relationships, a record of the original Object owner
+	// is maintained to prevent an "ownership hijack" attack.
+	//
+	// Suppose Bob owns object Foo, which is shared with Bob but not Eve.
+	// Eve wants to access Foo but was not given permission to, they could "hijack" Bob's object by waiting for Bob to Unregister Foo,
+	// then submitting a RegisterObject Msg, effectively becoming Foo's new owner.
+	// If Charlie has a copy of the object, Eve could convince Charlie to share his copy, granting Eve access to Foo.
+	// The previous scenario where an unauthorized user is able to claim ownership to data previously unaccessible to them
+	// is an "ownership hijack".
 	UnregisterObject(context.Context, *MsgUnregisterObject) (*MsgUnregisterObjectResponse, error)
+	// CheckAccess executes an Access Request for an User and stores the result of the evaluation in SourceHub.
+	//
+	// The resulting evaluation is used to generate a cryptographic proof that the given Access Request
+	// was valid at a particular block height.
 	CheckAccess(context.Context, *MsgCheckAccess) (*MsgCheckAccessResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }

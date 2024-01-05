@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package sourcehub.acp;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+// Object represents an entity which must be access controlled within a Policy.
+message Object {
+  string resource = 1;
+  string id = 2;
+}
+
+// Actor represents an entity which makes access requests to a Policy.
+message Actor {
+  string id = 1;
+}
+
+// ActorSet represents a set of Actors in a Policy.
+// It is specified through an Object, Relation pair, which represents
+// all actors which have a relationship with given obj-rel pair.
+// This expansion is recursive.
+message ActorSet {
+  Object object = 1;
+  string relation = 2;
+}
+
+// AllActors models a special Relationship Subject which indicates
+// that all Actors in the Policy are included.
+message AllActors {}
+
+// Subject specifies the target of a Relationship.
+message Subject {
+  oneof subject {
+    Actor actor = 1;
+    ActorSet actor_set = 2;
+    AllActors all_actors = 3;
+    Object object = 4;
+  }
+}
+
+// Relationship models an access control rule.
+// It states that the given subject has relation with object.
+message Relationship {
+  Object object = 1;
+  string relation = 2;
+  Subject subject = 3;
+}
+
+// RelationshipRecord represents a document contained a Relationship and additional data.
+message RelationshipRecord {
+  google.protobuf.Timestamp creation_time = 1;
+  string creator = 2;
+  string policy_id = 3;
+  Relationship relationship = 4;
+  bool archived = 5;
+}
+
+// Registration represents a record assigning an Object as being owned by an Actor
+message Registration {
+  Object object = 2;
+  Actor actor = 3;
+}
+
+// RegistrationResult encodes the possible result set from Registering an Object
+enum RegistrationResult {
+  // NoOp indicates no action was take. The operation failed or the Object already existed and was active
+  NoOp = 0;
+
+  // Registered indicates the Object was sucessfuly registered to the Actor.
+  Registered = 1;
+
+  // Unarchived indicates that a previously deleted Object is active again.
+  // Only the original owners can Unarchive an object.
+  Unarchived = 2;
+}

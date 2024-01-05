@@ -2,9 +2,9 @@ syntax = "proto3";
 package sourcehub.sourcehub;
 
 import "amino/amino.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "sourcehub/sourcehub/params.proto";
 
 option go_package = "github.com/sourcenetwork/sourcehub/x/sourcehub/types";

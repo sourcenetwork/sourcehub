@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package sourcehub.acp;
+
+import "sourcehub/acp/relationship.proto";
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
+
+// RelationshipSelector models a set of predicates which are used to filter through
+// Relationships in a Policy.
+message RelationshipSelector {
+  ObjectSelector object_selector = 1;
+  RelationSelector relation_selector = 2;
+  SubjectSelector subject_selector = 3;
+}
+
+// ObjectSelector models a filter for Relationship Objects
+message ObjectSelector {
+  oneof selector {
+    // object specifies an object which the Relationship must contain
+    Object object = 1;
+
+    // wildcard matches any object
+    WildcardSelector wildcard = 2;
+  }
+}
+
+// RelationsSelector models a filter for Relationship Relations
+message RelationSelector {
+  oneof selector {
+    // relation specifies a relation name which must exactly match the Relationship's
+    string relation = 1;
+
+    // wildcard matches any relation
+    WildcardSelector wildcard = 2;
+  }
+}
+
+// SubjectSelector models a filter for Relationship Subjects
+message SubjectSelector {
+  oneof selector {
+    // subject requires an exact match between the given subject and a Relationship's subject
+    Subject subject = 1;
+
+    // wildcard matches any subject in a Relationship
+    WildcardSelector wildcard = 2;
+  }
+}
+
+// WildcardSelector matches anything in a context
+message WildcardSelector {}

@@ -6,36 +6,82 @@ import "amino/amino.proto";
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "sourcehub/acp/access_decision.proto";
 import "sourcehub/acp/params.proto";
+import "sourcehub/acp/policy.proto";
+import "sourcehub/acp/policy_short.proto";
+import "sourcehub/acp/relationship.proto";
 
 option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
 // Msg defines the Msg service.
 service Msg {
   option (cosmos.msg.v1.service) = true;
-  
+
   // UpdateParams defines a (governance) operation for updating the module
   // parameters. The authority defaults to the x/gov module account.
-  rpc UpdateParams       (MsgUpdateParams      ) returns (MsgUpdateParamsResponse      );
-  rpc CreatePolicy       (MsgCreatePolicy      ) returns (MsgCreatePolicyResponse      );
-  rpc SetRelationship    (MsgSetRelationship   ) returns (MsgSetRelationshipResponse   );
-  rpc DeleteRelationship (MsgDeleteRelationship) returns (MsgDeleteRelationshipResponse);
-  rpc RegisterObject     (MsgRegisterObject    ) returns (MsgRegisterObjectResponse    );
-  rpc UnregisterObject   (MsgUnregisterObject  ) returns (MsgUnregisterObjectResponse  );
-  rpc CheckAccess        (MsgCheckAccess       ) returns (MsgCheckAccessResponse       );
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // CreatePolicy adds a new Policy to SourceHub.
+  // The Policy models an aplication's high level access control rules.
+  rpc CreatePolicy(MsgCreatePolicy) returns (MsgCreatePolicyResponse);
+
+  // SetRelationship creates or updates a Relationship within a Policy
+  // A Relationship is a statement which ties together an object and a subjecto with a "relation",
+  // which means the set of high level rules defined in the Policy will apply to these entities.
+  rpc SetRelationship(MsgSetRelationship) returns (MsgSetRelationshipResponse);
+
+  // DelereRelationship removes a Relationship from a Policy.
+  // If the Relationship was not found in a Policy, this Msg is a no-op.
+  rpc DeleteRelationship(MsgDeleteRelationship) returns (MsgDeleteRelationshipResponse);
+
+  // RegisterObject creates a special kind of Relationship within a Policy which ties
+  // the msg's Actor as the owner of the msg's Object.
+  // The Owner has complete control over the set of subjects that are related to their Object,
+  // giving them autonomy to share the object and revoke acces to the object,
+  // much like owners in a Discretionary Access Control model.
+  //
+  // Attempting to register a previously registered Object is an error,
+  // Object IDs are therefore assumed to be unique within a Policy.
+  rpc RegisterObject(MsgRegisterObject) returns (MsgRegisterObjectResponse);
+
+  // UnregisterObject let's an Object's Owner effectively "unshare" their Object.
+  // This method wipes all Relationships referencing the given Object.
+  //
+  // A caveat is that after removing the Relationships, a record of the original Object owner
+  // is maintained to prevent an "ownership hijack" attack.
+  //
+  // Suppose Bob owns object Foo, which is shared with Bob but not Eve.
+  // Eve wants to access Foo but was not given permission to, they could "hijack" Bob's object by waiting for Bob to Unregister Foo,
+  // then submitting a RegisterObject Msg, effectively becoming Foo's new owner.
+  // If Charlie has a copy of the object, Eve could convince Charlie to share his copy, granting Eve access to Foo.
+  // The previous scenario where an unauthorized user is able to claim ownership to data previously unaccessible to them
+  // is an "ownership hijack".
+  rpc UnregisterObject(MsgUnregisterObject) returns (MsgUnregisterObjectResponse);
+
+  // CheckAccess executes an Access Request for an User and stores the result of the evaluation in SourceHub.
+  //
+  // The resulting evaluation is used to generate a cryptographic proof that the given Access Request
+  // was valid at a particular block height.
+  rpc CheckAccess(MsgCheckAccess) returns (MsgCheckAccessResponse);
 }
+
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
-  option (cosmos.msg.v1.signer) =                       "authority";
-  option           (amino.name) = "sourcehub/x/acp/MsgUpdateParams";
-  
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "sourcehub/x/acp/MsgUpdateParams";
+
   // authority is the address that controls the module (defaults to x/gov unless overwritten).
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // params defines the module parameters to update.
-  
+
   // NOTE: All parameters must be supplied.
-  Params params = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  Params params = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 // MsgUpdateParamsResponse defines the response structure for executing a
@@ -45,48 +91,70 @@ message MsgUpdateParamsResponse {}
 message MsgCreatePolicy {
   option (cosmos.msg.v1.signer) = "creator";
   string creator = 1;
-  string policy  = 2;
+  string policy = 2;
+  PolicyMarshalingType marshal_type = 3;
+  google.protobuf.Timestamp creation_time = 4;
 }
 
-message MsgCreatePolicyResponse {}
+message MsgCreatePolicyResponse {
+  Policy policy = 1;
+}
 
 message MsgSetRelationship {
   option (cosmos.msg.v1.signer) = "creator";
   string creator = 1;
-  string policy  = 2;
+  string policy_id = 2;
+  google.protobuf.Timestamp creation_time = 3;
+  Relationship relationship = 4;
 }
 
-message MsgSetRelationshipResponse {}
+message MsgSetRelationshipResponse {
+  // Indicates whether the given Relationship previously existed, ie the Tx was a no op
+  bool record_existed = 1;
+}
 
 message MsgDeleteRelationship {
   option (cosmos.msg.v1.signer) = "creator";
-  string creator  = 1;
-  string policyId = 2;
+  string creator = 1;
+  string policy_id = 2;
+  Relationship relationship = 3;
 }
 
-message MsgDeleteRelationshipResponse {}
+message MsgDeleteRelationshipResponse {
+  bool record_found = 1;
+}
 
 message MsgRegisterObject {
   option (cosmos.msg.v1.signer) = "creator";
-  string creator  = 1;
-  string policyId = 2;
+  string creator = 1;
+  string policy_id = 2;
+  Object object = 3;
+  google.protobuf.Timestamp creation_time = 5;
 }
 
-message MsgRegisterObjectResponse {}
+message MsgRegisterObjectResponse {
+  RegistrationResult result = 1;
+}
 
 message MsgUnregisterObject {
   option (cosmos.msg.v1.signer) = "creator";
-  string creator  = 1;
-  string policyId = 2;
+  string creator = 1;
+  string policy_id = 2;
+  Object object = 3;
 }
 
-message MsgUnregisterObjectResponse {}
+message MsgUnregisterObjectResponse {
+  bool found = 1;
+}
 
 message MsgCheckAccess {
   option (cosmos.msg.v1.signer) = "creator";
-  string creator  = 1;
-  string policyId = 2;
+  string creator = 1;
+  string policy_id = 2;
+  google.protobuf.Timestamp creation_time = 3;
+  AccessRequest access_request = 4;
 }
 
-message MsgCheckAccessResponse {}
-
+message MsgCheckAccessResponse {
+  AccessDecision decision = 1;
+}

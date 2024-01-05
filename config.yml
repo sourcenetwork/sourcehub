@@ -17,3 +17,6 @@ faucet:
 validators:
 - name: validator
   bonded: 200000000stake
+
+build:
+  main: cmd/sourcehubd
