@@ -4,8 +4,7 @@ package sourcehub.bulletin;
 option go_package = "github.com/sourcenetwork/sourcehub/x/bulletin/types";
 
 message Post {
-  
-  string namespace = 1; 
-  string payload = 2; 
-  string proof = 3; 
+  string namespace = 1;
+  bytes payload = 2;
+  bytes proof = 3;
 }
