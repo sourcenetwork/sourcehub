@@ -1,0 +1,17 @@
+syntax = "proto3";
+package sourcehub.bulletin;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "sourcehub/bulletin/params.proto";
+
+option go_package = "github.com/sourcenetwork/sourcehub/x/bulletin/types";
+
+// GenesisState defines the bulletin module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
