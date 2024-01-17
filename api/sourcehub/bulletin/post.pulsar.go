@@ -98,14 +98,14 @@ func (x *fastReflection_Post) Range(f func(protoreflect.FieldDescriptor, protore
 			return
 		}
 	}
-	if x.Payload != "" {
-		value := protoreflect.ValueOfString(x.Payload)
+	if len(x.Payload) != 0 {
+		value := protoreflect.ValueOfBytes(x.Payload)
 		if !f(fd_Post_payload, value) {
 			return
 		}
 	}
-	if x.Proof != "" {
-		value := protoreflect.ValueOfString(x.Proof)
+	if len(x.Proof) != 0 {
+		value := protoreflect.ValueOfBytes(x.Proof)
 		if !f(fd_Post_proof, value) {
 			return
 		}
@@ -128,9 +128,9 @@ func (x *fastReflection_Post) Has(fd protoreflect.FieldDescriptor) bool {
 	case "sourcehub.bulletin.Post.namespace":
 		return x.Namespace != ""
 	case "sourcehub.bulletin.Post.payload":
-		return x.Payload != ""
+		return len(x.Payload) != 0
 	case "sourcehub.bulletin.Post.proof":
-		return x.Proof != ""
+		return len(x.Proof) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.bulletin.Post"))
@@ -150,9 +150,9 @@ func (x *fastReflection_Post) Clear(fd protoreflect.FieldDescriptor) {
 	case "sourcehub.bulletin.Post.namespace":
 		x.Namespace = ""
 	case "sourcehub.bulletin.Post.payload":
-		x.Payload = ""
+		x.Payload = nil
 	case "sourcehub.bulletin.Post.proof":
-		x.Proof = ""
+		x.Proof = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.bulletin.Post"))
@@ -174,10 +174,10 @@ func (x *fastReflection_Post) Get(descriptor protoreflect.FieldDescriptor) proto
 		return protoreflect.ValueOfString(value)
 	case "sourcehub.bulletin.Post.payload":
 		value := x.Payload
-		return protoreflect.ValueOfString(value)
+		return protoreflect.ValueOfBytes(value)
 	case "sourcehub.bulletin.Post.proof":
 		value := x.Proof
-		return protoreflect.ValueOfString(value)
+		return protoreflect.ValueOfBytes(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.bulletin.Post"))
@@ -201,9 +201,9 @@ func (x *fastReflection_Post) Set(fd protoreflect.FieldDescriptor, value protore
 	case "sourcehub.bulletin.Post.namespace":
 		x.Namespace = value.Interface().(string)
 	case "sourcehub.bulletin.Post.payload":
-		x.Payload = value.Interface().(string)
+		x.Payload = value.Bytes()
 	case "sourcehub.bulletin.Post.proof":
-		x.Proof = value.Interface().(string)
+		x.Proof = value.Bytes()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.bulletin.Post"))
@@ -246,9 +246,9 @@ func (x *fastReflection_Post) NewField(fd protoreflect.FieldDescriptor) protoref
 	case "sourcehub.bulletin.Post.namespace":
 		return protoreflect.ValueOfString("")
 	case "sourcehub.bulletin.Post.payload":
-		return protoreflect.ValueOfString("")
+		return protoreflect.ValueOfBytes(nil)
 	case "sourcehub.bulletin.Post.proof":
-		return protoreflect.ValueOfString("")
+		return protoreflect.ValueOfBytes(nil)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.bulletin.Post"))
@@ -465,7 +465,7 @@ func (x *fastReflection_Post) ProtoMethods() *protoiface.Methods {
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
 				}
-				var stringLen uint64
+				var byteLen int
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -475,29 +475,31 @@ func (x *fastReflection_Post) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
+					byteLen |= int(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
+				if byteLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + intStringLen
+				postIndex := iNdEx + byteLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Payload = string(dAtA[iNdEx:postIndex])
+				x.Payload = append(x.Payload[:0], dAtA[iNdEx:postIndex]...)
+				if x.Payload == nil {
+					x.Payload = []byte{}
+				}
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Proof", wireType)
 				}
-				var stringLen uint64
+				var byteLen int
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -507,23 +509,25 @@ func (x *fastReflection_Post) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
+					byteLen |= int(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
+				if byteLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + intStringLen
+				postIndex := iNdEx + byteLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Proof = string(dAtA[iNdEx:postIndex])
+				x.Proof = append(x.Proof[:0], dAtA[iNdEx:postIndex]...)
+				if x.Proof == nil {
+					x.Proof = []byte{}
+				}
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -579,8 +583,8 @@ type Post struct {
 	unknownFields protoimpl.UnknownFields
 
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	Payload   string `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
-	Proof     string `protobuf:"bytes,3,opt,name=proof,proto3" json:"proof,omitempty"`
+	Payload   []byte `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
+	Proof     []byte `protobuf:"bytes,3,opt,name=proof,proto3" json:"proof,omitempty"`
 }
 
 func (x *Post) Reset() {
@@ -610,18 +614,18 @@ func (x *Post) GetNamespace() string {
 	return ""
 }
 
-func (x *Post) GetPayload() string {
+func (x *Post) GetPayload() []byte {
 	if x != nil {
 		return x.Payload
 	}
-	return ""
+	return nil
 }
 
-func (x *Post) GetProof() string {
+func (x *Post) GetProof() []byte {
 	if x != nil {
 		return x.Proof
 	}
-	return ""
+	return nil
 }
 
 var File_sourcehub_bulletin_post_proto protoreflect.FileDescriptor
@@ -633,9 +637,9 @@ var file_sourcehub_bulletin_post_proto_rawDesc = []byte{
 	0x74, 0x69, 0x6e, 0x22, 0x54, 0x0a, 0x04, 0x50, 0x6f, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x6e,
 	0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
 	0x6e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x61, 0x79,
-	0x6c, 0x6f, 0x61, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x70, 0x61, 0x79, 0x6c,
+	0x6c, 0x6f, 0x61, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x70, 0x61, 0x79, 0x6c,
 	0x6f, 0x61, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x05, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x42, 0xb1, 0x01, 0x0a, 0x16, 0x63, 0x6f,
+	0x28, 0x0c, 0x52, 0x05, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x42, 0xb1, 0x01, 0x0a, 0x16, 0x63, 0x6f,
 	0x6d, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x62, 0x75, 0x6c, 0x6c,
 	0x65, 0x74, 0x69, 0x6e, 0x42, 0x09, 0x50, 0x6f, 0x73, 0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
 	0x01, 0x5a, 0x23, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,

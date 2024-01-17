@@ -10,6 +10,4 @@ option go_package = "github.com/sourcenetwork/sourcehub/x/bulletin/types";
 message Params {
   option (amino.name) = "sourcehub/x/bulletin/Params";
   option (gogoproto.equal) = true;
-
-  
 }

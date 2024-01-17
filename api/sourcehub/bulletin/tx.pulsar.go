@@ -965,14 +965,14 @@ func (x *fastReflection_MsgCreatePost) Range(f func(protoreflect.FieldDescriptor
 			return
 		}
 	}
-	if x.Payload != "" {
-		value := protoreflect.ValueOfString(x.Payload)
+	if len(x.Payload) != 0 {
+		value := protoreflect.ValueOfBytes(x.Payload)
 		if !f(fd_MsgCreatePost_payload, value) {
 			return
 		}
 	}
-	if x.Proof != "" {
-		value := protoreflect.ValueOfString(x.Proof)
+	if len(x.Proof) != 0 {
+		value := protoreflect.ValueOfBytes(x.Proof)
 		if !f(fd_MsgCreatePost_proof, value) {
 			return
 		}
@@ -997,9 +997,9 @@ func (x *fastReflection_MsgCreatePost) Has(fd protoreflect.FieldDescriptor) bool
 	case "sourcehub.bulletin.MsgCreatePost.namespace":
 		return x.Namespace != ""
 	case "sourcehub.bulletin.MsgCreatePost.payload":
-		return x.Payload != ""
+		return len(x.Payload) != 0
 	case "sourcehub.bulletin.MsgCreatePost.proof":
-		return x.Proof != ""
+		return len(x.Proof) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.bulletin.MsgCreatePost"))
@@ -1021,9 +1021,9 @@ func (x *fastReflection_MsgCreatePost) Clear(fd protoreflect.FieldDescriptor) {
 	case "sourcehub.bulletin.MsgCreatePost.namespace":
 		x.Namespace = ""
 	case "sourcehub.bulletin.MsgCreatePost.payload":
-		x.Payload = ""
+		x.Payload = nil
 	case "sourcehub.bulletin.MsgCreatePost.proof":
-		x.Proof = ""
+		x.Proof = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.bulletin.MsgCreatePost"))
@@ -1048,10 +1048,10 @@ func (x *fastReflection_MsgCreatePost) Get(descriptor protoreflect.FieldDescript
 		return protoreflect.ValueOfString(value)
 	case "sourcehub.bulletin.MsgCreatePost.payload":
 		value := x.Payload
-		return protoreflect.ValueOfString(value)
+		return protoreflect.ValueOfBytes(value)
 	case "sourcehub.bulletin.MsgCreatePost.proof":
 		value := x.Proof
-		return protoreflect.ValueOfString(value)
+		return protoreflect.ValueOfBytes(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.bulletin.MsgCreatePost"))
@@ -1077,9 +1077,9 @@ func (x *fastReflection_MsgCreatePost) Set(fd protoreflect.FieldDescriptor, valu
 	case "sourcehub.bulletin.MsgCreatePost.namespace":
 		x.Namespace = value.Interface().(string)
 	case "sourcehub.bulletin.MsgCreatePost.payload":
-		x.Payload = value.Interface().(string)
+		x.Payload = value.Bytes()
 	case "sourcehub.bulletin.MsgCreatePost.proof":
-		x.Proof = value.Interface().(string)
+		x.Proof = value.Bytes()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.bulletin.MsgCreatePost"))
@@ -1126,9 +1126,9 @@ func (x *fastReflection_MsgCreatePost) NewField(fd protoreflect.FieldDescriptor)
 	case "sourcehub.bulletin.MsgCreatePost.namespace":
 		return protoreflect.ValueOfString("")
 	case "sourcehub.bulletin.MsgCreatePost.payload":
-		return protoreflect.ValueOfString("")
+		return protoreflect.ValueOfBytes(nil)
 	case "sourcehub.bulletin.MsgCreatePost.proof":
-		return protoreflect.ValueOfString("")
+		return protoreflect.ValueOfBytes(nil)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.bulletin.MsgCreatePost"))
@@ -1388,7 +1388,7 @@ func (x *fastReflection_MsgCreatePost) ProtoMethods() *protoiface.Methods {
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
 				}
-				var stringLen uint64
+				var byteLen int
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1398,29 +1398,31 @@ func (x *fastReflection_MsgCreatePost) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
+					byteLen |= int(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
+				if byteLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + intStringLen
+				postIndex := iNdEx + byteLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Payload = string(dAtA[iNdEx:postIndex])
+				x.Payload = append(x.Payload[:0], dAtA[iNdEx:postIndex]...)
+				if x.Payload == nil {
+					x.Payload = []byte{}
+				}
 				iNdEx = postIndex
 			case 4:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Proof", wireType)
 				}
-				var stringLen uint64
+				var byteLen int
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1430,23 +1432,25 @@ func (x *fastReflection_MsgCreatePost) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
+					byteLen |= int(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
+				if byteLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + intStringLen
+				postIndex := iNdEx + byteLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Proof = string(dAtA[iNdEx:postIndex])
+				x.Proof = append(x.Proof[:0], dAtA[iNdEx:postIndex]...)
+				if x.Proof == nil {
+					x.Proof = []byte{}
+				}
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -1933,8 +1937,8 @@ type MsgCreatePost struct {
 
 	Creator   string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Namespace string `protobuf:"bytes,2,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	Payload   string `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
-	Proof     string `protobuf:"bytes,4,opt,name=proof,proto3" json:"proof,omitempty"`
+	Payload   []byte `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
+	Proof     []byte `protobuf:"bytes,4,opt,name=proof,proto3" json:"proof,omitempty"`
 }
 
 func (x *MsgCreatePost) Reset() {
@@ -1971,18 +1975,18 @@ func (x *MsgCreatePost) GetNamespace() string {
 	return ""
 }
 
-func (x *MsgCreatePost) GetPayload() string {
+func (x *MsgCreatePost) GetPayload() []byte {
 	if x != nil {
 		return x.Payload
 	}
-	return ""
+	return nil
 }
 
-func (x *MsgCreatePost) GetProof() string {
+func (x *MsgCreatePost) GetProof() []byte {
 	if x != nil {
 		return x.Proof
 	}
-	return ""
+	return nil
 }
 
 type MsgCreatePostResponse struct {
@@ -2044,9 +2048,9 @@ var file_sourcehub_bulletin_tx_proto_rawDesc = []byte{
 	0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x1c, 0x0a, 0x09, 0x6e, 0x61,
 	0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6e,
 	0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c,
-	0x6f, 0x61, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f,
+	0x6f, 0x61, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f,
 	0x61, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x05, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63,
+	0x0c, 0x52, 0x05, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x3a, 0x0c, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63,
 	0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x22, 0x17, 0x0a, 0x15, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65,
 	0x61, 0x74, 0x65, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32,
 	0xca, 0x01, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x60, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74,
