@@ -55,7 +55,6 @@ import (
 
 	acpmodulekeeper "github.com/sourcenetwork/sourcehub/x/acp/keeper"
 	bulletinmodulekeeper "github.com/sourcenetwork/sourcehub/x/bulletin/keeper"
-	sourcehubmodulekeeper "github.com/sourcenetwork/sourcehub/x/sourcehub/keeper"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/sourcenetwork/sourcehub/docs"
@@ -118,7 +117,6 @@ type App struct {
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 
-	SourcehubKeeper sourcehubmodulekeeper.Keeper
 	AcpKeeper       acpmodulekeeper.Keeper
 	BulletinKeeper  bulletinmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
@@ -258,7 +256,6 @@ func New(
 		&app.GroupKeeper,
 		&app.ConsensusParamsKeeper,
 		&app.CircuitBreakerKeeper,
-		&app.SourcehubKeeper,
 		&app.AcpKeeper,
 		&app.BulletinKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition

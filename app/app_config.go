@@ -73,13 +73,10 @@ import (
 
 	acpmodulev1 "github.com/sourcenetwork/sourcehub/api/sourcehub/acp/module"
 	bulletinmodulev1 "github.com/sourcenetwork/sourcehub/api/sourcehub/bulletin/module"
-	sourcehubmodulev1 "github.com/sourcenetwork/sourcehub/api/sourcehub/sourcehub/module"
 	_ "github.com/sourcenetwork/sourcehub/x/acp/module" // import for side-effects
 	acpmoduletypes "github.com/sourcenetwork/sourcehub/x/acp/types"
 	_ "github.com/sourcenetwork/sourcehub/x/bulletin/module" // import for side-effects
 	bulletinmoduletypes "github.com/sourcenetwork/sourcehub/x/bulletin/types"
-	_ "github.com/sourcenetwork/sourcehub/x/sourcehub/module" // import for side-effects
-	sourcehubmoduletypes "github.com/sourcenetwork/sourcehub/x/sourcehub/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -117,7 +114,6 @@ var (
 		consensusparamtypes.ModuleName,
 		circuittypes.ModuleName,
 		// chain modules
-		sourcehubmoduletypes.ModuleName,
 		acpmoduletypes.ModuleName,
 		bulletinmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
@@ -144,7 +140,6 @@ var (
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		// chain modules
-		sourcehubmoduletypes.ModuleName,
 		acpmoduletypes.ModuleName,
 		bulletinmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
@@ -165,7 +160,6 @@ var (
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		// chain modules
-		sourcehubmoduletypes.ModuleName,
 		acpmoduletypes.ModuleName,
 		bulletinmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
@@ -316,10 +310,6 @@ var (
 			{
 				Name:   circuittypes.ModuleName,
 				Config: appconfig.WrapAny(&circuitmodulev1.Module{}),
-			},
-			{
-				Name:   sourcehubmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&sourcehubmodulev1.Module{}),
 			},
 			{
 				Name:   acpmoduletypes.ModuleName,
