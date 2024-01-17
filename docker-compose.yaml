@@ -4,7 +4,9 @@ services:
   sourcehub:
     build:
       target: builder
+      args:
+        dev: 1
     ports:
-      - 9090
+      - 1317
     volumes:
       - .:/app

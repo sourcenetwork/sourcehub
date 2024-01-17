@@ -2,12 +2,15 @@ IGNITE_RUN = docker run --rm -ti --volume $(PWD):/apps ignitehq/cli:latest
 UID := $(shell id --user)
 GID := $(shell id --group)
 BIN = build/sourcehubd
-DEMO_SRC = cmd/token-protocol-demo/main.go
 DEMO_BIN = build/token-protocol-demo
 
 .PHONY: build
 build:
-	go build -o ${BIN} cmd/sourcehubd/main.go
+	go build -o ${BIN} ./cmd/sourcehubd
+
+.PHONY: install
+install:
+	go install ./cmd/sourcehubd
 
 .PHONY: proto
 proto:
@@ -20,7 +23,6 @@ test:
 .PHONY: simulate
 simulate:
 	ignite chain simulate
-	
 
 .PHONY: fmt
 fmt:
@@ -28,9 +30,15 @@ fmt:
 	buf format --write
 
 .PHONY: run
-run:
+run: build
 	${BIN} start
 
 .PHONY: docs
 docs:
 	pkgsite -http 0.0.0.0:8080
+
+.PHONY: image
+# builds a production docker image in the local system and tags it with
+# the ID of the current git HEAD
+image:
+	scripts/build-docker-image.sh
