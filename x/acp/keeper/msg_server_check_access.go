@@ -43,11 +43,11 @@ func (k msgServer) CheckAccess(goCtx context.Context, msg *types.MsgCheckAccess)
 
 	creatorAddr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		panic("creator must exist")
+		return nil, types.ErrInvalidAccAddr
 	}
 	creatorAcc := k.accountKeeper.GetAccount(ctx, creatorAddr)
 	if creatorAcc == nil {
-		panic("creator must exist")
+		return nil, types.ErrAccNotFound
 	}
 
 	cmd := access_decision.EvaluateAccessRequestsCommand{
