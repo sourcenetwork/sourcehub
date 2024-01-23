@@ -5,14 +5,14 @@ accounts:
     - 200000000stake
 - name: faucet
   coins:
-    - 200000000stake
+    - 2000000000000uopen
 client:
   openapi:
     path: docs/static/openapi.yml
 faucet:
   name: faucet
   coins:
-    - 100000stake
+    - 100000uopen
 
 validators:
 - name: validator
