@@ -47,7 +47,7 @@ type QueryClient interface {
 	ValidatePolicy(ctx context.Context, in *QueryValidatePolicyRequest, opts ...grpc.CallOption) (*QueryValidatePolicyResponse, error)
 	// Queries a list of AccessDecision items.
 	AccessDecision(ctx context.Context, in *QueryAccessDecisionRequest, opts ...grpc.CallOption) (*QueryAccessDecisionResponse, error)
-	// Queries a list of ObjectOwner items.
+	// ObjectOwner returns the Actor ID of the the given Object's owner
 	ObjectOwner(ctx context.Context, in *QueryObjectOwnerRequest, opts ...grpc.CallOption) (*QueryObjectOwnerResponse, error)
 }
 
@@ -149,7 +149,7 @@ type QueryServer interface {
 	ValidatePolicy(context.Context, *QueryValidatePolicyRequest) (*QueryValidatePolicyResponse, error)
 	// Queries a list of AccessDecision items.
 	AccessDecision(context.Context, *QueryAccessDecisionRequest) (*QueryAccessDecisionResponse, error)
-	// Queries a list of ObjectOwner items.
+	// ObjectOwner returns the Actor ID of the the given Object's owner
 	ObjectOwner(context.Context, *QueryObjectOwnerRequest) (*QueryObjectOwnerResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
