@@ -129,5 +129,5 @@ message QueryObjectOwnerRequest {
 
 message QueryObjectOwnerResponse {
   bool is_registered = 1;
-  optional string owner_id = 2;
+  string owner_id = 2;
 }
