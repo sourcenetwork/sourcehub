@@ -60,12 +60,12 @@ service Query {
   
   }
   
-  // Queries a list of ObjectOwner items.
+  // ObjectOwner returns the Actor ID of the the given Object's owner
   rpc ObjectOwner (QueryObjectOwnerRequest) returns (QueryObjectOwnerResponse) {
-    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/object_owner/{policyId}/{object}";
-  
+    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/object_owner/{policy_id}/{object.resource}/{object.id}";
   }
 }
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
@@ -131,9 +131,11 @@ message QueryAccessDecisionResponse {
 }
 
 message QueryObjectOwnerRequest {
-  string policyId = 1;
-  string object   = 2;
+  string policy_id = 1;
+  Object object   = 2;
 }
 
-message QueryObjectOwnerResponse {}
-
+message QueryObjectOwnerResponse {
+  bool is_registered = 1;
+  optional string owner_id = 2;
+}
