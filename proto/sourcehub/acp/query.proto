@@ -17,51 +17,43 @@ option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
   // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/params";
-  
   }
-  
+
   // Queries a list of Policy items.
-  rpc Policy (QueryPolicyRequest) returns (QueryPolicyResponse) {
+  rpc Policy(QueryPolicyRequest) returns (QueryPolicyResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/policy/{id}";
-  
   }
-  
+
   // Queries a list of PolicyIds items.
-  rpc PolicyIds (QueryPolicyIdsRequest) returns (QueryPolicyIdsResponse) {
+  rpc PolicyIds(QueryPolicyIdsRequest) returns (QueryPolicyIdsResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/policy_ids";
-  
   }
-  
+
   // Queries a list of FilterRelationships items.
-  rpc FilterRelationships (QueryFilterRelationshipsRequest) returns (QueryFilterRelationshipsResponse) {
+  rpc FilterRelationships(QueryFilterRelationshipsRequest) returns (QueryFilterRelationshipsResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/filter_relationships/{policy_id}";
-  
   }
-  
+
   // Queries a list of VerifyAccessRequest items.
-  rpc VerifyAccessRequest (QueryVerifyAccessRequestRequest) returns (QueryVerifyAccessRequestResponse) {
+  rpc VerifyAccessRequest(QueryVerifyAccessRequestRequest) returns (QueryVerifyAccessRequestResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/verify_access_request/{policy_id}";
-  
   }
-  
+
   // Queries a list of ValidatePolicy items.
-  rpc ValidatePolicy (QueryValidatePolicyRequest) returns (QueryValidatePolicyResponse) {
+  rpc ValidatePolicy(QueryValidatePolicyRequest) returns (QueryValidatePolicyResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/validate_policy/{policy}";
-  
   }
-  
+
   // Queries a list of AccessDecision items.
-  rpc AccessDecision (QueryAccessDecisionRequest) returns (QueryAccessDecisionResponse) {
+  rpc AccessDecision(QueryAccessDecisionRequest) returns (QueryAccessDecisionResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/access_decision/{id}";
-  
   }
-  
+
   // ObjectOwner returns the Actor ID of the the given Object's owner
-  rpc ObjectOwner (QueryObjectOwnerRequest) returns (QueryObjectOwnerResponse) {
+  rpc ObjectOwner(QueryObjectOwnerRequest) returns (QueryObjectOwnerResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/object_owner/{policy_id}/{object.resource}/{object.id}";
   }
 }
@@ -71,9 +63,11 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 message QueryPolicyRequest {
@@ -85,19 +79,17 @@ message QueryPolicyResponse {
 }
 
 message QueryPolicyIdsRequest {
-
   //cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 message QueryPolicyIdsResponse {
-  
   //cosmos.base.query.v1beta1.PageResponse pagination = 1;
   repeated string ids = 1;
 }
 
 message QueryFilterRelationshipsRequest {
-  string               policy_id = 1;
-  RelationshipSelector selector  = 2;
+  string policy_id = 1;
+  RelationshipSelector selector = 2;
 }
 
 message QueryFilterRelationshipsResponse {
@@ -105,7 +97,7 @@ message QueryFilterRelationshipsResponse {
 }
 
 message QueryVerifyAccessRequestRequest {
-  string        policy_id      = 1;
+  string policy_id = 1;
   AccessRequest access_request = 2;
 }
 
@@ -114,7 +106,7 @@ message QueryVerifyAccessRequestResponse {
 }
 
 message QueryValidatePolicyRequest {
-  string               policy       = 1;
+  string policy = 1;
   PolicyMarshalingType marshal_type = 3;
 }
 
@@ -132,7 +124,7 @@ message QueryAccessDecisionResponse {
 
 message QueryObjectOwnerRequest {
   string policy_id = 1;
-  Object object   = 2;
+  Object object = 2;
 }
 
 message QueryObjectOwnerResponse {
