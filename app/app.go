@@ -117,8 +117,8 @@ type App struct {
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 
-	AcpKeeper       acpmodulekeeper.Keeper
-	BulletinKeeper  bulletinmodulekeeper.Keeper
+	AcpKeeper      acpmodulekeeper.Keeper
+	BulletinKeeper bulletinmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager

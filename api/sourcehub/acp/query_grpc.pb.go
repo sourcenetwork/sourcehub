@@ -26,6 +26,7 @@ const (
 	Query_VerifyAccessRequest_FullMethodName = "/sourcehub.acp.Query/VerifyAccessRequest"
 	Query_ValidatePolicy_FullMethodName      = "/sourcehub.acp.Query/ValidatePolicy"
 	Query_AccessDecision_FullMethodName      = "/sourcehub.acp.Query/AccessDecision"
+	Query_ObjectOwner_FullMethodName         = "/sourcehub.acp.Query/ObjectOwner"
 )
 
 // QueryClient is the client API for Query service.
@@ -46,6 +47,8 @@ type QueryClient interface {
 	ValidatePolicy(ctx context.Context, in *QueryValidatePolicyRequest, opts ...grpc.CallOption) (*QueryValidatePolicyResponse, error)
 	// Queries a list of AccessDecision items.
 	AccessDecision(ctx context.Context, in *QueryAccessDecisionRequest, opts ...grpc.CallOption) (*QueryAccessDecisionResponse, error)
+	// Queries a list of ObjectOwner items.
+	ObjectOwner(ctx context.Context, in *QueryObjectOwnerRequest, opts ...grpc.CallOption) (*QueryObjectOwnerResponse, error)
 }
 
 type queryClient struct {
@@ -119,6 +122,15 @@ func (c *queryClient) AccessDecision(ctx context.Context, in *QueryAccessDecisio
 	return out, nil
 }
 
+func (c *queryClient) ObjectOwner(ctx context.Context, in *QueryObjectOwnerRequest, opts ...grpc.CallOption) (*QueryObjectOwnerResponse, error) {
+	out := new(QueryObjectOwnerResponse)
+	err := c.cc.Invoke(ctx, Query_ObjectOwner_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -137,6 +149,8 @@ type QueryServer interface {
 	ValidatePolicy(context.Context, *QueryValidatePolicyRequest) (*QueryValidatePolicyResponse, error)
 	// Queries a list of AccessDecision items.
 	AccessDecision(context.Context, *QueryAccessDecisionRequest) (*QueryAccessDecisionResponse, error)
+	// Queries a list of ObjectOwner items.
+	ObjectOwner(context.Context, *QueryObjectOwnerRequest) (*QueryObjectOwnerResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -164,6 +178,9 @@ func (UnimplementedQueryServer) ValidatePolicy(context.Context, *QueryValidatePo
 }
 func (UnimplementedQueryServer) AccessDecision(context.Context, *QueryAccessDecisionRequest) (*QueryAccessDecisionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccessDecision not implemented")
+}
+func (UnimplementedQueryServer) ObjectOwner(context.Context, *QueryObjectOwnerRequest) (*QueryObjectOwnerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ObjectOwner not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -304,6 +321,24 @@ func _Query_AccessDecision_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_ObjectOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryObjectOwnerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ObjectOwner(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ObjectOwner_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ObjectOwner(ctx, req.(*QueryObjectOwnerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -338,6 +373,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AccessDecision",
 			Handler:    _Query_AccessDecision_Handler,
+		},
+		{
+			MethodName: "ObjectOwner",
+			Handler:    _Query_ObjectOwner_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
