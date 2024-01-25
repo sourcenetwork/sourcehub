@@ -92,10 +92,41 @@ func (s *queryObjectOwnerSuite) TestQueryReturnsObjectOwner() {
 	})
 }
 
-// Test Query Unregistered Object
+func (s *queryObjectOwnerSuite) TestQueryingForUnregisteredObjectReturnsEmptyOwner() {
+	ctx, keeper, policyId := s.setup(s.T())
 
-// Test Query on invalid object (?)
+	resp, err := keeper.ObjectOwner(ctx, &types.QueryObjectOwnerRequest{
+		PolicyId: policyId,
+		Object:   types.NewObject("file", "404"),
+	})
 
-// Test Query missing policy
+	require.Nil(s.T(), err)
+	require.Equal(s.T(), resp, &types.QueryObjectOwnerResponse{
+		IsRegistered: false,
+		OwnerId:      "",
+	})
+}
 
-// Test Qury missing resource
+func (s *queryObjectOwnerSuite) TestQueryingPolicyThatDoesNotExistReturnError() {
+	ctx, keeper, _ := s.setup(s.T())
+
+	resp, err := keeper.ObjectOwner(ctx, &types.QueryObjectOwnerRequest{
+		PolicyId: "some-policy",
+		Object:   s.obj,
+	})
+
+	require.ErrorIs(s.T(), err, types.ErrPolicyNotFound)
+	require.Nil(s.T(), resp)
+}
+
+func (s *queryObjectOwnerSuite) TestQueryingForObjectInNonExistingPolicyReturnsError() {
+	ctx, keeper, policyId := s.setup(s.T())
+
+	resp, err := keeper.ObjectOwner(ctx, &types.QueryObjectOwnerRequest{
+		PolicyId: policyId,
+		Object:   types.NewObject("missing-resource", "abc"),
+	})
+
+	require.Nil(s.T(), resp)
+	require.NotNil(s.T(), err)
+}

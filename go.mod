@@ -40,7 +40,7 @@ require (
 	github.com/hyperledger/aries-framework-go v0.3.2
 	github.com/multiformats/go-varint v0.0.7
 	github.com/sourcenetwork/raccoondb v0.2.0
-	github.com/sourcenetwork/zanzi v0.2.1
+	github.com/sourcenetwork/zanzi v0.3.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.17.0
