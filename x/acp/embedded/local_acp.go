@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	defaultDataDir string = ".sourcehub-embedded-acp"
+	DefaultDataDir string = ".sourcehub-embedded-acp"
 	dataFile       string = "data"
 )
 
@@ -56,8 +56,8 @@ func (l *LocalACP) GetCtx() context.Context {
 }
 
 // closes the underlying DB
-func (l *LocalACP) close() {
-	l.db.Close()
+func (l *LocalACP) Close() error {
+	return l.db.Close()
 }
 
 // NewLocalACP creates an instance of LocalACP with the given options.
@@ -67,7 +67,7 @@ func NewLocalACP(options ...Option) (LocalACP, error) {
 	o := newDefaultOption()
 	o.Apply(options...)
 
-	db, err := o.GetDB()
+	db, err := o.NewDB()
 	if err != nil {
 		return LocalACP{}, err
 	}
@@ -170,7 +170,7 @@ func getDefaultStoragePath() string {
 		panic(fmt.Errorf("home directory must be set: %v", err))
 	}
 
-	return home + "/" + defaultDataDir
+	return home + "/" + DefaultDataDir
 }
 
 func (o *option) Apply(opts ...Option) {
@@ -179,8 +179,8 @@ func (o *option) Apply(opts ...Option) {
 	}
 }
 
-// GetDB returns the DB to be used by Local ACP
-func (o *option) GetDB() (dbm.DB, error) {
+// NewDB returns the DB to be used by Local ACP
+func (o *option) NewDB() (dbm.DB, error) {
 	backend := dbm.GoLevelDBBackend
 	if o.storePath == "" {
 		backend = dbm.MemDBBackend
