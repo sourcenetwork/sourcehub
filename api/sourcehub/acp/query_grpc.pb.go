@@ -35,17 +35,17 @@ const (
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Queries a list of Policy items.
+	// Policy returns a Policy with the given ID.
 	Policy(ctx context.Context, in *QueryPolicyRequest, opts ...grpc.CallOption) (*QueryPolicyResponse, error)
-	// Queries a list of PolicyIds items.
+	// PolicyIds returns list of Ids for Policies registered in the system.
 	PolicyIds(ctx context.Context, in *QueryPolicyIdsRequest, opts ...grpc.CallOption) (*QueryPolicyIdsResponse, error)
-	// Queries a list of FilterRelationships items.
+	// FilterRelationships returns filtered set of Relationships in a Policy.
 	FilterRelationships(ctx context.Context, in *QueryFilterRelationshipsRequest, opts ...grpc.CallOption) (*QueryFilterRelationshipsResponse, error)
-	// Queries a list of VerifyAccessRequest items.
+	// VerifyAccessRequest verifies whether an Access Request is accepted with respect to the given Policy's Relation Graph.
 	VerifyAccessRequest(ctx context.Context, in *QueryVerifyAccessRequestRequest, opts ...grpc.CallOption) (*QueryVerifyAccessRequestResponse, error)
-	// Queries a list of ValidatePolicy items.
+	// ValidatePolicy verifies whether the given Policy definition is properly formatted
 	ValidatePolicy(ctx context.Context, in *QueryValidatePolicyRequest, opts ...grpc.CallOption) (*QueryValidatePolicyResponse, error)
-	// Queries a list of AccessDecision items.
+	// AccessDecision queries the system for an AccessDecision with the given ID.
 	AccessDecision(ctx context.Context, in *QueryAccessDecisionRequest, opts ...grpc.CallOption) (*QueryAccessDecisionResponse, error)
 	// ObjectOwner returns the Actor ID of the the given Object's owner
 	ObjectOwner(ctx context.Context, in *QueryObjectOwnerRequest, opts ...grpc.CallOption) (*QueryObjectOwnerResponse, error)
@@ -137,17 +137,17 @@ func (c *queryClient) ObjectOwner(ctx context.Context, in *QueryObjectOwnerReque
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Queries a list of Policy items.
+	// Policy returns a Policy with the given ID.
 	Policy(context.Context, *QueryPolicyRequest) (*QueryPolicyResponse, error)
-	// Queries a list of PolicyIds items.
+	// PolicyIds returns list of Ids for Policies registered in the system.
 	PolicyIds(context.Context, *QueryPolicyIdsRequest) (*QueryPolicyIdsResponse, error)
-	// Queries a list of FilterRelationships items.
+	// FilterRelationships returns filtered set of Relationships in a Policy.
 	FilterRelationships(context.Context, *QueryFilterRelationshipsRequest) (*QueryFilterRelationshipsResponse, error)
-	// Queries a list of VerifyAccessRequest items.
+	// VerifyAccessRequest verifies whether an Access Request is accepted with respect to the given Policy's Relation Graph.
 	VerifyAccessRequest(context.Context, *QueryVerifyAccessRequestRequest) (*QueryVerifyAccessRequestResponse, error)
-	// Queries a list of ValidatePolicy items.
+	// ValidatePolicy verifies whether the given Policy definition is properly formatted
 	ValidatePolicy(context.Context, *QueryValidatePolicyRequest) (*QueryValidatePolicyResponse, error)
-	// Queries a list of AccessDecision items.
+	// AccessDecision queries the system for an AccessDecision with the given ID.
 	AccessDecision(context.Context, *QueryAccessDecisionRequest) (*QueryAccessDecisionResponse, error)
 	// ObjectOwner returns the Actor ID of the the given Object's owner
 	ObjectOwner(context.Context, *QueryObjectOwnerRequest) (*QueryObjectOwnerResponse, error)
