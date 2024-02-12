@@ -22,34 +22,39 @@ service Query {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/params";
   }
 
-  // Queries a list of Policy items.
+  // Policy returns a Policy with the given ID.
   rpc Policy(QueryPolicyRequest) returns (QueryPolicyResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/policy/{id}";
   }
 
-  // Queries a list of PolicyIds items.
+  // PolicyIds returns list of Ids for Policies registered in the system.
   rpc PolicyIds(QueryPolicyIdsRequest) returns (QueryPolicyIdsResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/policy_ids";
   }
 
-  // Queries a list of FilterRelationships items.
+  // FilterRelationships returns filtered set of Relationships in a Policy.
   rpc FilterRelationships(QueryFilterRelationshipsRequest) returns (QueryFilterRelationshipsResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/filter_relationships/{policy_id}";
   }
 
-  // Queries a list of VerifyAccessRequest items.
+  // VerifyAccessRequest verifies whether an Access Request is accepted with respect to the given Policy's Relation Graph.
   rpc VerifyAccessRequest(QueryVerifyAccessRequestRequest) returns (QueryVerifyAccessRequestResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/verify_access_request/{policy_id}";
   }
 
-  // Queries a list of ValidatePolicy items.
+  // ValidatePolicy verifies whether the given Policy definition is properly formatted
   rpc ValidatePolicy(QueryValidatePolicyRequest) returns (QueryValidatePolicyResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/validate_policy/{policy}";
   }
 
-  // Queries a list of AccessDecision items.
+  // AccessDecision queries the system for an AccessDecision with the given ID.
   rpc AccessDecision(QueryAccessDecisionRequest) returns (QueryAccessDecisionResponse) {
     option (google.api.http).get = "/sourcenetwork/sourcehub/acp/access_decision/{id}";
+  }
+
+  // ObjectOwner returns the Actor ID of the the given Object's owner
+  rpc ObjectOwner(QueryObjectOwnerRequest) returns (QueryObjectOwnerResponse) {
+    option (google.api.http).get = "/sourcenetwork/sourcehub/acp/object_owner/{policy_id}/{object.resource}/{object.id}";
   }
 }
 
@@ -115,4 +120,14 @@ message QueryAccessDecisionRequest {
 
 message QueryAccessDecisionResponse {
   AccessDecision decision = 1;
+}
+
+message QueryObjectOwnerRequest {
+  string policy_id = 1;
+  Object object = 2;
+}
+
+message QueryObjectOwnerResponse {
+  bool is_registered = 1;
+  string owner_id = 2;
 }

@@ -32,7 +32,8 @@ func TestLocalACPIsPersistentAccrossCalls(t *testing.T) {
 
 	require.Nil(t, err)
 	polId = createResp.Policy.Id
-	acp.close() // close first instance
+	err = acp.Close() // close first instance
+	require.Nil(t, err)
 
 	// create new ACP with same path
 	acp, err = NewLocalACP(
@@ -59,7 +60,8 @@ func TestLocalACPIsPersistentAccrossCalls(t *testing.T) {
 	require.NotNil(t, resp.Policy)
 
 	// cleanup
-	acp.close()
+	err = acp.Close()
+	require.Nil(t, err)
 	os.RemoveAll(storePath)
 }
 

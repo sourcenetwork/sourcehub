@@ -26,6 +26,7 @@ const (
 	Query_VerifyAccessRequest_FullMethodName = "/sourcehub.acp.Query/VerifyAccessRequest"
 	Query_ValidatePolicy_FullMethodName      = "/sourcehub.acp.Query/ValidatePolicy"
 	Query_AccessDecision_FullMethodName      = "/sourcehub.acp.Query/AccessDecision"
+	Query_ObjectOwner_FullMethodName         = "/sourcehub.acp.Query/ObjectOwner"
 )
 
 // QueryClient is the client API for Query service.
@@ -34,18 +35,20 @@ const (
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Queries a list of Policy items.
+	// Policy returns a Policy with the given ID.
 	Policy(ctx context.Context, in *QueryPolicyRequest, opts ...grpc.CallOption) (*QueryPolicyResponse, error)
-	// Queries a list of PolicyIds items.
+	// PolicyIds returns list of Ids for Policies registered in the system.
 	PolicyIds(ctx context.Context, in *QueryPolicyIdsRequest, opts ...grpc.CallOption) (*QueryPolicyIdsResponse, error)
-	// Queries a list of FilterRelationships items.
+	// FilterRelationships returns filtered set of Relationships in a Policy.
 	FilterRelationships(ctx context.Context, in *QueryFilterRelationshipsRequest, opts ...grpc.CallOption) (*QueryFilterRelationshipsResponse, error)
-	// Queries a list of VerifyAccessRequest items.
+	// VerifyAccessRequest verifies whether an Access Request is accepted with respect to the given Policy's Relation Graph.
 	VerifyAccessRequest(ctx context.Context, in *QueryVerifyAccessRequestRequest, opts ...grpc.CallOption) (*QueryVerifyAccessRequestResponse, error)
-	// Queries a list of ValidatePolicy items.
+	// ValidatePolicy verifies whether the given Policy definition is properly formatted
 	ValidatePolicy(ctx context.Context, in *QueryValidatePolicyRequest, opts ...grpc.CallOption) (*QueryValidatePolicyResponse, error)
-	// Queries a list of AccessDecision items.
+	// AccessDecision queries the system for an AccessDecision with the given ID.
 	AccessDecision(ctx context.Context, in *QueryAccessDecisionRequest, opts ...grpc.CallOption) (*QueryAccessDecisionResponse, error)
+	// ObjectOwner returns the Actor ID of the the given Object's owner
+	ObjectOwner(ctx context.Context, in *QueryObjectOwnerRequest, opts ...grpc.CallOption) (*QueryObjectOwnerResponse, error)
 }
 
 type queryClient struct {
@@ -119,24 +122,35 @@ func (c *queryClient) AccessDecision(ctx context.Context, in *QueryAccessDecisio
 	return out, nil
 }
 
+func (c *queryClient) ObjectOwner(ctx context.Context, in *QueryObjectOwnerRequest, opts ...grpc.CallOption) (*QueryObjectOwnerResponse, error) {
+	out := new(QueryObjectOwnerResponse)
+	err := c.cc.Invoke(ctx, Query_ObjectOwner_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Queries a list of Policy items.
+	// Policy returns a Policy with the given ID.
 	Policy(context.Context, *QueryPolicyRequest) (*QueryPolicyResponse, error)
-	// Queries a list of PolicyIds items.
+	// PolicyIds returns list of Ids for Policies registered in the system.
 	PolicyIds(context.Context, *QueryPolicyIdsRequest) (*QueryPolicyIdsResponse, error)
-	// Queries a list of FilterRelationships items.
+	// FilterRelationships returns filtered set of Relationships in a Policy.
 	FilterRelationships(context.Context, *QueryFilterRelationshipsRequest) (*QueryFilterRelationshipsResponse, error)
-	// Queries a list of VerifyAccessRequest items.
+	// VerifyAccessRequest verifies whether an Access Request is accepted with respect to the given Policy's Relation Graph.
 	VerifyAccessRequest(context.Context, *QueryVerifyAccessRequestRequest) (*QueryVerifyAccessRequestResponse, error)
-	// Queries a list of ValidatePolicy items.
+	// ValidatePolicy verifies whether the given Policy definition is properly formatted
 	ValidatePolicy(context.Context, *QueryValidatePolicyRequest) (*QueryValidatePolicyResponse, error)
-	// Queries a list of AccessDecision items.
+	// AccessDecision queries the system for an AccessDecision with the given ID.
 	AccessDecision(context.Context, *QueryAccessDecisionRequest) (*QueryAccessDecisionResponse, error)
+	// ObjectOwner returns the Actor ID of the the given Object's owner
+	ObjectOwner(context.Context, *QueryObjectOwnerRequest) (*QueryObjectOwnerResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -164,6 +178,9 @@ func (UnimplementedQueryServer) ValidatePolicy(context.Context, *QueryValidatePo
 }
 func (UnimplementedQueryServer) AccessDecision(context.Context, *QueryAccessDecisionRequest) (*QueryAccessDecisionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccessDecision not implemented")
+}
+func (UnimplementedQueryServer) ObjectOwner(context.Context, *QueryObjectOwnerRequest) (*QueryObjectOwnerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ObjectOwner not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -304,6 +321,24 @@ func _Query_AccessDecision_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_ObjectOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryObjectOwnerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ObjectOwner(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ObjectOwner_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ObjectOwner(ctx, req.(*QueryObjectOwnerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -338,6 +373,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AccessDecision",
 			Handler:    _Query_AccessDecision_Handler,
+		},
+		{
+			MethodName: "ObjectOwner",
+			Handler:    _Query_ObjectOwner_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
