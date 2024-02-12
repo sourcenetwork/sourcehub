@@ -1,0 +1,74 @@
+version: '3.9'
+
+services:
+  node1: &node
+    build: &build
+      context: ../.
+      target: builder
+    volumes:
+      - node1:/root/sourcehub
+    depends_on:
+      gentx-builder:
+        condition: service_completed_successfully
+    entrypoint: /app/build/sourcehubd
+    command:
+      - start
+      - --home
+      - /root/sourcehub
+
+  node2: 
+    <<: *node
+    volumes:
+      - node2:/root/sourcehub
+
+  node3:
+    <<: *node
+    volumes:
+      - node3:/root/sourcehub
+    ports:
+      - 26657:26657 # tendermint rpc
+      - 1317:1317 # cosmos swagger
+
+  setup-node1: &setup
+    build: *build
+    entrypoint: /app/devnet/setup-node.sh
+    volumes:
+      - node1:/root/sourcehub
+
+  setup-node2:
+    <<: *setup
+    volumes:
+      - node2:/root/sourcehub
+
+  setup-node3:
+    <<: *setup
+    volumes:
+      - node3:/root/sourcehub
+
+  gentx-builder:
+    build: *build
+    entrypoint: /app/devnet/make-update-gentx.sh
+    volumes:
+      - node1:/root/sourcehub
+      - node2:/root/node2
+      - node3:/root/node3
+    depends_on:
+      setup-node1:
+        condition: service_completed_successfully
+      setup-node2:
+        condition: service_completed_successfully
+      setup-node3:
+        condition: service_completed_successfully
+
+  dial_peers:
+    build: *build
+    entrypoint: /app/devnet/dial-peers.sh
+    depends_on:
+      - node1
+      - node2
+      - node3
+
+volumes:
+  node1:
+  node2:
+  node3:
