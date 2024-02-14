@@ -49,13 +49,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}},
 				},
 
-				{
-					RpcMethod:      "ObjectOwner",
-					Use:            "object-owner [policy-id] [object]",
-					Short:          "Returns the owner of the given object",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "policyId"}, {ProtoField: "object"}},
-				},
-
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},
