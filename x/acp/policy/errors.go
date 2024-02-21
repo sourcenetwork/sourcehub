@@ -15,5 +15,5 @@ var (
 	ErrInvalidShortPolicy           = fmt.Errorf("invalid short policy: %w", ErrInvalidPolicy)
 	ErrInvalidCreator               = fmt.Errorf("invalid creator: %w", ErrInvalidPolicy)
 	ErrResourceMissingOwnerRelation = fmt.Errorf("resource missing owner relation: %w", ErrInvalidPolicy)
-	ErrMalformedGraph               = fmt.Errorf("malformed management graph: %w", ErrInvalidPolicy)
+	ErrInvalidManagementRule        = fmt.Errorf("invalid relation managamente definition: %w", ErrInvalidPolicy)
 )

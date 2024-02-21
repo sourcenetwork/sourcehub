@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	"context"
 	"testing"
+	"time"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
@@ -24,14 +24,14 @@ import (
 )
 
 var creator = "cosmos1gue5de6a8fdff0jut08vw5sg9pk6rr00cstakj"
-var timestamp = prototypes.TimestampNow()
+var timestamp, _ = prototypes.TimestampProto(time.Date(2024, time.January, 1, 0, 0, 0, 0, time.UTC))
 
-func setupMsgServer(t *testing.T) (types.MsgServer, context.Context) {
+func setupMsgServer(t *testing.T) (types.MsgServer, sdk.Context) {
 	keeper, ctx := setupKeeper(t)
 	return NewMsgServerImpl(keeper), ctx
 }
 
-func setupKeeper(t *testing.T) (Keeper, context.Context) {
+func setupKeeper(t *testing.T) (Keeper, sdk.Context) {
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 
 	db := dbm.NewMemDB()
@@ -52,9 +52,15 @@ func setupKeeper(t *testing.T) (Keeper, context.Context) {
 	)
 
 	ctx := sdk.NewContext(stateStore, cmtproto.Header{}, false, log.NewNopLogger())
+	ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 	// Initialize params
 	keeper.SetParams(ctx, types.DefaultParams())
 
 	return keeper, ctx
+}
+
+type policyFixture struct {
+	Policy        *types.Policy
+	Relationships []*types.Relationship
 }
