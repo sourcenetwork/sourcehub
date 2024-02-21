@@ -5,12 +5,16 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/sourcenetwork/sourcehub/utils"
 	"github.com/sourcenetwork/sourcehub/x/acp/policy"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
 func (k msgServer) CreatePolicy(goCtx context.Context, msg *types.MsgCreatePolicy) (*types.MsgCreatePolicyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	ctx = utils.WithMsgSpan(ctx)
+	defer utils.FinalizeSpan(ctx)
+
 	eventManager := ctx.EventManager()
 
 	engine, err := k.GetZanziEngine(ctx)
@@ -28,7 +32,7 @@ func (k msgServer) CreatePolicy(goCtx context.Context, msg *types.MsgCreatePolic
 		Policy:       ir,
 		CreationTime: msg.CreationTime,
 	}
-	pol, err := cmd.Execute(goCtx, k.accountKeeper, engine)
+	pol, err := cmd.Execute(ctx, k.accountKeeper, engine)
 
 	if err != nil {
 		return nil, err
@@ -43,7 +47,6 @@ func (k msgServer) CreatePolicy(goCtx context.Context, msg *types.MsgCreatePolic
 	if err != nil {
 		return nil, err
 	}
-	ctx.Logger().Info("EventPolicyCreated: %v", event.String())
 
 	return &types.MsgCreatePolicyResponse{
 		Policy: pol,

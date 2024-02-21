@@ -3,14 +3,14 @@ package keeper
 import (
 	"testing"
 
-	prototypes "github.com/cosmos/gogoproto/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/sourcenetwork/sourcehub/x/acp/policy"
+	"github.com/sourcenetwork/sourcehub/x/acp/testutil"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
-func TestValidPolicyIsCreated(t *testing.T) {
+func TestMsgCreatePolicy_ValidPolicyIsCreated(t *testing.T) {
 	policyStr := `
 name: policy
 description: ok
@@ -36,9 +36,6 @@ actor:
   doc: my actor
           `
 
-	var creator = "cosmos1gue5de6a8fdff0jut08vw5sg9pk6rr00cstakj"
-	var timestamp = prototypes.TimestampNow()
-
 	msg := types.MsgCreatePolicy{
 		Creator:      creator,
 		Policy:       policyStr,
@@ -50,6 +47,7 @@ actor:
 	resp, err := msgServer.CreatePolicy(ctx, &msg)
 
 	require.Nil(t, err)
+
 	require.Equal(t, resp.Policy, &types.Policy{
 		Id:           "4f4bb16253a15448c1a3a2a67fdb4f4652f3ebf90c4326db53200b8d50c89ba6",
 		Name:         "policy",
@@ -114,9 +112,16 @@ actor:
 			Doc:  "my actor",
 		},
 	})
+
+	event := &types.EventPolicyCreated{
+		Creator:    creator,
+		PolicyId:   "4f4bb16253a15448c1a3a2a67fdb4f4652f3ebf90c4326db53200b8d50c89ba6",
+		PolicyName: "policy",
+	}
+	testutil.AssertEventEmmited(t, ctx, event)
 }
 
-func TestPolicyResourcesRequiresOwnerRelation(t *testing.T) {
+func TestMsgCreatePolicy_PolicyResourcesRequiresOwnerRelation(t *testing.T) {
 	pol := `
 name: policy
 description: ok
@@ -125,6 +130,10 @@ resources:
     relations: 
       reader:
     permissions: 
+  foo:
+    relations:
+      owner:
+    permissions:
 `
 
 	msgServer, ctx := setupMsgServer(t)
@@ -133,4 +142,40 @@ resources:
 
 	require.Nil(t, resp)
 	require.ErrorIs(t, err, policy.ErrResourceMissingOwnerRelation)
+}
+
+func TestMsgCreatePolicy_ManagementReferencingUndefinedRelationReturnsError(t *testing.T) {
+	pol := `
+name: policy
+description: ok
+resources:
+  file:
+    relations: 
+      owner:
+      admin:
+        manages:
+          - deleter
+    permissions: 
+`
+
+	msgServer, ctx := setupMsgServer(t)
+	msg := types.NewMsgCreatePolicyNow(creator, pol, types.PolicyMarshalingType_SHORT_YAML)
+	resp, err := msgServer.CreatePolicy(ctx, msg)
+
+	require.Nil(t, resp)
+	require.ErrorIs(t, err, policy.ErrInvalidManagementRule)
+}
+
+func TestMsgCreatePolicy_InvalidCreatorAddressCausesError(t *testing.T) {
+	pol := `
+name: policy
+resources:
+`
+
+	msgServer, ctx := setupMsgServer(t)
+	msg := types.NewMsgCreatePolicyNow("creator", pol, types.PolicyMarshalingType_SHORT_YAML)
+	resp, err := msgServer.CreatePolicy(ctx, msg)
+
+	require.Nil(t, resp)
+	require.ErrorIs(t, err, policy.ErrInvalidCreator)
 }

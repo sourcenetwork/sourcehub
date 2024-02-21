@@ -1,7 +1,6 @@
 package policy
 
 import (
-	"context"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -24,19 +23,18 @@ type CreatePolicyCommand struct {
 }
 
 // Execute consumes the data supplied in the command and creates a new ACP Policy and stores it in the given engine.
-func (c *CreatePolicyCommand) Execute(ctx context.Context, accountKeeper types.AccountKeeper, engine auth_engine.AuthEngine) (*types.Policy, error) {
-	factory := factory{}
+func (c *CreatePolicyCommand) Execute(ctx sdk.Context, accountKeeper types.AccountKeeper, engine auth_engine.AuthEngine) (*types.Policy, error) {
+	err := basicPolicyIRSpec(&c.Policy)
+	if err != nil {
+		return nil, fmt.Errorf("CreatePolicyCommand: %w", err)
+	}
 
 	sequence, err := c.getAccountSequenceNumber(ctx, accountKeeper)
 	if err != nil {
 		return nil, fmt.Errorf("CreatePolicyCommand: %w", err)
 	}
 
-	err = basicPolicyIRSpec(&c.Policy)
-	if err != nil {
-		return nil, fmt.Errorf("CreatePolicyCommand: %w", err)
-	}
-
+	factory := factory{}
 	record, err := factory.Create(c.Policy, c.Creator, sequence, c.CreationTime)
 	if err != nil {
 		return nil, fmt.Errorf("CreatePolicyCommand: %w", err)
@@ -48,7 +46,7 @@ func (c *CreatePolicyCommand) Execute(ctx context.Context, accountKeeper types.A
 		return nil, fmt.Errorf("CreatePolicyCommand: %w", err)
 	}
 
-	err = engine.SetPolicy(ctx, record)
+	err = engine.SetPolicy(ctx.Context(), record)
 	if err != nil {
 		return nil, fmt.Errorf("CreatePolicyCommand: %w", err)
 	}
@@ -56,11 +54,13 @@ func (c *CreatePolicyCommand) Execute(ctx context.Context, accountKeeper types.A
 	return record.Policy, nil
 }
 
-func (c *CreatePolicyCommand) getAccountSequenceNumber(ctx context.Context, accountKeeper types.AccountKeeper) (uint64, error) {
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
+func (c *CreatePolicyCommand) getAccountSequenceNumber(ctx sdk.Context, accountKeeper types.AccountKeeper) (uint64, error) {
+	addr, err := sdk.AccAddressFromBech32(c.Creator)
+	if err != nil {
+		return 0, fmt.Errorf("%w: %v", ErrInvalidCreator, err)
+	}
 
-	addr := sdk.MustAccAddressFromBech32(c.Creator)
-	acc := accountKeeper.GetAccount(sdkCtx, addr)
+	acc := accountKeeper.GetAccount(ctx, addr)
 	if acc == nil {
 		return 0, fmt.Errorf("account %v: %w", c.Creator, types.ErrAccNotFound)
 	}
