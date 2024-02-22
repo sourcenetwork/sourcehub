@@ -78,3 +78,13 @@ func (s Sortable[T]) Sort() []T {
 	sortable.SortInPlace()
 	return vals
 }
+
+// SortSlice performs an inplace sort of a Slice of Ordered elements
+func SortSlice[T Ordered](elems []T) {
+	sortable := Sortable[T]{
+		ts: elems,
+		//comparator: comparator,
+		comparator: func(left T, right T) bool { return left < right },
+	}
+	sortable.SortInPlace()
+}

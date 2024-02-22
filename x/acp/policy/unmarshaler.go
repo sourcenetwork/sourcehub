@@ -11,6 +11,10 @@ import (
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
+const (
+	V1_0 string = "1.0"
+)
+
 func Unmarshal(pol string, t types.PolicyMarshalingType) (PolicyIR, error) {
 	var policy PolicyIR
 	var err error

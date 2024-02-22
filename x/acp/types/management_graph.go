@@ -2,6 +2,8 @@ package types
 
 import (
 	"fmt"
+
+	"github.com/sourcenetwork/sourcehub/utils"
 )
 
 // BuildManagementGraph builds a Management Graph from a Policy.
@@ -117,5 +119,7 @@ func (g *ManagementGraph) GetManagers(resourceName, relationName string) []strin
 		node, _ := g.getNode(id)
 		managers = append(managers, node.Text)
 	}
+
+	utils.SortSlice(managers)
 	return managers
 }
