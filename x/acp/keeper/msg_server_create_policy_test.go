@@ -36,20 +36,20 @@ actor:
   doc: my actor
           `
 
+	ctx, msgServer, accKeeper := setupMsgServer(t)
+	creator := accKeeper.GenAccount().GetAddress().String()
 	msg := types.MsgCreatePolicy{
 		Creator:      creator,
 		Policy:       policyStr,
 		MarshalType:  types.PolicyMarshalingType_SHORT_YAML,
 		CreationTime: timestamp,
 	}
-
-	msgServer, ctx := setupMsgServer(t)
 	resp, err := msgServer.CreatePolicy(ctx, &msg)
 
 	require.Nil(t, err)
 
 	require.Equal(t, resp.Policy, &types.Policy{
-		Id:           "4f4bb16253a15448c1a3a2a67fdb4f4652f3ebf90c4326db53200b8d50c89ba6",
+		Id:           "b85e26d4531559746971d8644023074e0e4e886750386a1724e4f1483818683b",
 		Name:         "policy",
 		Description:  "ok",
 		CreationTime: timestamp,
@@ -115,7 +115,7 @@ actor:
 
 	event := &types.EventPolicyCreated{
 		Creator:    creator,
-		PolicyId:   "4f4bb16253a15448c1a3a2a67fdb4f4652f3ebf90c4326db53200b8d50c89ba6",
+		PolicyId:   "b85e26d4531559746971d8644023074e0e4e886750386a1724e4f1483818683b",
 		PolicyName: "policy",
 	}
 	testutil.AssertEventEmmited(t, ctx, event)
@@ -136,7 +136,8 @@ resources:
     permissions:
 `
 
-	msgServer, ctx := setupMsgServer(t)
+	ctx, msgServer, accKeeper := setupMsgServer(t)
+	creator := accKeeper.GenAccount().GetAddress().String()
 	msg := types.NewMsgCreatePolicyNow(creator, pol, types.PolicyMarshalingType_SHORT_YAML)
 	resp, err := msgServer.CreatePolicy(ctx, msg)
 
@@ -158,7 +159,9 @@ resources:
     permissions: 
 `
 
-	msgServer, ctx := setupMsgServer(t)
+	ctx, msgServer, accKeeper := setupMsgServer(t)
+	creator := accKeeper.GenAccount().GetAddress().String()
+
 	msg := types.NewMsgCreatePolicyNow(creator, pol, types.PolicyMarshalingType_SHORT_YAML)
 	resp, err := msgServer.CreatePolicy(ctx, msg)
 
@@ -172,7 +175,7 @@ name: policy
 resources:
 `
 
-	msgServer, ctx := setupMsgServer(t)
+	ctx, msgServer, _ := setupMsgServer(t)
 	msg := types.NewMsgCreatePolicyNow("creator", pol, types.PolicyMarshalingType_SHORT_YAML)
 	resp, err := msgServer.CreatePolicy(ctx, msg)
 

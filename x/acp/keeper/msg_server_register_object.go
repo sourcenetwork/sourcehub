@@ -6,6 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/sourcenetwork/sourcehub/x/acp/did"
 	"github.com/sourcenetwork/sourcehub/x/acp/relationship"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
@@ -24,23 +25,39 @@ func (k msgServer) RegisterObject(goCtx context.Context, msg *types.MsgRegisterO
 		return nil, fmt.Errorf("policy %v: %w", msg.PolicyId, types.ErrPolicyNotFound)
 	}
 
+	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, fmt.Errorf("MsgRegisterObject: invalid creator: %v", err)
+	}
+
+	account := k.accountKeeper.GetAccount(ctx, addr)
+	if account == nil {
+		return nil, fmt.Errorf("MsgRegisterObject: %w", types.ErrAccNotFound)
+	}
+
+	accDID, err := did.IssueDID(account)
+	if err != nil {
+		return nil, fmt.Errorf("MsgRegisterObject: %w", err)
+	}
+
 	cmd := relationship.RegisterObjectCommand{
 		Policy:     rec.Policy,
 		CreationTs: msg.CreationTime,
 		Registration: &types.Registration{
 			Object: msg.Object,
 			Actor: &types.Actor{
-				Id: msg.Creator,
+				Id: accDID,
 			},
 		},
 	}
 
-	result, err := cmd.Execute(goCtx, engine)
+	result, record, err := cmd.Execute(goCtx, engine)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.MsgRegisterObjectResponse{
 		Result: result,
+		Record: record,
 	}, nil
 }

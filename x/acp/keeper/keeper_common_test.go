@@ -23,15 +23,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var creator = "cosmos1gue5de6a8fdff0jut08vw5sg9pk6rr00cstakj"
 var timestamp, _ = prototypes.TimestampProto(time.Date(2024, time.January, 1, 0, 0, 0, 0, time.UTC))
 
-func setupMsgServer(t *testing.T) (types.MsgServer, sdk.Context) {
-	keeper, ctx := setupKeeper(t)
-	return NewMsgServerImpl(keeper), ctx
+func setupMsgServer(t *testing.T) (sdk.Context, types.MsgServer, *testutil.AccountKeeperStub) {
+	ctx, keeper, accK := setupKeeper(t)
+	return ctx, NewMsgServerImpl(keeper), accK
 }
 
-func setupKeeper(t *testing.T) (Keeper, sdk.Context) {
+func setupKeeper(t *testing.T) (sdk.Context, Keeper, *testutil.AccountKeeperStub) {
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 
 	db := dbm.NewMemDB()
@@ -43,12 +42,15 @@ func setupKeeper(t *testing.T) (Keeper, sdk.Context) {
 	cdc := codec.NewProtoCodec(registry)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
 
+	accKeeper := &testutil.AccountKeeperStub{}
+	accKeeper.GenAccount()
+
 	keeper := NewKeeper(
 		cdc,
 		runtime.NewKVStoreService(storeKey),
 		log.NewNopLogger(),
 		authority.String(),
-		&testutil.AccountKeeperStub{},
+		accKeeper,
 	)
 
 	ctx := sdk.NewContext(stateStore, cmtproto.Header{}, false, log.NewNopLogger())
@@ -57,7 +59,7 @@ func setupKeeper(t *testing.T) (Keeper, sdk.Context) {
 	// Initialize params
 	keeper.SetParams(ctx, types.DefaultParams())
 
-	return keeper, ctx
+	return ctx, keeper, accKeeper
 }
 
 type policyFixture struct {

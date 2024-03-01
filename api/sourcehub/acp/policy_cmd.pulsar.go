@@ -515,13 +515,16 @@ func (x *fastReflection_SignedPolicyCmd) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_PolicyCmdPayload                   protoreflect.MessageDescriptor
-	fd_PolicyCmdPayload_actor             protoreflect.FieldDescriptor
-	fd_PolicyCmdPayload_issued_height     protoreflect.FieldDescriptor
-	fd_PolicyCmdPayload_expiration_height protoreflect.FieldDescriptor
-	fd_PolicyCmdPayload_creation_time     protoreflect.FieldDescriptor
-	fd_PolicyCmdPayload_policy_id         protoreflect.FieldDescriptor
-	fd_PolicyCmdPayload_cmd               protoreflect.FieldDescriptor
+	md_PolicyCmdPayload                         protoreflect.MessageDescriptor
+	fd_PolicyCmdPayload_actor                   protoreflect.FieldDescriptor
+	fd_PolicyCmdPayload_issued_height           protoreflect.FieldDescriptor
+	fd_PolicyCmdPayload_expiration_height       protoreflect.FieldDescriptor
+	fd_PolicyCmdPayload_creation_time           protoreflect.FieldDescriptor
+	fd_PolicyCmdPayload_policy_id               protoreflect.FieldDescriptor
+	fd_PolicyCmdPayload_set_relationship_cmd    protoreflect.FieldDescriptor
+	fd_PolicyCmdPayload_delete_relationship_cmd protoreflect.FieldDescriptor
+	fd_PolicyCmdPayload_register_object_cmd     protoreflect.FieldDescriptor
+	fd_PolicyCmdPayload_unregister_object_cmd   protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -532,7 +535,10 @@ func init() {
 	fd_PolicyCmdPayload_expiration_height = md_PolicyCmdPayload.Fields().ByName("expiration_height")
 	fd_PolicyCmdPayload_creation_time = md_PolicyCmdPayload.Fields().ByName("creation_time")
 	fd_PolicyCmdPayload_policy_id = md_PolicyCmdPayload.Fields().ByName("policy_id")
-	fd_PolicyCmdPayload_cmd = md_PolicyCmdPayload.Fields().ByName("cmd")
+	fd_PolicyCmdPayload_set_relationship_cmd = md_PolicyCmdPayload.Fields().ByName("set_relationship_cmd")
+	fd_PolicyCmdPayload_delete_relationship_cmd = md_PolicyCmdPayload.Fields().ByName("delete_relationship_cmd")
+	fd_PolicyCmdPayload_register_object_cmd = md_PolicyCmdPayload.Fields().ByName("register_object_cmd")
+	fd_PolicyCmdPayload_unregister_object_cmd = md_PolicyCmdPayload.Fields().ByName("unregister_object_cmd")
 }
 
 var _ protoreflect.Message = (*fastReflection_PolicyCmdPayload)(nil)
@@ -631,9 +637,31 @@ func (x *fastReflection_PolicyCmdPayload) Range(f func(protoreflect.FieldDescrip
 		}
 	}
 	if x.Cmd != nil {
-		value := protoreflect.ValueOfMessage(x.Cmd.ProtoReflect())
-		if !f(fd_PolicyCmdPayload_cmd, value) {
-			return
+		switch o := x.Cmd.(type) {
+		case *PolicyCmdPayload_SetRelationshipCmd:
+			v := o.SetRelationshipCmd
+			value := protoreflect.ValueOfMessage(v.ProtoReflect())
+			if !f(fd_PolicyCmdPayload_set_relationship_cmd, value) {
+				return
+			}
+		case *PolicyCmdPayload_DeleteRelationshipCmd:
+			v := o.DeleteRelationshipCmd
+			value := protoreflect.ValueOfMessage(v.ProtoReflect())
+			if !f(fd_PolicyCmdPayload_delete_relationship_cmd, value) {
+				return
+			}
+		case *PolicyCmdPayload_RegisterObjectCmd:
+			v := o.RegisterObjectCmd
+			value := protoreflect.ValueOfMessage(v.ProtoReflect())
+			if !f(fd_PolicyCmdPayload_register_object_cmd, value) {
+				return
+			}
+		case *PolicyCmdPayload_UnregisterObjectCmd:
+			v := o.UnregisterObjectCmd
+			value := protoreflect.ValueOfMessage(v.ProtoReflect())
+			if !f(fd_PolicyCmdPayload_unregister_object_cmd, value) {
+				return
+			}
 		}
 	}
 }
@@ -661,8 +689,38 @@ func (x *fastReflection_PolicyCmdPayload) Has(fd protoreflect.FieldDescriptor) b
 		return x.CreationTime != nil
 	case "sourcehub.acp.PolicyCmdPayload.policy_id":
 		return x.PolicyId != ""
-	case "sourcehub.acp.PolicyCmdPayload.cmd":
-		return x.Cmd != nil
+	case "sourcehub.acp.PolicyCmdPayload.set_relationship_cmd":
+		if x.Cmd == nil {
+			return false
+		} else if _, ok := x.Cmd.(*PolicyCmdPayload_SetRelationshipCmd); ok {
+			return true
+		} else {
+			return false
+		}
+	case "sourcehub.acp.PolicyCmdPayload.delete_relationship_cmd":
+		if x.Cmd == nil {
+			return false
+		} else if _, ok := x.Cmd.(*PolicyCmdPayload_DeleteRelationshipCmd); ok {
+			return true
+		} else {
+			return false
+		}
+	case "sourcehub.acp.PolicyCmdPayload.register_object_cmd":
+		if x.Cmd == nil {
+			return false
+		} else if _, ok := x.Cmd.(*PolicyCmdPayload_RegisterObjectCmd); ok {
+			return true
+		} else {
+			return false
+		}
+	case "sourcehub.acp.PolicyCmdPayload.unregister_object_cmd":
+		if x.Cmd == nil {
+			return false
+		} else if _, ok := x.Cmd.(*PolicyCmdPayload_UnregisterObjectCmd); ok {
+			return true
+		} else {
+			return false
+		}
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdPayload"))
@@ -689,7 +747,13 @@ func (x *fastReflection_PolicyCmdPayload) Clear(fd protoreflect.FieldDescriptor)
 		x.CreationTime = nil
 	case "sourcehub.acp.PolicyCmdPayload.policy_id":
 		x.PolicyId = ""
-	case "sourcehub.acp.PolicyCmdPayload.cmd":
+	case "sourcehub.acp.PolicyCmdPayload.set_relationship_cmd":
+		x.Cmd = nil
+	case "sourcehub.acp.PolicyCmdPayload.delete_relationship_cmd":
+		x.Cmd = nil
+	case "sourcehub.acp.PolicyCmdPayload.register_object_cmd":
+		x.Cmd = nil
+	case "sourcehub.acp.PolicyCmdPayload.unregister_object_cmd":
 		x.Cmd = nil
 	default:
 		if fd.IsExtension() {
@@ -722,9 +786,38 @@ func (x *fastReflection_PolicyCmdPayload) Get(descriptor protoreflect.FieldDescr
 	case "sourcehub.acp.PolicyCmdPayload.policy_id":
 		value := x.PolicyId
 		return protoreflect.ValueOfString(value)
-	case "sourcehub.acp.PolicyCmdPayload.cmd":
-		value := x.Cmd
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "sourcehub.acp.PolicyCmdPayload.set_relationship_cmd":
+		if x.Cmd == nil {
+			return protoreflect.ValueOfMessage((*SetRelationshipCmd)(nil).ProtoReflect())
+		} else if v, ok := x.Cmd.(*PolicyCmdPayload_SetRelationshipCmd); ok {
+			return protoreflect.ValueOfMessage(v.SetRelationshipCmd.ProtoReflect())
+		} else {
+			return protoreflect.ValueOfMessage((*SetRelationshipCmd)(nil).ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdPayload.delete_relationship_cmd":
+		if x.Cmd == nil {
+			return protoreflect.ValueOfMessage((*DeleteRelationshipCmd)(nil).ProtoReflect())
+		} else if v, ok := x.Cmd.(*PolicyCmdPayload_DeleteRelationshipCmd); ok {
+			return protoreflect.ValueOfMessage(v.DeleteRelationshipCmd.ProtoReflect())
+		} else {
+			return protoreflect.ValueOfMessage((*DeleteRelationshipCmd)(nil).ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdPayload.register_object_cmd":
+		if x.Cmd == nil {
+			return protoreflect.ValueOfMessage((*RegisterObjectCmd)(nil).ProtoReflect())
+		} else if v, ok := x.Cmd.(*PolicyCmdPayload_RegisterObjectCmd); ok {
+			return protoreflect.ValueOfMessage(v.RegisterObjectCmd.ProtoReflect())
+		} else {
+			return protoreflect.ValueOfMessage((*RegisterObjectCmd)(nil).ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdPayload.unregister_object_cmd":
+		if x.Cmd == nil {
+			return protoreflect.ValueOfMessage((*UnregisterObjectCmd)(nil).ProtoReflect())
+		} else if v, ok := x.Cmd.(*PolicyCmdPayload_UnregisterObjectCmd); ok {
+			return protoreflect.ValueOfMessage(v.UnregisterObjectCmd.ProtoReflect())
+		} else {
+			return protoreflect.ValueOfMessage((*UnregisterObjectCmd)(nil).ProtoReflect())
+		}
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdPayload"))
@@ -755,8 +848,18 @@ func (x *fastReflection_PolicyCmdPayload) Set(fd protoreflect.FieldDescriptor, v
 		x.CreationTime = value.Message().Interface().(*timestamppb.Timestamp)
 	case "sourcehub.acp.PolicyCmdPayload.policy_id":
 		x.PolicyId = value.Interface().(string)
-	case "sourcehub.acp.PolicyCmdPayload.cmd":
-		x.Cmd = value.Message().Interface().(*PolicyCmdPayload_PolicyCmd)
+	case "sourcehub.acp.PolicyCmdPayload.set_relationship_cmd":
+		cv := value.Message().Interface().(*SetRelationshipCmd)
+		x.Cmd = &PolicyCmdPayload_SetRelationshipCmd{SetRelationshipCmd: cv}
+	case "sourcehub.acp.PolicyCmdPayload.delete_relationship_cmd":
+		cv := value.Message().Interface().(*DeleteRelationshipCmd)
+		x.Cmd = &PolicyCmdPayload_DeleteRelationshipCmd{DeleteRelationshipCmd: cv}
+	case "sourcehub.acp.PolicyCmdPayload.register_object_cmd":
+		cv := value.Message().Interface().(*RegisterObjectCmd)
+		x.Cmd = &PolicyCmdPayload_RegisterObjectCmd{RegisterObjectCmd: cv}
+	case "sourcehub.acp.PolicyCmdPayload.unregister_object_cmd":
+		cv := value.Message().Interface().(*UnregisterObjectCmd)
+		x.Cmd = &PolicyCmdPayload_UnregisterObjectCmd{UnregisterObjectCmd: cv}
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdPayload"))
@@ -782,11 +885,70 @@ func (x *fastReflection_PolicyCmdPayload) Mutable(fd protoreflect.FieldDescripto
 			x.CreationTime = new(timestamppb.Timestamp)
 		}
 		return protoreflect.ValueOfMessage(x.CreationTime.ProtoReflect())
-	case "sourcehub.acp.PolicyCmdPayload.cmd":
+	case "sourcehub.acp.PolicyCmdPayload.set_relationship_cmd":
 		if x.Cmd == nil {
-			x.Cmd = new(PolicyCmdPayload_PolicyCmd)
+			value := &SetRelationshipCmd{}
+			oneofValue := &PolicyCmdPayload_SetRelationshipCmd{SetRelationshipCmd: value}
+			x.Cmd = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
 		}
-		return protoreflect.ValueOfMessage(x.Cmd.ProtoReflect())
+		switch m := x.Cmd.(type) {
+		case *PolicyCmdPayload_SetRelationshipCmd:
+			return protoreflect.ValueOfMessage(m.SetRelationshipCmd.ProtoReflect())
+		default:
+			value := &SetRelationshipCmd{}
+			oneofValue := &PolicyCmdPayload_SetRelationshipCmd{SetRelationshipCmd: value}
+			x.Cmd = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdPayload.delete_relationship_cmd":
+		if x.Cmd == nil {
+			value := &DeleteRelationshipCmd{}
+			oneofValue := &PolicyCmdPayload_DeleteRelationshipCmd{DeleteRelationshipCmd: value}
+			x.Cmd = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+		switch m := x.Cmd.(type) {
+		case *PolicyCmdPayload_DeleteRelationshipCmd:
+			return protoreflect.ValueOfMessage(m.DeleteRelationshipCmd.ProtoReflect())
+		default:
+			value := &DeleteRelationshipCmd{}
+			oneofValue := &PolicyCmdPayload_DeleteRelationshipCmd{DeleteRelationshipCmd: value}
+			x.Cmd = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdPayload.register_object_cmd":
+		if x.Cmd == nil {
+			value := &RegisterObjectCmd{}
+			oneofValue := &PolicyCmdPayload_RegisterObjectCmd{RegisterObjectCmd: value}
+			x.Cmd = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+		switch m := x.Cmd.(type) {
+		case *PolicyCmdPayload_RegisterObjectCmd:
+			return protoreflect.ValueOfMessage(m.RegisterObjectCmd.ProtoReflect())
+		default:
+			value := &RegisterObjectCmd{}
+			oneofValue := &PolicyCmdPayload_RegisterObjectCmd{RegisterObjectCmd: value}
+			x.Cmd = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdPayload.unregister_object_cmd":
+		if x.Cmd == nil {
+			value := &UnregisterObjectCmd{}
+			oneofValue := &PolicyCmdPayload_UnregisterObjectCmd{UnregisterObjectCmd: value}
+			x.Cmd = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+		switch m := x.Cmd.(type) {
+		case *PolicyCmdPayload_UnregisterObjectCmd:
+			return protoreflect.ValueOfMessage(m.UnregisterObjectCmd.ProtoReflect())
+		default:
+			value := &UnregisterObjectCmd{}
+			oneofValue := &PolicyCmdPayload_UnregisterObjectCmd{UnregisterObjectCmd: value}
+			x.Cmd = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
 	case "sourcehub.acp.PolicyCmdPayload.actor":
 		panic(fmt.Errorf("field actor of message sourcehub.acp.PolicyCmdPayload is not mutable"))
 	case "sourcehub.acp.PolicyCmdPayload.issued_height":
@@ -819,9 +981,18 @@ func (x *fastReflection_PolicyCmdPayload) NewField(fd protoreflect.FieldDescript
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	case "sourcehub.acp.PolicyCmdPayload.policy_id":
 		return protoreflect.ValueOfString("")
-	case "sourcehub.acp.PolicyCmdPayload.cmd":
-		m := new(PolicyCmdPayload_PolicyCmd)
-		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "sourcehub.acp.PolicyCmdPayload.set_relationship_cmd":
+		value := &SetRelationshipCmd{}
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "sourcehub.acp.PolicyCmdPayload.delete_relationship_cmd":
+		value := &DeleteRelationshipCmd{}
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "sourcehub.acp.PolicyCmdPayload.register_object_cmd":
+		value := &RegisterObjectCmd{}
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "sourcehub.acp.PolicyCmdPayload.unregister_object_cmd":
+		value := &UnregisterObjectCmd{}
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdPayload"))
@@ -835,6 +1006,20 @@ func (x *fastReflection_PolicyCmdPayload) NewField(fd protoreflect.FieldDescript
 // It panics if the oneof descriptor does not belong to this message.
 func (x *fastReflection_PolicyCmdPayload) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
+	case "sourcehub.acp.PolicyCmdPayload.cmd":
+		if x.Cmd == nil {
+			return nil
+		}
+		switch x.Cmd.(type) {
+		case *PolicyCmdPayload_SetRelationshipCmd:
+			return x.Descriptor().Fields().ByName("set_relationship_cmd")
+		case *PolicyCmdPayload_DeleteRelationshipCmd:
+			return x.Descriptor().Fields().ByName("delete_relationship_cmd")
+		case *PolicyCmdPayload_RegisterObjectCmd:
+			return x.Descriptor().Fields().ByName("register_object_cmd")
+		case *PolicyCmdPayload_UnregisterObjectCmd:
+			return x.Descriptor().Fields().ByName("unregister_object_cmd")
+		}
 	default:
 		panic(fmt.Errorf("%s is not a oneof field in sourcehub.acp.PolicyCmdPayload", d.FullName()))
 	}
@@ -909,8 +1094,30 @@ func (x *fastReflection_PolicyCmdPayload) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.Cmd != nil {
-			l = options.Size(x.Cmd)
+		switch x := x.Cmd.(type) {
+		case *PolicyCmdPayload_SetRelationshipCmd:
+			if x == nil {
+				break
+			}
+			l = options.Size(x.SetRelationshipCmd)
+			n += 1 + l + runtime.Sov(uint64(l))
+		case *PolicyCmdPayload_DeleteRelationshipCmd:
+			if x == nil {
+				break
+			}
+			l = options.Size(x.DeleteRelationshipCmd)
+			n += 1 + l + runtime.Sov(uint64(l))
+		case *PolicyCmdPayload_RegisterObjectCmd:
+			if x == nil {
+				break
+			}
+			l = options.Size(x.RegisterObjectCmd)
+			n += 1 + l + runtime.Sov(uint64(l))
+		case *PolicyCmdPayload_UnregisterObjectCmd:
+			if x == nil {
+				break
+			}
+			l = options.Size(x.UnregisterObjectCmd)
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
@@ -942,8 +1149,9 @@ func (x *fastReflection_PolicyCmdPayload) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.Cmd != nil {
-			encoded, err := options.Marshal(x.Cmd)
+		switch x := x.Cmd.(type) {
+		case *PolicyCmdPayload_SetRelationshipCmd:
+			encoded, err := options.Marshal(x.SetRelationshipCmd)
 			if err != nil {
 				return protoiface.MarshalOutput{
 					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -955,6 +1163,45 @@ func (x *fastReflection_PolicyCmdPayload) ProtoMethods() *protoiface.Methods {
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 			i--
 			dAtA[i] = 0x32
+		case *PolicyCmdPayload_DeleteRelationshipCmd:
+			encoded, err := options.Marshal(x.DeleteRelationshipCmd)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x3a
+		case *PolicyCmdPayload_RegisterObjectCmd:
+			encoded, err := options.Marshal(x.RegisterObjectCmd)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x42
+		case *PolicyCmdPayload_UnregisterObjectCmd:
+			encoded, err := options.Marshal(x.UnregisterObjectCmd)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x4a
 		}
 		if len(x.PolicyId) > 0 {
 			i -= len(x.PolicyId)
@@ -1183,688 +1430,6 @@ func (x *fastReflection_PolicyCmdPayload) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 6:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Cmd", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if x.Cmd == nil {
-					x.Cmd = &PolicyCmdPayload_PolicyCmd{}
-				}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Cmd); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var (
-	md_PolicyCmdPayload_PolicyCmd                         protoreflect.MessageDescriptor
-	fd_PolicyCmdPayload_PolicyCmd_set_relationship_cmd    protoreflect.FieldDescriptor
-	fd_PolicyCmdPayload_PolicyCmd_delete_relationship_cmd protoreflect.FieldDescriptor
-	fd_PolicyCmdPayload_PolicyCmd_register_object_cmd     protoreflect.FieldDescriptor
-	fd_PolicyCmdPayload_PolicyCmd_unregister_object_cmd   protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_sourcehub_acp_policy_cmd_proto_init()
-	md_PolicyCmdPayload_PolicyCmd = File_sourcehub_acp_policy_cmd_proto.Messages().ByName("PolicyCmdPayload").Messages().ByName("PolicyCmd")
-	fd_PolicyCmdPayload_PolicyCmd_set_relationship_cmd = md_PolicyCmdPayload_PolicyCmd.Fields().ByName("set_relationship_cmd")
-	fd_PolicyCmdPayload_PolicyCmd_delete_relationship_cmd = md_PolicyCmdPayload_PolicyCmd.Fields().ByName("delete_relationship_cmd")
-	fd_PolicyCmdPayload_PolicyCmd_register_object_cmd = md_PolicyCmdPayload_PolicyCmd.Fields().ByName("register_object_cmd")
-	fd_PolicyCmdPayload_PolicyCmd_unregister_object_cmd = md_PolicyCmdPayload_PolicyCmd.Fields().ByName("unregister_object_cmd")
-}
-
-var _ protoreflect.Message = (*fastReflection_PolicyCmdPayload_PolicyCmd)(nil)
-
-type fastReflection_PolicyCmdPayload_PolicyCmd PolicyCmdPayload_PolicyCmd
-
-func (x *PolicyCmdPayload_PolicyCmd) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_PolicyCmdPayload_PolicyCmd)(x)
-}
-
-func (x *PolicyCmdPayload_PolicyCmd) slowProtoReflect() protoreflect.Message {
-	mi := &file_sourcehub_acp_policy_cmd_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_PolicyCmdPayload_PolicyCmd_messageType fastReflection_PolicyCmdPayload_PolicyCmd_messageType
-var _ protoreflect.MessageType = fastReflection_PolicyCmdPayload_PolicyCmd_messageType{}
-
-type fastReflection_PolicyCmdPayload_PolicyCmd_messageType struct{}
-
-func (x fastReflection_PolicyCmdPayload_PolicyCmd_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_PolicyCmdPayload_PolicyCmd)(nil)
-}
-func (x fastReflection_PolicyCmdPayload_PolicyCmd_messageType) New() protoreflect.Message {
-	return new(fastReflection_PolicyCmdPayload_PolicyCmd)
-}
-func (x fastReflection_PolicyCmdPayload_PolicyCmd_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_PolicyCmdPayload_PolicyCmd
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) Descriptor() protoreflect.MessageDescriptor {
-	return md_PolicyCmdPayload_PolicyCmd
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) Type() protoreflect.MessageType {
-	return _fastReflection_PolicyCmdPayload_PolicyCmd_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) New() protoreflect.Message {
-	return new(fastReflection_PolicyCmdPayload_PolicyCmd)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) Interface() protoreflect.ProtoMessage {
-	return (*PolicyCmdPayload_PolicyCmd)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Cmd != nil {
-		switch o := x.Cmd.(type) {
-		case *PolicyCmdPayload_PolicyCmd_SetRelationshipCmd:
-			v := o.SetRelationshipCmd
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_PolicyCmdPayload_PolicyCmd_set_relationship_cmd, value) {
-				return
-			}
-		case *PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd:
-			v := o.DeleteRelationshipCmd
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_PolicyCmdPayload_PolicyCmd_delete_relationship_cmd, value) {
-				return
-			}
-		case *PolicyCmdPayload_PolicyCmd_RegisterObjectCmd:
-			v := o.RegisterObjectCmd
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_PolicyCmdPayload_PolicyCmd_register_object_cmd, value) {
-				return
-			}
-		case *PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd:
-			v := o.UnregisterObjectCmd
-			value := protoreflect.ValueOfMessage(v.ProtoReflect())
-			if !f(fd_PolicyCmdPayload_PolicyCmd_unregister_object_cmd, value) {
-				return
-			}
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.set_relationship_cmd":
-		if x.Cmd == nil {
-			return false
-		} else if _, ok := x.Cmd.(*PolicyCmdPayload_PolicyCmd_SetRelationshipCmd); ok {
-			return true
-		} else {
-			return false
-		}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.delete_relationship_cmd":
-		if x.Cmd == nil {
-			return false
-		} else if _, ok := x.Cmd.(*PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd); ok {
-			return true
-		} else {
-			return false
-		}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.register_object_cmd":
-		if x.Cmd == nil {
-			return false
-		} else if _, ok := x.Cmd.(*PolicyCmdPayload_PolicyCmd_RegisterObjectCmd); ok {
-			return true
-		} else {
-			return false
-		}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.unregister_object_cmd":
-		if x.Cmd == nil {
-			return false
-		} else if _, ok := x.Cmd.(*PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd); ok {
-			return true
-		} else {
-			return false
-		}
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdPayload.PolicyCmd"))
-		}
-		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdPayload.PolicyCmd does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.set_relationship_cmd":
-		x.Cmd = nil
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.delete_relationship_cmd":
-		x.Cmd = nil
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.register_object_cmd":
-		x.Cmd = nil
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.unregister_object_cmd":
-		x.Cmd = nil
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdPayload.PolicyCmd"))
-		}
-		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdPayload.PolicyCmd does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.set_relationship_cmd":
-		if x.Cmd == nil {
-			return protoreflect.ValueOfMessage((*SetRelationshipCmd)(nil).ProtoReflect())
-		} else if v, ok := x.Cmd.(*PolicyCmdPayload_PolicyCmd_SetRelationshipCmd); ok {
-			return protoreflect.ValueOfMessage(v.SetRelationshipCmd.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*SetRelationshipCmd)(nil).ProtoReflect())
-		}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.delete_relationship_cmd":
-		if x.Cmd == nil {
-			return protoreflect.ValueOfMessage((*DeleteRelationshipCmd)(nil).ProtoReflect())
-		} else if v, ok := x.Cmd.(*PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd); ok {
-			return protoreflect.ValueOfMessage(v.DeleteRelationshipCmd.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*DeleteRelationshipCmd)(nil).ProtoReflect())
-		}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.register_object_cmd":
-		if x.Cmd == nil {
-			return protoreflect.ValueOfMessage((*RegisterObjectCmd)(nil).ProtoReflect())
-		} else if v, ok := x.Cmd.(*PolicyCmdPayload_PolicyCmd_RegisterObjectCmd); ok {
-			return protoreflect.ValueOfMessage(v.RegisterObjectCmd.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*RegisterObjectCmd)(nil).ProtoReflect())
-		}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.unregister_object_cmd":
-		if x.Cmd == nil {
-			return protoreflect.ValueOfMessage((*UnregisterObjectCmd)(nil).ProtoReflect())
-		} else if v, ok := x.Cmd.(*PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd); ok {
-			return protoreflect.ValueOfMessage(v.UnregisterObjectCmd.ProtoReflect())
-		} else {
-			return protoreflect.ValueOfMessage((*UnregisterObjectCmd)(nil).ProtoReflect())
-		}
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdPayload.PolicyCmd"))
-		}
-		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdPayload.PolicyCmd does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.set_relationship_cmd":
-		cv := value.Message().Interface().(*SetRelationshipCmd)
-		x.Cmd = &PolicyCmdPayload_PolicyCmd_SetRelationshipCmd{SetRelationshipCmd: cv}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.delete_relationship_cmd":
-		cv := value.Message().Interface().(*DeleteRelationshipCmd)
-		x.Cmd = &PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd{DeleteRelationshipCmd: cv}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.register_object_cmd":
-		cv := value.Message().Interface().(*RegisterObjectCmd)
-		x.Cmd = &PolicyCmdPayload_PolicyCmd_RegisterObjectCmd{RegisterObjectCmd: cv}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.unregister_object_cmd":
-		cv := value.Message().Interface().(*UnregisterObjectCmd)
-		x.Cmd = &PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd{UnregisterObjectCmd: cv}
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdPayload.PolicyCmd"))
-		}
-		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdPayload.PolicyCmd does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.set_relationship_cmd":
-		if x.Cmd == nil {
-			value := &SetRelationshipCmd{}
-			oneofValue := &PolicyCmdPayload_PolicyCmd_SetRelationshipCmd{SetRelationshipCmd: value}
-			x.Cmd = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Cmd.(type) {
-		case *PolicyCmdPayload_PolicyCmd_SetRelationshipCmd:
-			return protoreflect.ValueOfMessage(m.SetRelationshipCmd.ProtoReflect())
-		default:
-			value := &SetRelationshipCmd{}
-			oneofValue := &PolicyCmdPayload_PolicyCmd_SetRelationshipCmd{SetRelationshipCmd: value}
-			x.Cmd = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.delete_relationship_cmd":
-		if x.Cmd == nil {
-			value := &DeleteRelationshipCmd{}
-			oneofValue := &PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd{DeleteRelationshipCmd: value}
-			x.Cmd = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Cmd.(type) {
-		case *PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd:
-			return protoreflect.ValueOfMessage(m.DeleteRelationshipCmd.ProtoReflect())
-		default:
-			value := &DeleteRelationshipCmd{}
-			oneofValue := &PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd{DeleteRelationshipCmd: value}
-			x.Cmd = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.register_object_cmd":
-		if x.Cmd == nil {
-			value := &RegisterObjectCmd{}
-			oneofValue := &PolicyCmdPayload_PolicyCmd_RegisterObjectCmd{RegisterObjectCmd: value}
-			x.Cmd = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Cmd.(type) {
-		case *PolicyCmdPayload_PolicyCmd_RegisterObjectCmd:
-			return protoreflect.ValueOfMessage(m.RegisterObjectCmd.ProtoReflect())
-		default:
-			value := &RegisterObjectCmd{}
-			oneofValue := &PolicyCmdPayload_PolicyCmd_RegisterObjectCmd{RegisterObjectCmd: value}
-			x.Cmd = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.unregister_object_cmd":
-		if x.Cmd == nil {
-			value := &UnregisterObjectCmd{}
-			oneofValue := &PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd{UnregisterObjectCmd: value}
-			x.Cmd = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-		switch m := x.Cmd.(type) {
-		case *PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd:
-			return protoreflect.ValueOfMessage(m.UnregisterObjectCmd.ProtoReflect())
-		default:
-			value := &UnregisterObjectCmd{}
-			oneofValue := &PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd{UnregisterObjectCmd: value}
-			x.Cmd = oneofValue
-			return protoreflect.ValueOfMessage(value.ProtoReflect())
-		}
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdPayload.PolicyCmd"))
-		}
-		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdPayload.PolicyCmd does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.set_relationship_cmd":
-		value := &SetRelationshipCmd{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.delete_relationship_cmd":
-		value := &DeleteRelationshipCmd{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.register_object_cmd":
-		value := &RegisterObjectCmd{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.unregister_object_cmd":
-		value := &UnregisterObjectCmd{}
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdPayload.PolicyCmd"))
-		}
-		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdPayload.PolicyCmd does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	case "sourcehub.acp.PolicyCmdPayload.PolicyCmd.cmd":
-		if x.Cmd == nil {
-			return nil
-		}
-		switch x.Cmd.(type) {
-		case *PolicyCmdPayload_PolicyCmd_SetRelationshipCmd:
-			return x.Descriptor().Fields().ByName("set_relationship_cmd")
-		case *PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd:
-			return x.Descriptor().Fields().ByName("delete_relationship_cmd")
-		case *PolicyCmdPayload_PolicyCmd_RegisterObjectCmd:
-			return x.Descriptor().Fields().ByName("register_object_cmd")
-		case *PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd:
-			return x.Descriptor().Fields().ByName("unregister_object_cmd")
-		}
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in sourcehub.acp.PolicyCmdPayload.PolicyCmd", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_PolicyCmdPayload_PolicyCmd) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*PolicyCmdPayload_PolicyCmd)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		switch x := x.Cmd.(type) {
-		case *PolicyCmdPayload_PolicyCmd_SetRelationshipCmd:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.SetRelationshipCmd)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.DeleteRelationshipCmd)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *PolicyCmdPayload_PolicyCmd_RegisterObjectCmd:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.RegisterObjectCmd)
-			n += 1 + l + runtime.Sov(uint64(l))
-		case *PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd:
-			if x == nil {
-				break
-			}
-			l = options.Size(x.UnregisterObjectCmd)
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*PolicyCmdPayload_PolicyCmd)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		switch x := x.Cmd.(type) {
-		case *PolicyCmdPayload_PolicyCmd_SetRelationshipCmd:
-			encoded, err := options.Marshal(x.SetRelationshipCmd)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x12
-		case *PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd:
-			encoded, err := options.Marshal(x.DeleteRelationshipCmd)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x1a
-		case *PolicyCmdPayload_PolicyCmd_RegisterObjectCmd:
-			encoded, err := options.Marshal(x.RegisterObjectCmd)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x22
-		case *PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd:
-			encoded, err := options.Marshal(x.UnregisterObjectCmd)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x2a
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*PolicyCmdPayload_PolicyCmd)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PolicyCmdPayload_PolicyCmd: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PolicyCmdPayload_PolicyCmd: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 2:
-				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SetRelationshipCmd", wireType)
 				}
 				var msglen int
@@ -1896,9 +1461,9 @@ func (x *fastReflection_PolicyCmdPayload_PolicyCmd) ProtoMethods() *protoiface.M
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
-				x.Cmd = &PolicyCmdPayload_PolicyCmd_SetRelationshipCmd{v}
+				x.Cmd = &PolicyCmdPayload_SetRelationshipCmd{v}
 				iNdEx = postIndex
-			case 3:
+			case 7:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DeleteRelationshipCmd", wireType)
 				}
@@ -1931,9 +1496,9 @@ func (x *fastReflection_PolicyCmdPayload_PolicyCmd) ProtoMethods() *protoiface.M
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
-				x.Cmd = &PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd{v}
+				x.Cmd = &PolicyCmdPayload_DeleteRelationshipCmd{v}
 				iNdEx = postIndex
-			case 4:
+			case 8:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field RegisterObjectCmd", wireType)
 				}
@@ -1966,9 +1531,9 @@ func (x *fastReflection_PolicyCmdPayload_PolicyCmd) ProtoMethods() *protoiface.M
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
-				x.Cmd = &PolicyCmdPayload_PolicyCmd_RegisterObjectCmd{v}
+				x.Cmd = &PolicyCmdPayload_RegisterObjectCmd{v}
 				iNdEx = postIndex
-			case 5:
+			case 9:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UnregisterObjectCmd", wireType)
 				}
@@ -2001,7 +1566,7 @@ func (x *fastReflection_PolicyCmdPayload_PolicyCmd) ProtoMethods() *protoiface.M
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
-				x.Cmd = &PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd{v}
+				x.Cmd = &PolicyCmdPayload_UnregisterObjectCmd{v}
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -3778,6 +3343,2553 @@ func (x *fastReflection_UnregisterObjectCmd) ProtoMethods() *protoiface.Methods 
 	}
 }
 
+var (
+	md_SetRelationshipCmdResult                protoreflect.MessageDescriptor
+	fd_SetRelationshipCmdResult_record_existed protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_sourcehub_acp_policy_cmd_proto_init()
+	md_SetRelationshipCmdResult = File_sourcehub_acp_policy_cmd_proto.Messages().ByName("SetRelationshipCmdResult")
+	fd_SetRelationshipCmdResult_record_existed = md_SetRelationshipCmdResult.Fields().ByName("record_existed")
+}
+
+var _ protoreflect.Message = (*fastReflection_SetRelationshipCmdResult)(nil)
+
+type fastReflection_SetRelationshipCmdResult SetRelationshipCmdResult
+
+func (x *SetRelationshipCmdResult) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_SetRelationshipCmdResult)(x)
+}
+
+func (x *SetRelationshipCmdResult) slowProtoReflect() protoreflect.Message {
+	mi := &file_sourcehub_acp_policy_cmd_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_SetRelationshipCmdResult_messageType fastReflection_SetRelationshipCmdResult_messageType
+var _ protoreflect.MessageType = fastReflection_SetRelationshipCmdResult_messageType{}
+
+type fastReflection_SetRelationshipCmdResult_messageType struct{}
+
+func (x fastReflection_SetRelationshipCmdResult_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_SetRelationshipCmdResult)(nil)
+}
+func (x fastReflection_SetRelationshipCmdResult_messageType) New() protoreflect.Message {
+	return new(fastReflection_SetRelationshipCmdResult)
+}
+func (x fastReflection_SetRelationshipCmdResult_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_SetRelationshipCmdResult
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_SetRelationshipCmdResult) Descriptor() protoreflect.MessageDescriptor {
+	return md_SetRelationshipCmdResult
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_SetRelationshipCmdResult) Type() protoreflect.MessageType {
+	return _fastReflection_SetRelationshipCmdResult_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_SetRelationshipCmdResult) New() protoreflect.Message {
+	return new(fastReflection_SetRelationshipCmdResult)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_SetRelationshipCmdResult) Interface() protoreflect.ProtoMessage {
+	return (*SetRelationshipCmdResult)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_SetRelationshipCmdResult) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.RecordExisted != false {
+		value := protoreflect.ValueOfBool(x.RecordExisted)
+		if !f(fd_SetRelationshipCmdResult_record_existed, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_SetRelationshipCmdResult) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "sourcehub.acp.SetRelationshipCmdResult.record_existed":
+		return x.RecordExisted != false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.SetRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.SetRelationshipCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_SetRelationshipCmdResult) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "sourcehub.acp.SetRelationshipCmdResult.record_existed":
+		x.RecordExisted = false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.SetRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.SetRelationshipCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_SetRelationshipCmdResult) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "sourcehub.acp.SetRelationshipCmdResult.record_existed":
+		value := x.RecordExisted
+		return protoreflect.ValueOfBool(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.SetRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.SetRelationshipCmdResult does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_SetRelationshipCmdResult) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "sourcehub.acp.SetRelationshipCmdResult.record_existed":
+		x.RecordExisted = value.Bool()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.SetRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.SetRelationshipCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_SetRelationshipCmdResult) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "sourcehub.acp.SetRelationshipCmdResult.record_existed":
+		panic(fmt.Errorf("field record_existed of message sourcehub.acp.SetRelationshipCmdResult is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.SetRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.SetRelationshipCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_SetRelationshipCmdResult) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "sourcehub.acp.SetRelationshipCmdResult.record_existed":
+		return protoreflect.ValueOfBool(false)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.SetRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.SetRelationshipCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_SetRelationshipCmdResult) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in sourcehub.acp.SetRelationshipCmdResult", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_SetRelationshipCmdResult) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_SetRelationshipCmdResult) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_SetRelationshipCmdResult) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_SetRelationshipCmdResult) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*SetRelationshipCmdResult)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.RecordExisted {
+			n += 2
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*SetRelationshipCmdResult)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.RecordExisted {
+			i--
+			if x.RecordExisted {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*SetRelationshipCmdResult)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: SetRelationshipCmdResult: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: SetRelationshipCmdResult: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field RecordExisted", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.RecordExisted = bool(v != 0)
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_DeleteRelationshipCmdResult              protoreflect.MessageDescriptor
+	fd_DeleteRelationshipCmdResult_record_found protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_sourcehub_acp_policy_cmd_proto_init()
+	md_DeleteRelationshipCmdResult = File_sourcehub_acp_policy_cmd_proto.Messages().ByName("DeleteRelationshipCmdResult")
+	fd_DeleteRelationshipCmdResult_record_found = md_DeleteRelationshipCmdResult.Fields().ByName("record_found")
+}
+
+var _ protoreflect.Message = (*fastReflection_DeleteRelationshipCmdResult)(nil)
+
+type fastReflection_DeleteRelationshipCmdResult DeleteRelationshipCmdResult
+
+func (x *DeleteRelationshipCmdResult) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_DeleteRelationshipCmdResult)(x)
+}
+
+func (x *DeleteRelationshipCmdResult) slowProtoReflect() protoreflect.Message {
+	mi := &file_sourcehub_acp_policy_cmd_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_DeleteRelationshipCmdResult_messageType fastReflection_DeleteRelationshipCmdResult_messageType
+var _ protoreflect.MessageType = fastReflection_DeleteRelationshipCmdResult_messageType{}
+
+type fastReflection_DeleteRelationshipCmdResult_messageType struct{}
+
+func (x fastReflection_DeleteRelationshipCmdResult_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_DeleteRelationshipCmdResult)(nil)
+}
+func (x fastReflection_DeleteRelationshipCmdResult_messageType) New() protoreflect.Message {
+	return new(fastReflection_DeleteRelationshipCmdResult)
+}
+func (x fastReflection_DeleteRelationshipCmdResult_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_DeleteRelationshipCmdResult
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_DeleteRelationshipCmdResult) Descriptor() protoreflect.MessageDescriptor {
+	return md_DeleteRelationshipCmdResult
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_DeleteRelationshipCmdResult) Type() protoreflect.MessageType {
+	return _fastReflection_DeleteRelationshipCmdResult_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_DeleteRelationshipCmdResult) New() protoreflect.Message {
+	return new(fastReflection_DeleteRelationshipCmdResult)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_DeleteRelationshipCmdResult) Interface() protoreflect.ProtoMessage {
+	return (*DeleteRelationshipCmdResult)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_DeleteRelationshipCmdResult) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.RecordFound != false {
+		value := protoreflect.ValueOfBool(x.RecordFound)
+		if !f(fd_DeleteRelationshipCmdResult_record_found, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_DeleteRelationshipCmdResult) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "sourcehub.acp.DeleteRelationshipCmdResult.record_found":
+		return x.RecordFound != false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.DeleteRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.DeleteRelationshipCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_DeleteRelationshipCmdResult) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "sourcehub.acp.DeleteRelationshipCmdResult.record_found":
+		x.RecordFound = false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.DeleteRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.DeleteRelationshipCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_DeleteRelationshipCmdResult) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "sourcehub.acp.DeleteRelationshipCmdResult.record_found":
+		value := x.RecordFound
+		return protoreflect.ValueOfBool(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.DeleteRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.DeleteRelationshipCmdResult does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_DeleteRelationshipCmdResult) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "sourcehub.acp.DeleteRelationshipCmdResult.record_found":
+		x.RecordFound = value.Bool()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.DeleteRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.DeleteRelationshipCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_DeleteRelationshipCmdResult) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "sourcehub.acp.DeleteRelationshipCmdResult.record_found":
+		panic(fmt.Errorf("field record_found of message sourcehub.acp.DeleteRelationshipCmdResult is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.DeleteRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.DeleteRelationshipCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_DeleteRelationshipCmdResult) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "sourcehub.acp.DeleteRelationshipCmdResult.record_found":
+		return protoreflect.ValueOfBool(false)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.DeleteRelationshipCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.DeleteRelationshipCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_DeleteRelationshipCmdResult) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in sourcehub.acp.DeleteRelationshipCmdResult", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_DeleteRelationshipCmdResult) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_DeleteRelationshipCmdResult) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_DeleteRelationshipCmdResult) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_DeleteRelationshipCmdResult) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*DeleteRelationshipCmdResult)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.RecordFound {
+			n += 2
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*DeleteRelationshipCmdResult)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.RecordFound {
+			i--
+			if x.RecordFound {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*DeleteRelationshipCmdResult)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: DeleteRelationshipCmdResult: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: DeleteRelationshipCmdResult: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field RecordFound", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.RecordFound = bool(v != 0)
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_RegisterObjectCmdResult        protoreflect.MessageDescriptor
+	fd_RegisterObjectCmdResult_result protoreflect.FieldDescriptor
+	fd_RegisterObjectCmdResult_record protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_sourcehub_acp_policy_cmd_proto_init()
+	md_RegisterObjectCmdResult = File_sourcehub_acp_policy_cmd_proto.Messages().ByName("RegisterObjectCmdResult")
+	fd_RegisterObjectCmdResult_result = md_RegisterObjectCmdResult.Fields().ByName("result")
+	fd_RegisterObjectCmdResult_record = md_RegisterObjectCmdResult.Fields().ByName("record")
+}
+
+var _ protoreflect.Message = (*fastReflection_RegisterObjectCmdResult)(nil)
+
+type fastReflection_RegisterObjectCmdResult RegisterObjectCmdResult
+
+func (x *RegisterObjectCmdResult) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_RegisterObjectCmdResult)(x)
+}
+
+func (x *RegisterObjectCmdResult) slowProtoReflect() protoreflect.Message {
+	mi := &file_sourcehub_acp_policy_cmd_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_RegisterObjectCmdResult_messageType fastReflection_RegisterObjectCmdResult_messageType
+var _ protoreflect.MessageType = fastReflection_RegisterObjectCmdResult_messageType{}
+
+type fastReflection_RegisterObjectCmdResult_messageType struct{}
+
+func (x fastReflection_RegisterObjectCmdResult_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_RegisterObjectCmdResult)(nil)
+}
+func (x fastReflection_RegisterObjectCmdResult_messageType) New() protoreflect.Message {
+	return new(fastReflection_RegisterObjectCmdResult)
+}
+func (x fastReflection_RegisterObjectCmdResult_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_RegisterObjectCmdResult
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_RegisterObjectCmdResult) Descriptor() protoreflect.MessageDescriptor {
+	return md_RegisterObjectCmdResult
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_RegisterObjectCmdResult) Type() protoreflect.MessageType {
+	return _fastReflection_RegisterObjectCmdResult_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_RegisterObjectCmdResult) New() protoreflect.Message {
+	return new(fastReflection_RegisterObjectCmdResult)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_RegisterObjectCmdResult) Interface() protoreflect.ProtoMessage {
+	return (*RegisterObjectCmdResult)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_RegisterObjectCmdResult) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Result != 0 {
+		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.Result))
+		if !f(fd_RegisterObjectCmdResult_result, value) {
+			return
+		}
+	}
+	if x.Record != nil {
+		value := protoreflect.ValueOfMessage(x.Record.ProtoReflect())
+		if !f(fd_RegisterObjectCmdResult_record, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_RegisterObjectCmdResult) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "sourcehub.acp.RegisterObjectCmdResult.result":
+		return x.Result != 0
+	case "sourcehub.acp.RegisterObjectCmdResult.record":
+		return x.Record != nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.RegisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.RegisterObjectCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_RegisterObjectCmdResult) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "sourcehub.acp.RegisterObjectCmdResult.result":
+		x.Result = 0
+	case "sourcehub.acp.RegisterObjectCmdResult.record":
+		x.Record = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.RegisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.RegisterObjectCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_RegisterObjectCmdResult) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "sourcehub.acp.RegisterObjectCmdResult.result":
+		value := x.Result
+		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
+	case "sourcehub.acp.RegisterObjectCmdResult.record":
+		value := x.Record
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.RegisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.RegisterObjectCmdResult does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_RegisterObjectCmdResult) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "sourcehub.acp.RegisterObjectCmdResult.result":
+		x.Result = (RegistrationResult)(value.Enum())
+	case "sourcehub.acp.RegisterObjectCmdResult.record":
+		x.Record = value.Message().Interface().(*RelationshipRecord)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.RegisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.RegisterObjectCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_RegisterObjectCmdResult) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "sourcehub.acp.RegisterObjectCmdResult.record":
+		if x.Record == nil {
+			x.Record = new(RelationshipRecord)
+		}
+		return protoreflect.ValueOfMessage(x.Record.ProtoReflect())
+	case "sourcehub.acp.RegisterObjectCmdResult.result":
+		panic(fmt.Errorf("field result of message sourcehub.acp.RegisterObjectCmdResult is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.RegisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.RegisterObjectCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_RegisterObjectCmdResult) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "sourcehub.acp.RegisterObjectCmdResult.result":
+		return protoreflect.ValueOfEnum(0)
+	case "sourcehub.acp.RegisterObjectCmdResult.record":
+		m := new(RelationshipRecord)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.RegisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.RegisterObjectCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_RegisterObjectCmdResult) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in sourcehub.acp.RegisterObjectCmdResult", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_RegisterObjectCmdResult) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_RegisterObjectCmdResult) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_RegisterObjectCmdResult) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_RegisterObjectCmdResult) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*RegisterObjectCmdResult)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.Result != 0 {
+			n += 1 + runtime.Sov(uint64(x.Result))
+		}
+		if x.Record != nil {
+			l = options.Size(x.Record)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*RegisterObjectCmdResult)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Record != nil {
+			encoded, err := options.Marshal(x.Record)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if x.Result != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Result))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*RegisterObjectCmdResult)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: RegisterObjectCmdResult: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: RegisterObjectCmdResult: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Result", wireType)
+				}
+				x.Result = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Result |= RegistrationResult(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Record", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.Record == nil {
+					x.Record = &RelationshipRecord{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Record); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_UnregisterObjectCmdResult                       protoreflect.MessageDescriptor
+	fd_UnregisterObjectCmdResult_found                 protoreflect.FieldDescriptor
+	fd_UnregisterObjectCmdResult_relationships_removed protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_sourcehub_acp_policy_cmd_proto_init()
+	md_UnregisterObjectCmdResult = File_sourcehub_acp_policy_cmd_proto.Messages().ByName("UnregisterObjectCmdResult")
+	fd_UnregisterObjectCmdResult_found = md_UnregisterObjectCmdResult.Fields().ByName("found")
+	fd_UnregisterObjectCmdResult_relationships_removed = md_UnregisterObjectCmdResult.Fields().ByName("relationships_removed")
+}
+
+var _ protoreflect.Message = (*fastReflection_UnregisterObjectCmdResult)(nil)
+
+type fastReflection_UnregisterObjectCmdResult UnregisterObjectCmdResult
+
+func (x *UnregisterObjectCmdResult) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_UnregisterObjectCmdResult)(x)
+}
+
+func (x *UnregisterObjectCmdResult) slowProtoReflect() protoreflect.Message {
+	mi := &file_sourcehub_acp_policy_cmd_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_UnregisterObjectCmdResult_messageType fastReflection_UnregisterObjectCmdResult_messageType
+var _ protoreflect.MessageType = fastReflection_UnregisterObjectCmdResult_messageType{}
+
+type fastReflection_UnregisterObjectCmdResult_messageType struct{}
+
+func (x fastReflection_UnregisterObjectCmdResult_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_UnregisterObjectCmdResult)(nil)
+}
+func (x fastReflection_UnregisterObjectCmdResult_messageType) New() protoreflect.Message {
+	return new(fastReflection_UnregisterObjectCmdResult)
+}
+func (x fastReflection_UnregisterObjectCmdResult_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_UnregisterObjectCmdResult
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_UnregisterObjectCmdResult) Descriptor() protoreflect.MessageDescriptor {
+	return md_UnregisterObjectCmdResult
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_UnregisterObjectCmdResult) Type() protoreflect.MessageType {
+	return _fastReflection_UnregisterObjectCmdResult_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_UnregisterObjectCmdResult) New() protoreflect.Message {
+	return new(fastReflection_UnregisterObjectCmdResult)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_UnregisterObjectCmdResult) Interface() protoreflect.ProtoMessage {
+	return (*UnregisterObjectCmdResult)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_UnregisterObjectCmdResult) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Found != false {
+		value := protoreflect.ValueOfBool(x.Found)
+		if !f(fd_UnregisterObjectCmdResult_found, value) {
+			return
+		}
+	}
+	if x.RelationshipsRemoved != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.RelationshipsRemoved)
+		if !f(fd_UnregisterObjectCmdResult_relationships_removed, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_UnregisterObjectCmdResult) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "sourcehub.acp.UnregisterObjectCmdResult.found":
+		return x.Found != false
+	case "sourcehub.acp.UnregisterObjectCmdResult.relationships_removed":
+		return x.RelationshipsRemoved != uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.UnregisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.UnregisterObjectCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_UnregisterObjectCmdResult) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "sourcehub.acp.UnregisterObjectCmdResult.found":
+		x.Found = false
+	case "sourcehub.acp.UnregisterObjectCmdResult.relationships_removed":
+		x.RelationshipsRemoved = uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.UnregisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.UnregisterObjectCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_UnregisterObjectCmdResult) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "sourcehub.acp.UnregisterObjectCmdResult.found":
+		value := x.Found
+		return protoreflect.ValueOfBool(value)
+	case "sourcehub.acp.UnregisterObjectCmdResult.relationships_removed":
+		value := x.RelationshipsRemoved
+		return protoreflect.ValueOfUint64(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.UnregisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.UnregisterObjectCmdResult does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_UnregisterObjectCmdResult) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "sourcehub.acp.UnregisterObjectCmdResult.found":
+		x.Found = value.Bool()
+	case "sourcehub.acp.UnregisterObjectCmdResult.relationships_removed":
+		x.RelationshipsRemoved = value.Uint()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.UnregisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.UnregisterObjectCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_UnregisterObjectCmdResult) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "sourcehub.acp.UnregisterObjectCmdResult.found":
+		panic(fmt.Errorf("field found of message sourcehub.acp.UnregisterObjectCmdResult is not mutable"))
+	case "sourcehub.acp.UnregisterObjectCmdResult.relationships_removed":
+		panic(fmt.Errorf("field relationships_removed of message sourcehub.acp.UnregisterObjectCmdResult is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.UnregisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.UnregisterObjectCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_UnregisterObjectCmdResult) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "sourcehub.acp.UnregisterObjectCmdResult.found":
+		return protoreflect.ValueOfBool(false)
+	case "sourcehub.acp.UnregisterObjectCmdResult.relationships_removed":
+		return protoreflect.ValueOfUint64(uint64(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.UnregisterObjectCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.UnregisterObjectCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_UnregisterObjectCmdResult) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in sourcehub.acp.UnregisterObjectCmdResult", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_UnregisterObjectCmdResult) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_UnregisterObjectCmdResult) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_UnregisterObjectCmdResult) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_UnregisterObjectCmdResult) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*UnregisterObjectCmdResult)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.Found {
+			n += 2
+		}
+		if x.RelationshipsRemoved != 0 {
+			n += 1 + runtime.Sov(uint64(x.RelationshipsRemoved))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*UnregisterObjectCmdResult)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.RelationshipsRemoved != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.RelationshipsRemoved))
+			i--
+			dAtA[i] = 0x10
+		}
+		if x.Found {
+			i--
+			if x.Found {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*UnregisterObjectCmdResult)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: UnregisterObjectCmdResult: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: UnregisterObjectCmdResult: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Found", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Found = bool(v != 0)
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field RelationshipsRemoved", wireType)
+				}
+				x.RelationshipsRemoved = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.RelationshipsRemoved |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_PolicyCmdResult                            protoreflect.MessageDescriptor
+	fd_PolicyCmdResult_set_relationship_result    protoreflect.FieldDescriptor
+	fd_PolicyCmdResult_delete_relationship_result protoreflect.FieldDescriptor
+	fd_PolicyCmdResult_register_object_result     protoreflect.FieldDescriptor
+	fd_PolicyCmdResult_unregister_object_result   protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_sourcehub_acp_policy_cmd_proto_init()
+	md_PolicyCmdResult = File_sourcehub_acp_policy_cmd_proto.Messages().ByName("PolicyCmdResult")
+	fd_PolicyCmdResult_set_relationship_result = md_PolicyCmdResult.Fields().ByName("set_relationship_result")
+	fd_PolicyCmdResult_delete_relationship_result = md_PolicyCmdResult.Fields().ByName("delete_relationship_result")
+	fd_PolicyCmdResult_register_object_result = md_PolicyCmdResult.Fields().ByName("register_object_result")
+	fd_PolicyCmdResult_unregister_object_result = md_PolicyCmdResult.Fields().ByName("unregister_object_result")
+}
+
+var _ protoreflect.Message = (*fastReflection_PolicyCmdResult)(nil)
+
+type fastReflection_PolicyCmdResult PolicyCmdResult
+
+func (x *PolicyCmdResult) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_PolicyCmdResult)(x)
+}
+
+func (x *PolicyCmdResult) slowProtoReflect() protoreflect.Message {
+	mi := &file_sourcehub_acp_policy_cmd_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_PolicyCmdResult_messageType fastReflection_PolicyCmdResult_messageType
+var _ protoreflect.MessageType = fastReflection_PolicyCmdResult_messageType{}
+
+type fastReflection_PolicyCmdResult_messageType struct{}
+
+func (x fastReflection_PolicyCmdResult_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_PolicyCmdResult)(nil)
+}
+func (x fastReflection_PolicyCmdResult_messageType) New() protoreflect.Message {
+	return new(fastReflection_PolicyCmdResult)
+}
+func (x fastReflection_PolicyCmdResult_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_PolicyCmdResult
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_PolicyCmdResult) Descriptor() protoreflect.MessageDescriptor {
+	return md_PolicyCmdResult
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_PolicyCmdResult) Type() protoreflect.MessageType {
+	return _fastReflection_PolicyCmdResult_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_PolicyCmdResult) New() protoreflect.Message {
+	return new(fastReflection_PolicyCmdResult)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_PolicyCmdResult) Interface() protoreflect.ProtoMessage {
+	return (*PolicyCmdResult)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_PolicyCmdResult) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Result != nil {
+		switch o := x.Result.(type) {
+		case *PolicyCmdResult_SetRelationshipResult:
+			v := o.SetRelationshipResult
+			value := protoreflect.ValueOfMessage(v.ProtoReflect())
+			if !f(fd_PolicyCmdResult_set_relationship_result, value) {
+				return
+			}
+		case *PolicyCmdResult_DeleteRelationshipResult:
+			v := o.DeleteRelationshipResult
+			value := protoreflect.ValueOfMessage(v.ProtoReflect())
+			if !f(fd_PolicyCmdResult_delete_relationship_result, value) {
+				return
+			}
+		case *PolicyCmdResult_RegisterObjectResult:
+			v := o.RegisterObjectResult
+			value := protoreflect.ValueOfMessage(v.ProtoReflect())
+			if !f(fd_PolicyCmdResult_register_object_result, value) {
+				return
+			}
+		case *PolicyCmdResult_UnregisterObjectResult:
+			v := o.UnregisterObjectResult
+			value := protoreflect.ValueOfMessage(v.ProtoReflect())
+			if !f(fd_PolicyCmdResult_unregister_object_result, value) {
+				return
+			}
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_PolicyCmdResult) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "sourcehub.acp.PolicyCmdResult.set_relationship_result":
+		if x.Result == nil {
+			return false
+		} else if _, ok := x.Result.(*PolicyCmdResult_SetRelationshipResult); ok {
+			return true
+		} else {
+			return false
+		}
+	case "sourcehub.acp.PolicyCmdResult.delete_relationship_result":
+		if x.Result == nil {
+			return false
+		} else if _, ok := x.Result.(*PolicyCmdResult_DeleteRelationshipResult); ok {
+			return true
+		} else {
+			return false
+		}
+	case "sourcehub.acp.PolicyCmdResult.register_object_result":
+		if x.Result == nil {
+			return false
+		} else if _, ok := x.Result.(*PolicyCmdResult_RegisterObjectResult); ok {
+			return true
+		} else {
+			return false
+		}
+	case "sourcehub.acp.PolicyCmdResult.unregister_object_result":
+		if x.Result == nil {
+			return false
+		} else if _, ok := x.Result.(*PolicyCmdResult_UnregisterObjectResult); ok {
+			return true
+		} else {
+			return false
+		}
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PolicyCmdResult) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "sourcehub.acp.PolicyCmdResult.set_relationship_result":
+		x.Result = nil
+	case "sourcehub.acp.PolicyCmdResult.delete_relationship_result":
+		x.Result = nil
+	case "sourcehub.acp.PolicyCmdResult.register_object_result":
+		x.Result = nil
+	case "sourcehub.acp.PolicyCmdResult.unregister_object_result":
+		x.Result = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_PolicyCmdResult) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "sourcehub.acp.PolicyCmdResult.set_relationship_result":
+		if x.Result == nil {
+			return protoreflect.ValueOfMessage((*SetRelationshipCmdResult)(nil).ProtoReflect())
+		} else if v, ok := x.Result.(*PolicyCmdResult_SetRelationshipResult); ok {
+			return protoreflect.ValueOfMessage(v.SetRelationshipResult.ProtoReflect())
+		} else {
+			return protoreflect.ValueOfMessage((*SetRelationshipCmdResult)(nil).ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdResult.delete_relationship_result":
+		if x.Result == nil {
+			return protoreflect.ValueOfMessage((*DeleteRelationshipCmdResult)(nil).ProtoReflect())
+		} else if v, ok := x.Result.(*PolicyCmdResult_DeleteRelationshipResult); ok {
+			return protoreflect.ValueOfMessage(v.DeleteRelationshipResult.ProtoReflect())
+		} else {
+			return protoreflect.ValueOfMessage((*DeleteRelationshipCmdResult)(nil).ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdResult.register_object_result":
+		if x.Result == nil {
+			return protoreflect.ValueOfMessage((*RegisterObjectCmdResult)(nil).ProtoReflect())
+		} else if v, ok := x.Result.(*PolicyCmdResult_RegisterObjectResult); ok {
+			return protoreflect.ValueOfMessage(v.RegisterObjectResult.ProtoReflect())
+		} else {
+			return protoreflect.ValueOfMessage((*RegisterObjectCmdResult)(nil).ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdResult.unregister_object_result":
+		if x.Result == nil {
+			return protoreflect.ValueOfMessage((*UnregisterObjectCmdResult)(nil).ProtoReflect())
+		} else if v, ok := x.Result.(*PolicyCmdResult_UnregisterObjectResult); ok {
+			return protoreflect.ValueOfMessage(v.UnregisterObjectResult.ProtoReflect())
+		} else {
+			return protoreflect.ValueOfMessage((*UnregisterObjectCmdResult)(nil).ProtoReflect())
+		}
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdResult does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PolicyCmdResult) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "sourcehub.acp.PolicyCmdResult.set_relationship_result":
+		cv := value.Message().Interface().(*SetRelationshipCmdResult)
+		x.Result = &PolicyCmdResult_SetRelationshipResult{SetRelationshipResult: cv}
+	case "sourcehub.acp.PolicyCmdResult.delete_relationship_result":
+		cv := value.Message().Interface().(*DeleteRelationshipCmdResult)
+		x.Result = &PolicyCmdResult_DeleteRelationshipResult{DeleteRelationshipResult: cv}
+	case "sourcehub.acp.PolicyCmdResult.register_object_result":
+		cv := value.Message().Interface().(*RegisterObjectCmdResult)
+		x.Result = &PolicyCmdResult_RegisterObjectResult{RegisterObjectResult: cv}
+	case "sourcehub.acp.PolicyCmdResult.unregister_object_result":
+		cv := value.Message().Interface().(*UnregisterObjectCmdResult)
+		x.Result = &PolicyCmdResult_UnregisterObjectResult{UnregisterObjectResult: cv}
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PolicyCmdResult) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "sourcehub.acp.PolicyCmdResult.set_relationship_result":
+		if x.Result == nil {
+			value := &SetRelationshipCmdResult{}
+			oneofValue := &PolicyCmdResult_SetRelationshipResult{SetRelationshipResult: value}
+			x.Result = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+		switch m := x.Result.(type) {
+		case *PolicyCmdResult_SetRelationshipResult:
+			return protoreflect.ValueOfMessage(m.SetRelationshipResult.ProtoReflect())
+		default:
+			value := &SetRelationshipCmdResult{}
+			oneofValue := &PolicyCmdResult_SetRelationshipResult{SetRelationshipResult: value}
+			x.Result = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdResult.delete_relationship_result":
+		if x.Result == nil {
+			value := &DeleteRelationshipCmdResult{}
+			oneofValue := &PolicyCmdResult_DeleteRelationshipResult{DeleteRelationshipResult: value}
+			x.Result = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+		switch m := x.Result.(type) {
+		case *PolicyCmdResult_DeleteRelationshipResult:
+			return protoreflect.ValueOfMessage(m.DeleteRelationshipResult.ProtoReflect())
+		default:
+			value := &DeleteRelationshipCmdResult{}
+			oneofValue := &PolicyCmdResult_DeleteRelationshipResult{DeleteRelationshipResult: value}
+			x.Result = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdResult.register_object_result":
+		if x.Result == nil {
+			value := &RegisterObjectCmdResult{}
+			oneofValue := &PolicyCmdResult_RegisterObjectResult{RegisterObjectResult: value}
+			x.Result = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+		switch m := x.Result.(type) {
+		case *PolicyCmdResult_RegisterObjectResult:
+			return protoreflect.ValueOfMessage(m.RegisterObjectResult.ProtoReflect())
+		default:
+			value := &RegisterObjectCmdResult{}
+			oneofValue := &PolicyCmdResult_RegisterObjectResult{RegisterObjectResult: value}
+			x.Result = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+	case "sourcehub.acp.PolicyCmdResult.unregister_object_result":
+		if x.Result == nil {
+			value := &UnregisterObjectCmdResult{}
+			oneofValue := &PolicyCmdResult_UnregisterObjectResult{UnregisterObjectResult: value}
+			x.Result = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+		switch m := x.Result.(type) {
+		case *PolicyCmdResult_UnregisterObjectResult:
+			return protoreflect.ValueOfMessage(m.UnregisterObjectResult.ProtoReflect())
+		default:
+			value := &UnregisterObjectCmdResult{}
+			oneofValue := &PolicyCmdResult_UnregisterObjectResult{UnregisterObjectResult: value}
+			x.Result = oneofValue
+			return protoreflect.ValueOfMessage(value.ProtoReflect())
+		}
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_PolicyCmdResult) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "sourcehub.acp.PolicyCmdResult.set_relationship_result":
+		value := &SetRelationshipCmdResult{}
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "sourcehub.acp.PolicyCmdResult.delete_relationship_result":
+		value := &DeleteRelationshipCmdResult{}
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "sourcehub.acp.PolicyCmdResult.register_object_result":
+		value := &RegisterObjectCmdResult{}
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "sourcehub.acp.PolicyCmdResult.unregister_object_result":
+		value := &UnregisterObjectCmdResult{}
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: sourcehub.acp.PolicyCmdResult"))
+		}
+		panic(fmt.Errorf("message sourcehub.acp.PolicyCmdResult does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_PolicyCmdResult) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	case "sourcehub.acp.PolicyCmdResult.result":
+		if x.Result == nil {
+			return nil
+		}
+		switch x.Result.(type) {
+		case *PolicyCmdResult_SetRelationshipResult:
+			return x.Descriptor().Fields().ByName("set_relationship_result")
+		case *PolicyCmdResult_DeleteRelationshipResult:
+			return x.Descriptor().Fields().ByName("delete_relationship_result")
+		case *PolicyCmdResult_RegisterObjectResult:
+			return x.Descriptor().Fields().ByName("register_object_result")
+		case *PolicyCmdResult_UnregisterObjectResult:
+			return x.Descriptor().Fields().ByName("unregister_object_result")
+		}
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in sourcehub.acp.PolicyCmdResult", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_PolicyCmdResult) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PolicyCmdResult) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_PolicyCmdResult) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_PolicyCmdResult) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*PolicyCmdResult)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		switch x := x.Result.(type) {
+		case *PolicyCmdResult_SetRelationshipResult:
+			if x == nil {
+				break
+			}
+			l = options.Size(x.SetRelationshipResult)
+			n += 1 + l + runtime.Sov(uint64(l))
+		case *PolicyCmdResult_DeleteRelationshipResult:
+			if x == nil {
+				break
+			}
+			l = options.Size(x.DeleteRelationshipResult)
+			n += 1 + l + runtime.Sov(uint64(l))
+		case *PolicyCmdResult_RegisterObjectResult:
+			if x == nil {
+				break
+			}
+			l = options.Size(x.RegisterObjectResult)
+			n += 1 + l + runtime.Sov(uint64(l))
+		case *PolicyCmdResult_UnregisterObjectResult:
+			if x == nil {
+				break
+			}
+			l = options.Size(x.UnregisterObjectResult)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*PolicyCmdResult)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		switch x := x.Result.(type) {
+		case *PolicyCmdResult_SetRelationshipResult:
+			encoded, err := options.Marshal(x.SetRelationshipResult)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0xa
+		case *PolicyCmdResult_DeleteRelationshipResult:
+			encoded, err := options.Marshal(x.DeleteRelationshipResult)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x12
+		case *PolicyCmdResult_RegisterObjectResult:
+			encoded, err := options.Marshal(x.RegisterObjectResult)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x1a
+		case *PolicyCmdResult_UnregisterObjectResult:
+			encoded, err := options.Marshal(x.UnregisterObjectResult)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*PolicyCmdResult)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PolicyCmdResult: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PolicyCmdResult: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SetRelationshipResult", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				v := &SetRelationshipCmdResult{}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				x.Result = &PolicyCmdResult_SetRelationshipResult{v}
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DeleteRelationshipResult", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				v := &DeleteRelationshipCmdResult{}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				x.Result = &PolicyCmdResult_DeleteRelationshipResult{v}
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field RegisterObjectResult", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				v := &RegisterObjectCmdResult{}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				x.Result = &PolicyCmdResult_RegisterObjectResult{v}
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UnregisterObjectResult", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				v := &UnregisterObjectCmdResult{}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], v); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				x.Result = &PolicyCmdResult_UnregisterObjectResult{v}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -3858,8 +5970,14 @@ type PolicyCmdPayload struct {
 	// This is used only as metadata and isn't trusted
 	CreationTime *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=creation_time,json=creationTime,proto3" json:"creation_time,omitempty"`
 	// policy_id is the ID of the policy under which the Command will be executed
-	PolicyId string                      `protobuf:"bytes,5,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
-	Cmd      *PolicyCmdPayload_PolicyCmd `protobuf:"bytes,6,opt,name=cmd,proto3" json:"cmd,omitempty"`
+	PolicyId string `protobuf:"bytes,5,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
+	// Types that are assignable to Cmd:
+	//
+	//	*PolicyCmdPayload_SetRelationshipCmd
+	//	*PolicyCmdPayload_DeleteRelationshipCmd
+	//	*PolicyCmdPayload_RegisterObjectCmd
+	//	*PolicyCmdPayload_UnregisterObjectCmd
+	Cmd isPolicyCmdPayload_Cmd `protobuf_oneof:"cmd"`
 }
 
 func (x *PolicyCmdPayload) Reset() {
@@ -3917,12 +6035,68 @@ func (x *PolicyCmdPayload) GetPolicyId() string {
 	return ""
 }
 
-func (x *PolicyCmdPayload) GetCmd() *PolicyCmdPayload_PolicyCmd {
+func (x *PolicyCmdPayload) GetCmd() isPolicyCmdPayload_Cmd {
 	if x != nil {
 		return x.Cmd
 	}
 	return nil
 }
+
+func (x *PolicyCmdPayload) GetSetRelationshipCmd() *SetRelationshipCmd {
+	if x, ok := x.GetCmd().(*PolicyCmdPayload_SetRelationshipCmd); ok {
+		return x.SetRelationshipCmd
+	}
+	return nil
+}
+
+func (x *PolicyCmdPayload) GetDeleteRelationshipCmd() *DeleteRelationshipCmd {
+	if x, ok := x.GetCmd().(*PolicyCmdPayload_DeleteRelationshipCmd); ok {
+		return x.DeleteRelationshipCmd
+	}
+	return nil
+}
+
+func (x *PolicyCmdPayload) GetRegisterObjectCmd() *RegisterObjectCmd {
+	if x, ok := x.GetCmd().(*PolicyCmdPayload_RegisterObjectCmd); ok {
+		return x.RegisterObjectCmd
+	}
+	return nil
+}
+
+func (x *PolicyCmdPayload) GetUnregisterObjectCmd() *UnregisterObjectCmd {
+	if x, ok := x.GetCmd().(*PolicyCmdPayload_UnregisterObjectCmd); ok {
+		return x.UnregisterObjectCmd
+	}
+	return nil
+}
+
+type isPolicyCmdPayload_Cmd interface {
+	isPolicyCmdPayload_Cmd()
+}
+
+type PolicyCmdPayload_SetRelationshipCmd struct {
+	SetRelationshipCmd *SetRelationshipCmd `protobuf:"bytes,6,opt,name=set_relationship_cmd,json=setRelationshipCmd,proto3,oneof"`
+}
+
+type PolicyCmdPayload_DeleteRelationshipCmd struct {
+	DeleteRelationshipCmd *DeleteRelationshipCmd `protobuf:"bytes,7,opt,name=delete_relationship_cmd,json=deleteRelationshipCmd,proto3,oneof"`
+}
+
+type PolicyCmdPayload_RegisterObjectCmd struct {
+	RegisterObjectCmd *RegisterObjectCmd `protobuf:"bytes,8,opt,name=register_object_cmd,json=registerObjectCmd,proto3,oneof"`
+}
+
+type PolicyCmdPayload_UnregisterObjectCmd struct {
+	UnregisterObjectCmd *UnregisterObjectCmd `protobuf:"bytes,9,opt,name=unregister_object_cmd,json=unregisterObjectCmd,proto3,oneof"`
+}
+
+func (*PolicyCmdPayload_SetRelationshipCmd) isPolicyCmdPayload_Cmd() {}
+
+func (*PolicyCmdPayload_DeleteRelationshipCmd) isPolicyCmdPayload_Cmd() {}
+
+func (*PolicyCmdPayload_RegisterObjectCmd) isPolicyCmdPayload_Cmd() {}
+
+func (*PolicyCmdPayload_UnregisterObjectCmd) isPolicyCmdPayload_Cmd() {}
 
 // SetRelationshipCmd sets a Relationship in a Policy
 type SetRelationshipCmd struct {
@@ -4068,22 +6242,18 @@ func (x *UnregisterObjectCmd) GetObject() *Object {
 	return nil
 }
 
-type PolicyCmdPayload_PolicyCmd struct {
+// SetRelationshipCmd sets a Relationship in a Policy
+type SetRelationshipCmdResult struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Types that are assignable to Cmd:
-	//
-	//	*PolicyCmdPayload_PolicyCmd_SetRelationshipCmd
-	//	*PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd
-	//	*PolicyCmdPayload_PolicyCmd_RegisterObjectCmd
-	//	*PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd
-	Cmd isPolicyCmdPayload_PolicyCmd_Cmd `protobuf_oneof:"cmd"`
+	// Indicates whether the given Relationship previously existed, ie the Tx was a no op
+	RecordExisted bool `protobuf:"varint,1,opt,name=record_existed,json=recordExisted,proto3" json:"record_existed,omitempty"`
 }
 
-func (x *PolicyCmdPayload_PolicyCmd) Reset() {
-	*x = PolicyCmdPayload_PolicyCmd{}
+func (x *SetRelationshipCmdResult) Reset() {
+	*x = SetRelationshipCmdResult{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_sourcehub_acp_policy_cmd_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -4091,79 +6261,244 @@ func (x *PolicyCmdPayload_PolicyCmd) Reset() {
 	}
 }
 
-func (x *PolicyCmdPayload_PolicyCmd) String() string {
+func (x *SetRelationshipCmdResult) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PolicyCmdPayload_PolicyCmd) ProtoMessage() {}
+func (*SetRelationshipCmdResult) ProtoMessage() {}
 
-// Deprecated: Use PolicyCmdPayload_PolicyCmd.ProtoReflect.Descriptor instead.
-func (*PolicyCmdPayload_PolicyCmd) Descriptor() ([]byte, []int) {
-	return file_sourcehub_acp_policy_cmd_proto_rawDescGZIP(), []int{1, 0}
+// Deprecated: Use SetRelationshipCmdResult.ProtoReflect.Descriptor instead.
+func (*SetRelationshipCmdResult) Descriptor() ([]byte, []int) {
+	return file_sourcehub_acp_policy_cmd_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *PolicyCmdPayload_PolicyCmd) GetCmd() isPolicyCmdPayload_PolicyCmd_Cmd {
+func (x *SetRelationshipCmdResult) GetRecordExisted() bool {
 	if x != nil {
-		return x.Cmd
+		return x.RecordExisted
+	}
+	return false
+}
+
+// DeleteRelationshipCmdResult removes a Relationship in a Policy
+type DeleteRelationshipCmdResult struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	RecordFound bool `protobuf:"varint,1,opt,name=record_found,json=recordFound,proto3" json:"record_found,omitempty"`
+}
+
+func (x *DeleteRelationshipCmdResult) Reset() {
+	*x = DeleteRelationshipCmdResult{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sourcehub_acp_policy_cmd_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteRelationshipCmdResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteRelationshipCmdResult) ProtoMessage() {}
+
+// Deprecated: Use DeleteRelationshipCmdResult.ProtoReflect.Descriptor instead.
+func (*DeleteRelationshipCmdResult) Descriptor() ([]byte, []int) {
+	return file_sourcehub_acp_policy_cmd_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *DeleteRelationshipCmdResult) GetRecordFound() bool {
+	if x != nil {
+		return x.RecordFound
+	}
+	return false
+}
+
+// RegisterObjectCmdResult registers an Object in a Policy
+type RegisterObjectCmdResult struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Result RegistrationResult  `protobuf:"varint,1,opt,name=result,proto3,enum=sourcehub.acp.RegistrationResult" json:"result,omitempty"`
+	Record *RelationshipRecord `protobuf:"bytes,2,opt,name=record,proto3" json:"record,omitempty"`
+}
+
+func (x *RegisterObjectCmdResult) Reset() {
+	*x = RegisterObjectCmdResult{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sourcehub_acp_policy_cmd_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RegisterObjectCmdResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RegisterObjectCmdResult) ProtoMessage() {}
+
+// Deprecated: Use RegisterObjectCmdResult.ProtoReflect.Descriptor instead.
+func (*RegisterObjectCmdResult) Descriptor() ([]byte, []int) {
+	return file_sourcehub_acp_policy_cmd_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *RegisterObjectCmdResult) GetResult() RegistrationResult {
+	if x != nil {
+		return x.Result
+	}
+	return RegistrationResult_NoOp
+}
+
+func (x *RegisterObjectCmdResult) GetRecord() *RelationshipRecord {
+	if x != nil {
+		return x.Record
 	}
 	return nil
 }
 
-func (x *PolicyCmdPayload_PolicyCmd) GetSetRelationshipCmd() *SetRelationshipCmd {
-	if x, ok := x.GetCmd().(*PolicyCmdPayload_PolicyCmd_SetRelationshipCmd); ok {
-		return x.SetRelationshipCmd
+// UnregisterObjectCmdResult unregisters an Object in a Policy
+type UnregisterObjectCmdResult struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Found                bool   `protobuf:"varint,1,opt,name=found,proto3" json:"found,omitempty"`
+	RelationshipsRemoved uint64 `protobuf:"varint,2,opt,name=relationships_removed,json=relationshipsRemoved,proto3" json:"relationships_removed,omitempty"`
+}
+
+func (x *UnregisterObjectCmdResult) Reset() {
+	*x = UnregisterObjectCmdResult{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sourcehub_acp_policy_cmd_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UnregisterObjectCmdResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnregisterObjectCmdResult) ProtoMessage() {}
+
+// Deprecated: Use UnregisterObjectCmdResult.ProtoReflect.Descriptor instead.
+func (*UnregisterObjectCmdResult) Descriptor() ([]byte, []int) {
+	return file_sourcehub_acp_policy_cmd_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *UnregisterObjectCmdResult) GetFound() bool {
+	if x != nil {
+		return x.Found
+	}
+	return false
+}
+
+func (x *UnregisterObjectCmdResult) GetRelationshipsRemoved() uint64 {
+	if x != nil {
+		return x.RelationshipsRemoved
+	}
+	return 0
+}
+
+type PolicyCmdResult struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Types that are assignable to Result:
+	//
+	//	*PolicyCmdResult_SetRelationshipResult
+	//	*PolicyCmdResult_DeleteRelationshipResult
+	//	*PolicyCmdResult_RegisterObjectResult
+	//	*PolicyCmdResult_UnregisterObjectResult
+	Result isPolicyCmdResult_Result `protobuf_oneof:"result"`
+}
+
+func (x *PolicyCmdResult) Reset() {
+	*x = PolicyCmdResult{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sourcehub_acp_policy_cmd_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PolicyCmdResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PolicyCmdResult) ProtoMessage() {}
+
+// Deprecated: Use PolicyCmdResult.ProtoReflect.Descriptor instead.
+func (*PolicyCmdResult) Descriptor() ([]byte, []int) {
+	return file_sourcehub_acp_policy_cmd_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *PolicyCmdResult) GetResult() isPolicyCmdResult_Result {
+	if x != nil {
+		return x.Result
 	}
 	return nil
 }
 
-func (x *PolicyCmdPayload_PolicyCmd) GetDeleteRelationshipCmd() *DeleteRelationshipCmd {
-	if x, ok := x.GetCmd().(*PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd); ok {
-		return x.DeleteRelationshipCmd
+func (x *PolicyCmdResult) GetSetRelationshipResult() *SetRelationshipCmdResult {
+	if x, ok := x.GetResult().(*PolicyCmdResult_SetRelationshipResult); ok {
+		return x.SetRelationshipResult
 	}
 	return nil
 }
 
-func (x *PolicyCmdPayload_PolicyCmd) GetRegisterObjectCmd() *RegisterObjectCmd {
-	if x, ok := x.GetCmd().(*PolicyCmdPayload_PolicyCmd_RegisterObjectCmd); ok {
-		return x.RegisterObjectCmd
+func (x *PolicyCmdResult) GetDeleteRelationshipResult() *DeleteRelationshipCmdResult {
+	if x, ok := x.GetResult().(*PolicyCmdResult_DeleteRelationshipResult); ok {
+		return x.DeleteRelationshipResult
 	}
 	return nil
 }
 
-func (x *PolicyCmdPayload_PolicyCmd) GetUnregisterObjectCmd() *UnregisterObjectCmd {
-	if x, ok := x.GetCmd().(*PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd); ok {
-		return x.UnregisterObjectCmd
+func (x *PolicyCmdResult) GetRegisterObjectResult() *RegisterObjectCmdResult {
+	if x, ok := x.GetResult().(*PolicyCmdResult_RegisterObjectResult); ok {
+		return x.RegisterObjectResult
 	}
 	return nil
 }
 
-type isPolicyCmdPayload_PolicyCmd_Cmd interface {
-	isPolicyCmdPayload_PolicyCmd_Cmd()
+func (x *PolicyCmdResult) GetUnregisterObjectResult() *UnregisterObjectCmdResult {
+	if x, ok := x.GetResult().(*PolicyCmdResult_UnregisterObjectResult); ok {
+		return x.UnregisterObjectResult
+	}
+	return nil
 }
 
-type PolicyCmdPayload_PolicyCmd_SetRelationshipCmd struct {
-	SetRelationshipCmd *SetRelationshipCmd `protobuf:"bytes,2,opt,name=set_relationship_cmd,json=setRelationshipCmd,proto3,oneof"`
+type isPolicyCmdResult_Result interface {
+	isPolicyCmdResult_Result()
 }
 
-type PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd struct {
-	DeleteRelationshipCmd *DeleteRelationshipCmd `protobuf:"bytes,3,opt,name=delete_relationship_cmd,json=deleteRelationshipCmd,proto3,oneof"`
+type PolicyCmdResult_SetRelationshipResult struct {
+	SetRelationshipResult *SetRelationshipCmdResult `protobuf:"bytes,1,opt,name=set_relationship_result,json=setRelationshipResult,proto3,oneof"`
 }
 
-type PolicyCmdPayload_PolicyCmd_RegisterObjectCmd struct {
-	RegisterObjectCmd *RegisterObjectCmd `protobuf:"bytes,4,opt,name=register_object_cmd,json=registerObjectCmd,proto3,oneof"`
+type PolicyCmdResult_DeleteRelationshipResult struct {
+	DeleteRelationshipResult *DeleteRelationshipCmdResult `protobuf:"bytes,2,opt,name=delete_relationship_result,json=deleteRelationshipResult,proto3,oneof"`
 }
 
-type PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd struct {
-	UnregisterObjectCmd *UnregisterObjectCmd `protobuf:"bytes,5,opt,name=unregister_object_cmd,json=unregisterObjectCmd,proto3,oneof"`
+type PolicyCmdResult_RegisterObjectResult struct {
+	RegisterObjectResult *RegisterObjectCmdResult `protobuf:"bytes,3,opt,name=register_object_result,json=registerObjectResult,proto3,oneof"`
 }
 
-func (*PolicyCmdPayload_PolicyCmd_SetRelationshipCmd) isPolicyCmdPayload_PolicyCmd_Cmd() {}
+type PolicyCmdResult_UnregisterObjectResult struct {
+	UnregisterObjectResult *UnregisterObjectCmdResult `protobuf:"bytes,4,opt,name=unregister_object_result,json=unregisterObjectResult,proto3,oneof"`
+}
 
-func (*PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd) isPolicyCmdPayload_PolicyCmd_Cmd() {}
+func (*PolicyCmdResult_SetRelationshipResult) isPolicyCmdResult_Result() {}
 
-func (*PolicyCmdPayload_PolicyCmd_RegisterObjectCmd) isPolicyCmdPayload_PolicyCmd_Cmd() {}
+func (*PolicyCmdResult_DeleteRelationshipResult) isPolicyCmdResult_Result() {}
 
-func (*PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd) isPolicyCmdPayload_PolicyCmd_Cmd() {}
+func (*PolicyCmdResult_RegisterObjectResult) isPolicyCmdResult_Result() {}
+
+func (*PolicyCmdResult_UnregisterObjectResult) isPolicyCmdResult_Result() {}
 
 var File_sourcehub_acp_policy_cmd_proto protoreflect.FileDescriptor
 
@@ -4181,8 +6516,8 @@ var file_sourcehub_acp_policy_cmd_proto_rawDesc = []byte{
 	0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x43, 0x6d, 0x64,
 	0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64,
 	0x12, 0x1c, 0x0a, 0x09, 0x73, 0x69, 0x67, 0x6e, 0x61, 0x74, 0x75, 0x72, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x0c, 0x52, 0x09, 0x73, 0x69, 0x67, 0x6e, 0x61, 0x74, 0x75, 0x72, 0x65, 0x22, 0x8f,
-	0x05, 0x0a, 0x10, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x43, 0x6d, 0x64, 0x50, 0x61, 0x79, 0x6c,
+	0x01, 0x28, 0x0c, 0x52, 0x09, 0x73, 0x69, 0x67, 0x6e, 0x61, 0x74, 0x75, 0x72, 0x65, 0x22, 0xc4,
+	0x04, 0x0a, 0x10, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x43, 0x6d, 0x64, 0x50, 0x61, 0x79, 0x6c,
 	0x6f, 0x61, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x09, 0x52, 0x05, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x73, 0x73,
 	0x75, 0x65, 0x64, 0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04,
@@ -4195,64 +6530,111 @@ var file_sourcehub_acp_policy_cmd_proto_rawDesc = []byte{
 	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x0c,
 	0x63, 0x72, 0x65, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x1b, 0x0a, 0x09,
 	0x70, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x5f, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x70, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x49, 0x64, 0x12, 0x3b, 0x0a, 0x03, 0x63, 0x6d, 0x64,
-	0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x29, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68,
-	0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x43, 0x6d, 0x64,
-	0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x2e, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x43, 0x6d,
-	0x64, 0x52, 0x03, 0x63, 0x6d, 0x64, 0x1a, 0xf7, 0x02, 0x0a, 0x09, 0x50, 0x6f, 0x6c, 0x69, 0x63,
-	0x79, 0x43, 0x6d, 0x64, 0x12, 0x55, 0x0a, 0x14, 0x73, 0x65, 0x74, 0x5f, 0x72, 0x65, 0x6c, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x5f, 0x63, 0x6d, 0x64, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x21, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61,
-	0x63, 0x70, 0x2e, 0x53, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68,
-	0x69, 0x70, 0x43, 0x6d, 0x64, 0x48, 0x00, 0x52, 0x12, 0x73, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x43, 0x6d, 0x64, 0x12, 0x5e, 0x0a, 0x17, 0x64,
-	0x65, 0x6c, 0x65, 0x74, 0x65, 0x5f, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68,
-	0x69, 0x70, 0x5f, 0x63, 0x6d, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x73,
-	0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x44, 0x65, 0x6c,
-	0x65, 0x74, 0x65, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x43,
-	0x6d, 0x64, 0x48, 0x00, 0x52, 0x15, 0x64, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x6c, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x43, 0x6d, 0x64, 0x12, 0x52, 0x0a, 0x13, 0x72,
-	0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x5f, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x5f, 0x63,
-	0x6d, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63,
-	0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65,
-	0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x48, 0x00, 0x52, 0x11, 0x72, 0x65,
-	0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x12,
-	0x58, 0x0a, 0x15, 0x75, 0x6e, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x5f, 0x6f, 0x62,
-	0x6a, 0x65, 0x63, 0x74, 0x5f, 0x63, 0x6d, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22,
-	0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x55,
-	0x6e, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43,
-	0x6d, 0x64, 0x48, 0x00, 0x52, 0x13, 0x75, 0x6e, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72,
-	0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x42, 0x05, 0x0a, 0x03, 0x63, 0x6d, 0x64,
-	0x22, 0x55, 0x0a, 0x12, 0x53, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73,
-	0x68, 0x69, 0x70, 0x43, 0x6d, 0x64, 0x12, 0x3f, 0x0a, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x73,
-	0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x52, 0x65, 0x6c,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x52, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x22, 0x58, 0x0a, 0x15, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x08, 0x70, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x49, 0x64, 0x12, 0x55, 0x0a, 0x14, 0x73, 0x65, 0x74,
+	0x5f, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x5f, 0x63, 0x6d,
+	0x64, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65,
+	0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x53, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x43, 0x6d, 0x64, 0x48, 0x00, 0x52, 0x12, 0x73, 0x65,
+	0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x43, 0x6d, 0x64,
+	0x12, 0x5e, 0x0a, 0x17, 0x64, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x5f, 0x72, 0x65, 0x6c, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x5f, 0x63, 0x6d, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x24, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63,
+	0x70, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x73, 0x68, 0x69, 0x70, 0x43, 0x6d, 0x64, 0x48, 0x00, 0x52, 0x15, 0x64, 0x65, 0x6c, 0x65, 0x74,
 	0x65, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x43, 0x6d, 0x64,
-	0x12, 0x3f, 0x0a, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68,
-	0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73,
-	0x68, 0x69, 0x70, 0x52, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69,
-	0x70, 0x22, 0x42, 0x0a, 0x11, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a,
-	0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x12, 0x2d, 0x0a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68,
-	0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x06, 0x6f,
-	0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x44, 0x0a, 0x13, 0x55, 0x6e, 0x72, 0x65, 0x67, 0x69, 0x73,
-	0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x12, 0x2d, 0x0a, 0x06,
-	0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x73,
-	0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x4f, 0x62, 0x6a,
-	0x65, 0x63, 0x74, 0x52, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x42, 0x98, 0x01, 0x0a, 0x11,
-	0x63, 0x6f, 0x6d, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63,
-	0x70, 0x42, 0x0e, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x43, 0x6d, 0x64, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x1e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
-	0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2f,
-	0x61, 0x63, 0x70, 0xa2, 0x02, 0x03, 0x53, 0x41, 0x58, 0xaa, 0x02, 0x0d, 0x53, 0x6f, 0x75, 0x72,
-	0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x41, 0x63, 0x70, 0xca, 0x02, 0x0d, 0x53, 0x6f, 0x75, 0x72,
-	0x63, 0x65, 0x68, 0x75, 0x62, 0x5c, 0x41, 0x63, 0x70, 0xe2, 0x02, 0x19, 0x53, 0x6f, 0x75, 0x72,
-	0x63, 0x65, 0x68, 0x75, 0x62, 0x5c, 0x41, 0x63, 0x70, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
-	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0e, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75,
-	0x62, 0x3a, 0x3a, 0x41, 0x63, 0x70, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x12, 0x52, 0x0a, 0x13, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x5f, 0x6f, 0x62, 0x6a,
+	0x65, 0x63, 0x74, 0x5f, 0x63, 0x6d, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e,
+	0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x52, 0x65,
+	0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x48,
+	0x00, 0x52, 0x11, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63,
+	0x74, 0x43, 0x6d, 0x64, 0x12, 0x58, 0x0a, 0x15, 0x75, 0x6e, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74,
+	0x65, 0x72, 0x5f, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x5f, 0x63, 0x6d, 0x64, 0x18, 0x09, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e,
+	0x61, 0x63, 0x70, 0x2e, 0x55, 0x6e, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62,
+	0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x48, 0x00, 0x52, 0x13, 0x75, 0x6e, 0x72, 0x65, 0x67,
+	0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x42, 0x05,
+	0x0a, 0x03, 0x63, 0x6d, 0x64, 0x22, 0x55, 0x0a, 0x12, 0x53, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x43, 0x6d, 0x64, 0x12, 0x3f, 0x0a, 0x0c, 0x72,
+	0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x1b, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63,
+	0x70, 0x2e, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x52, 0x0c,
+	0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x22, 0x58, 0x0a, 0x15,
+	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68,
+	0x69, 0x70, 0x43, 0x6d, 0x64, 0x12, 0x3f, 0x0a, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x68, 0x69, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x73, 0x6f,
+	0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x52, 0x65, 0x6c, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x52, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x22, 0x42, 0x0a, 0x11, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74,
+	0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x12, 0x2d, 0x0a, 0x06, 0x6f,
+	0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x73, 0x6f,
+	0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x4f, 0x62, 0x6a, 0x65,
+	0x63, 0x74, 0x52, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x44, 0x0a, 0x13, 0x55, 0x6e,
+	0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d,
+	0x64, 0x12, 0x2d, 0x0a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x15, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63,
+	0x70, 0x2e, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74,
+	0x22, 0x41, 0x0a, 0x18, 0x53, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x68, 0x69, 0x70, 0x43, 0x6d, 0x64, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x25, 0x0a, 0x0e,
+	0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x5f, 0x65, 0x78, 0x69, 0x73, 0x74, 0x65, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x0d, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x45, 0x78, 0x69, 0x73,
+	0x74, 0x65, 0x64, 0x22, 0x40, 0x0a, 0x1b, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x6c,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x43, 0x6d, 0x64, 0x52, 0x65, 0x73, 0x75,
+	0x6c, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x5f, 0x66, 0x6f, 0x75,
+	0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0b, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64,
+	0x46, 0x6f, 0x75, 0x6e, 0x64, 0x22, 0x8f, 0x01, 0x0a, 0x17, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74,
+	0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x52, 0x65, 0x73, 0x75, 0x6c,
+	0x74, 0x12, 0x39, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0e, 0x32, 0x21, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63,
+	0x70, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
+	0x73, 0x75, 0x6c, 0x74, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x39, 0x0a, 0x06,
+	0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x73,
+	0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x52, 0x65, 0x6c,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52,
+	0x06, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x22, 0x66, 0x0a, 0x19, 0x55, 0x6e, 0x72, 0x65, 0x67,
+	0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x52, 0x65,
+	0x73, 0x75, 0x6c, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x66, 0x6f, 0x75, 0x6e, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x05, 0x66, 0x6f, 0x75, 0x6e, 0x64, 0x12, 0x33, 0x0a, 0x15, 0x72, 0x65,
+	0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x73, 0x5f, 0x72, 0x65, 0x6d, 0x6f,
+	0x76, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x14, 0x72, 0x65, 0x6c, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x73, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x64, 0x22,
+	0xb0, 0x03, 0x0a, 0x0f, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x43, 0x6d, 0x64, 0x52, 0x65, 0x73,
+	0x75, 0x6c, 0x74, 0x12, 0x61, 0x0a, 0x17, 0x73, 0x65, 0x74, 0x5f, 0x72, 0x65, 0x6c, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x5f, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62,
+	0x2e, 0x61, 0x63, 0x70, 0x2e, 0x53, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x73, 0x68, 0x69, 0x70, 0x43, 0x6d, 0x64, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x48, 0x00, 0x52,
+	0x15, 0x73, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70,
+	0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x6a, 0x0a, 0x1a, 0x64, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x5f, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x5f, 0x72, 0x65,
+	0x73, 0x75, 0x6c, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2a, 0x2e, 0x73, 0x6f, 0x75,
+	0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x65, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x43, 0x6d, 0x64,
+	0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x48, 0x00, 0x52, 0x18, 0x64, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x68, 0x69, 0x70, 0x52, 0x65, 0x73, 0x75,
+	0x6c, 0x74, 0x12, 0x5e, 0x0a, 0x16, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x5f, 0x6f,
+	0x62, 0x6a, 0x65, 0x63, 0x74, 0x5f, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x26, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x61,
+	0x63, 0x70, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63,
+	0x74, 0x43, 0x6d, 0x64, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x48, 0x00, 0x52, 0x14, 0x72, 0x65,
+	0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x73, 0x75,
+	0x6c, 0x74, 0x12, 0x64, 0x0a, 0x18, 0x75, 0x6e, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72,
+	0x5f, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x5f, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x28, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62,
+	0x2e, 0x61, 0x63, 0x70, 0x2e, 0x55, 0x6e, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f,
+	0x62, 0x6a, 0x65, 0x63, 0x74, 0x43, 0x6d, 0x64, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x48, 0x00,
+	0x52, 0x16, 0x75, 0x6e, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x62, 0x6a, 0x65,
+	0x63, 0x74, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x42, 0x08, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75,
+	0x6c, 0x74, 0x42, 0x98, 0x01, 0x0a, 0x11, 0x63, 0x6f, 0x6d, 0x2e, 0x73, 0x6f, 0x75, 0x72, 0x63,
+	0x65, 0x68, 0x75, 0x62, 0x2e, 0x61, 0x63, 0x70, 0x42, 0x0e, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79,
+	0x43, 0x6d, 0x64, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x1e, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x73, 0x6f, 0x75,
+	0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2f, 0x61, 0x63, 0x70, 0xa2, 0x02, 0x03, 0x53, 0x41, 0x58,
+	0xaa, 0x02, 0x0d, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x2e, 0x41, 0x63, 0x70,
+	0xca, 0x02, 0x0d, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x5c, 0x41, 0x63, 0x70,
+	0xe2, 0x02, 0x19, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x5c, 0x41, 0x63, 0x70,
+	0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0e, 0x53,
+	0x6f, 0x75, 0x72, 0x63, 0x65, 0x68, 0x75, 0x62, 0x3a, 0x3a, 0x41, 0x63, 0x70, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -4267,36 +6649,47 @@ func file_sourcehub_acp_policy_cmd_proto_rawDescGZIP() []byte {
 	return file_sourcehub_acp_policy_cmd_proto_rawDescData
 }
 
-var file_sourcehub_acp_policy_cmd_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_sourcehub_acp_policy_cmd_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_sourcehub_acp_policy_cmd_proto_goTypes = []interface{}{
-	(*SignedPolicyCmd)(nil),            // 0: sourcehub.acp.SignedPolicyCmd
-	(*PolicyCmdPayload)(nil),           // 1: sourcehub.acp.PolicyCmdPayload
-	(*SetRelationshipCmd)(nil),         // 2: sourcehub.acp.SetRelationshipCmd
-	(*DeleteRelationshipCmd)(nil),      // 3: sourcehub.acp.DeleteRelationshipCmd
-	(*RegisterObjectCmd)(nil),          // 4: sourcehub.acp.RegisterObjectCmd
-	(*UnregisterObjectCmd)(nil),        // 5: sourcehub.acp.UnregisterObjectCmd
-	(*PolicyCmdPayload_PolicyCmd)(nil), // 6: sourcehub.acp.PolicyCmdPayload.PolicyCmd
-	(*timestamppb.Timestamp)(nil),      // 7: google.protobuf.Timestamp
-	(*Relationship)(nil),               // 8: sourcehub.acp.Relationship
-	(*Object)(nil),                     // 9: sourcehub.acp.Object
+	(*SignedPolicyCmd)(nil),             // 0: sourcehub.acp.SignedPolicyCmd
+	(*PolicyCmdPayload)(nil),            // 1: sourcehub.acp.PolicyCmdPayload
+	(*SetRelationshipCmd)(nil),          // 2: sourcehub.acp.SetRelationshipCmd
+	(*DeleteRelationshipCmd)(nil),       // 3: sourcehub.acp.DeleteRelationshipCmd
+	(*RegisterObjectCmd)(nil),           // 4: sourcehub.acp.RegisterObjectCmd
+	(*UnregisterObjectCmd)(nil),         // 5: sourcehub.acp.UnregisterObjectCmd
+	(*SetRelationshipCmdResult)(nil),    // 6: sourcehub.acp.SetRelationshipCmdResult
+	(*DeleteRelationshipCmdResult)(nil), // 7: sourcehub.acp.DeleteRelationshipCmdResult
+	(*RegisterObjectCmdResult)(nil),     // 8: sourcehub.acp.RegisterObjectCmdResult
+	(*UnregisterObjectCmdResult)(nil),   // 9: sourcehub.acp.UnregisterObjectCmdResult
+	(*PolicyCmdResult)(nil),             // 10: sourcehub.acp.PolicyCmdResult
+	(*timestamppb.Timestamp)(nil),       // 11: google.protobuf.Timestamp
+	(*Relationship)(nil),                // 12: sourcehub.acp.Relationship
+	(*Object)(nil),                      // 13: sourcehub.acp.Object
+	(RegistrationResult)(0),             // 14: sourcehub.acp.RegistrationResult
+	(*RelationshipRecord)(nil),          // 15: sourcehub.acp.RelationshipRecord
 }
 var file_sourcehub_acp_policy_cmd_proto_depIdxs = []int32{
 	1,  // 0: sourcehub.acp.SignedPolicyCmd.payload:type_name -> sourcehub.acp.PolicyCmdPayload
-	7,  // 1: sourcehub.acp.PolicyCmdPayload.creation_time:type_name -> google.protobuf.Timestamp
-	6,  // 2: sourcehub.acp.PolicyCmdPayload.cmd:type_name -> sourcehub.acp.PolicyCmdPayload.PolicyCmd
-	8,  // 3: sourcehub.acp.SetRelationshipCmd.relationship:type_name -> sourcehub.acp.Relationship
-	8,  // 4: sourcehub.acp.DeleteRelationshipCmd.relationship:type_name -> sourcehub.acp.Relationship
-	9,  // 5: sourcehub.acp.RegisterObjectCmd.object:type_name -> sourcehub.acp.Object
-	9,  // 6: sourcehub.acp.UnregisterObjectCmd.object:type_name -> sourcehub.acp.Object
-	2,  // 7: sourcehub.acp.PolicyCmdPayload.PolicyCmd.set_relationship_cmd:type_name -> sourcehub.acp.SetRelationshipCmd
-	3,  // 8: sourcehub.acp.PolicyCmdPayload.PolicyCmd.delete_relationship_cmd:type_name -> sourcehub.acp.DeleteRelationshipCmd
-	4,  // 9: sourcehub.acp.PolicyCmdPayload.PolicyCmd.register_object_cmd:type_name -> sourcehub.acp.RegisterObjectCmd
-	5,  // 10: sourcehub.acp.PolicyCmdPayload.PolicyCmd.unregister_object_cmd:type_name -> sourcehub.acp.UnregisterObjectCmd
-	11, // [11:11] is the sub-list for method output_type
-	11, // [11:11] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	11, // 1: sourcehub.acp.PolicyCmdPayload.creation_time:type_name -> google.protobuf.Timestamp
+	2,  // 2: sourcehub.acp.PolicyCmdPayload.set_relationship_cmd:type_name -> sourcehub.acp.SetRelationshipCmd
+	3,  // 3: sourcehub.acp.PolicyCmdPayload.delete_relationship_cmd:type_name -> sourcehub.acp.DeleteRelationshipCmd
+	4,  // 4: sourcehub.acp.PolicyCmdPayload.register_object_cmd:type_name -> sourcehub.acp.RegisterObjectCmd
+	5,  // 5: sourcehub.acp.PolicyCmdPayload.unregister_object_cmd:type_name -> sourcehub.acp.UnregisterObjectCmd
+	12, // 6: sourcehub.acp.SetRelationshipCmd.relationship:type_name -> sourcehub.acp.Relationship
+	12, // 7: sourcehub.acp.DeleteRelationshipCmd.relationship:type_name -> sourcehub.acp.Relationship
+	13, // 8: sourcehub.acp.RegisterObjectCmd.object:type_name -> sourcehub.acp.Object
+	13, // 9: sourcehub.acp.UnregisterObjectCmd.object:type_name -> sourcehub.acp.Object
+	14, // 10: sourcehub.acp.RegisterObjectCmdResult.result:type_name -> sourcehub.acp.RegistrationResult
+	15, // 11: sourcehub.acp.RegisterObjectCmdResult.record:type_name -> sourcehub.acp.RelationshipRecord
+	6,  // 12: sourcehub.acp.PolicyCmdResult.set_relationship_result:type_name -> sourcehub.acp.SetRelationshipCmdResult
+	7,  // 13: sourcehub.acp.PolicyCmdResult.delete_relationship_result:type_name -> sourcehub.acp.DeleteRelationshipCmdResult
+	8,  // 14: sourcehub.acp.PolicyCmdResult.register_object_result:type_name -> sourcehub.acp.RegisterObjectCmdResult
+	9,  // 15: sourcehub.acp.PolicyCmdResult.unregister_object_result:type_name -> sourcehub.acp.UnregisterObjectCmdResult
+	16, // [16:16] is the sub-list for method output_type
+	16, // [16:16] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_sourcehub_acp_policy_cmd_proto_init() }
@@ -4379,7 +6772,55 @@ func file_sourcehub_acp_policy_cmd_proto_init() {
 			}
 		}
 		file_sourcehub_acp_policy_cmd_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PolicyCmdPayload_PolicyCmd); i {
+			switch v := v.(*SetRelationshipCmdResult); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sourcehub_acp_policy_cmd_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteRelationshipCmdResult); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sourcehub_acp_policy_cmd_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RegisterObjectCmdResult); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sourcehub_acp_policy_cmd_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UnregisterObjectCmdResult); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sourcehub_acp_policy_cmd_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PolicyCmdResult); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4391,11 +6832,17 @@ func file_sourcehub_acp_policy_cmd_proto_init() {
 			}
 		}
 	}
-	file_sourcehub_acp_policy_cmd_proto_msgTypes[6].OneofWrappers = []interface{}{
-		(*PolicyCmdPayload_PolicyCmd_SetRelationshipCmd)(nil),
-		(*PolicyCmdPayload_PolicyCmd_DeleteRelationshipCmd)(nil),
-		(*PolicyCmdPayload_PolicyCmd_RegisterObjectCmd)(nil),
-		(*PolicyCmdPayload_PolicyCmd_UnregisterObjectCmd)(nil),
+	file_sourcehub_acp_policy_cmd_proto_msgTypes[1].OneofWrappers = []interface{}{
+		(*PolicyCmdPayload_SetRelationshipCmd)(nil),
+		(*PolicyCmdPayload_DeleteRelationshipCmd)(nil),
+		(*PolicyCmdPayload_RegisterObjectCmd)(nil),
+		(*PolicyCmdPayload_UnregisterObjectCmd)(nil),
+	}
+	file_sourcehub_acp_policy_cmd_proto_msgTypes[10].OneofWrappers = []interface{}{
+		(*PolicyCmdResult_SetRelationshipResult)(nil),
+		(*PolicyCmdResult_DeleteRelationshipResult)(nil),
+		(*PolicyCmdResult_RegisterObjectResult)(nil),
+		(*PolicyCmdResult_UnregisterObjectResult)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -4403,7 +6850,7 @@ func file_sourcehub_acp_policy_cmd_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_sourcehub_acp_policy_cmd_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

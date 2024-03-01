@@ -9,7 +9,7 @@ import (
 )
 
 func TestQueryPolicy_UnknownPolicyReturnsPolicyNotFoundErr(t *testing.T) {
-	k, ctx := setupKeeper(t)
+	ctx, k, _ := setupKeeper(t)
 
 	req := types.QueryPolicyRequest{
 		Id: "not found",

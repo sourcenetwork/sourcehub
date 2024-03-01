@@ -21,18 +21,18 @@ type RegisterObjectCommand struct {
 	CreationTs   *prototypes.Timestamp
 }
 
-func (c *RegisterObjectCommand) Execute(ctx context.Context, engine auth_engine.AuthEngine) (types.RegistrationResult, error) {
+func (c *RegisterObjectCommand) Execute(ctx context.Context, engine auth_engine.AuthEngine) (types.RegistrationResult, *types.RelationshipRecord, error) {
 	var err error
 	var result types.RegistrationResult
 
 	err = c.validate()
 	if err != nil {
-		return result, fmt.Errorf("RegisterObject: %w", err)
+		return result, nil, fmt.Errorf("failed to register object: %w", err)
 	}
 
 	record, err := c.getOwnerRelationship(ctx, engine)
 	if err != nil {
-		return result, fmt.Errorf("RegisterObject: %w", err)
+		return result, nil, fmt.Errorf("failed to register object: %w", err)
 	}
 
 	switch c.resolveObjectStatus(record) {
@@ -45,10 +45,15 @@ func (c *RegisterObjectCommand) Execute(ctx context.Context, engine auth_engine.
 	}
 
 	if err != nil {
-		return result, fmt.Errorf("RegisterObject: %w", err)
+		return result, nil, fmt.Errorf("failed to register object: %w", err)
 	}
 
-	return result, nil
+	record, err = c.getOwnerRelationship(ctx, engine)
+	if err != nil {
+		return result, nil, fmt.Errorf("failed to register object: %w", err)
+	}
+
+	return result, record, nil
 }
 
 // validates the command input params
@@ -57,15 +62,9 @@ func (c *RegisterObjectCommand) validate() error {
 		return types.ErrPolicyNil
 	}
 
-	if c.Registration == nil {
-		return types.ErrRegistrationNil
-	}
-
-	if c.Registration.Actor == nil {
-		return types.ErrActorNil
-	}
-	if c.Registration.Object == nil {
-		return types.ErrActorNil
+	err := registrationSpec(c.Registration)
+	if err != nil {
+		return err
 	}
 
 	if c.CreationTs == nil {
@@ -186,7 +185,7 @@ type SetRelationshipCommand struct {
 func (c *SetRelationshipCommand) Execute(ctx context.Context, engine auth_engine.AuthEngine, authorizer *RelationshipAuthorizer) (auth_engine.RecordFound, error) {
 	err := c.validate()
 	if err != nil {
-		return false, fmt.Errorf("SetRelationship: %w", err)
+		return false, fmt.Errorf("failed to set relationship: %w", err)
 	}
 
 	creatorActor := types.Actor{
@@ -194,15 +193,15 @@ func (c *SetRelationshipCommand) Execute(ctx context.Context, engine auth_engine
 	}
 	authorized, err := authorizer.IsAuthorized(ctx, c.Policy, c.Relationship, &creatorActor)
 	if err != nil {
-		return false, fmt.Errorf("SetRelationship: %w", err)
+		return false, fmt.Errorf("failed to set relationship: %w", err)
 	}
 	if !authorized {
-		return false, fmt.Errorf("SetRelationship: %w", types.ErrNotAuthorized)
+		return false, fmt.Errorf("failed to set relationship: %w", types.ErrNotAuthorized)
 	}
 
 	record, err := engine.GetRelationship(ctx, c.Policy, c.Relationship)
 	if err != nil {
-		return false, fmt.Errorf("SetRelationship: %w", err)
+		return false, fmt.Errorf("failed to set relationship: %w", err)
 	}
 	if record != nil {
 		return true, nil
@@ -217,13 +216,18 @@ func (c *SetRelationshipCommand) Execute(ctx context.Context, engine auth_engine
 	}
 	_, err = engine.SetRelationship(ctx, c.Policy, record)
 	if err != nil {
-		return false, fmt.Errorf("SetRelationship: %w", err)
+		return false, fmt.Errorf("failed to set relationship: %w", err)
 	}
 
 	return false, nil
 }
 
 func (c *SetRelationshipCommand) validate() error {
+	err := relationshipSpec(c.Policy, c.Relationship)
+	if err != nil {
+		return err
+	}
+
 	if c.Relationship.Relation == policy.OwnerRelation {
 		return ErrSetOwnerRel
 	}
@@ -246,21 +250,21 @@ type DeleteRelationshipCommand struct {
 func (c *DeleteRelationshipCommand) Execute(ctx context.Context, engine auth_engine.AuthEngine, authorizer *RelationshipAuthorizer) (auth_engine.RecordFound, error) {
 	err := c.validate()
 	if err != nil {
-		return false, fmt.Errorf("DeleteRelationshipCommand: %w", err)
+		return false, fmt.Errorf("failed to delete relationship: %w", err)
 	}
 
 	isAuthorized, err := c.isActorAuthorized(ctx, authorizer)
 	if err != nil {
-		return false, fmt.Errorf("DeleteRelationshipCommand: %w", err)
+		return false, fmt.Errorf("failed to delete relationship: %w", err)
 	}
 
 	if !isAuthorized {
-		return false, fmt.Errorf("DeleteRelationshipCommand: %w", types.ErrNotAuthorized)
+		return false, fmt.Errorf("failed to delete relationship: %w", types.ErrNotAuthorized)
 	}
 
 	found, err := engine.DeleteRelationship(ctx, c.Policy, c.Relationship)
 	if err != nil {
-		return false, fmt.Errorf("DeleteRelationshipCommand: %w", err)
+		return false, fmt.Errorf("failed to delete relationship: %w", err)
 	}
 
 	return found, nil
@@ -306,24 +310,25 @@ type UnregisterObjectCommand struct {
 }
 
 func (c *UnregisterObjectCommand) Execute(ctx context.Context, engine auth_engine.AuthEngine, authorizer *RelationshipAuthorizer) (uint, error) {
+	// TODO return found or not
 	err := c.validate()
 	if err != nil {
-		return 0, fmt.Errorf("UnregisterObject: %w", err)
+		return 0, fmt.Errorf("failed to unregister object: %w", err)
 	}
 
 	authRelationship := types.NewActorRelationship(c.Object.Resource, c.Object.Id, policy.OwnerRelation, c.Actor)
 	actor := types.Actor{Id: c.Actor}
 	authorized, err := authorizer.IsAuthorized(ctx, c.Policy, authRelationship, &actor)
 	if err != nil {
-		return 0, fmt.Errorf("UnregisterObject: %w", err)
+		return 0, fmt.Errorf("failed to unregister object: %w", err)
 	}
 	if !authorized {
-		return 0, fmt.Errorf("UnregisterObject: %w", types.ErrNotAuthorized)
+		return 0, fmt.Errorf("failed to unregister object: %w", types.ErrNotAuthorized)
 	}
 
 	ownerRecord, err := engine.GetRelationship(ctx, c.Policy, authRelationship)
 	if err != nil {
-		return 0, fmt.Errorf("UnregisterObject: %w", err)
+		return 0, fmt.Errorf("failed to unregister object: %w", err)
 	}
 	if ownerRecord.Archived {
 		return 0, nil
@@ -333,7 +338,7 @@ func (c *UnregisterObjectCommand) Execute(ctx context.Context, engine auth_engin
 
 	err = c.archiveObject(ctx, engine, ownerRecord)
 	if err != nil {
-		return 0, fmt.Errorf("UnregisterObject: archiving object: %w", err)
+		return 0, fmt.Errorf("failed to unregister object: archiving object: %w", err)
 	}
 
 	return count, nil
@@ -366,7 +371,7 @@ func (c *UnregisterObjectCommand) removeObjectRelationships(ctx context.Context,
 	}
 	count, err := engine.DeleteRelationships(ctx, c.Policy, selector)
 	if err != nil {
-		return 0, fmt.Errorf("UnregisterObject: %w", err)
+		return 0, fmt.Errorf("failed to unregister object: %w", err)
 	}
 
 	return count, nil

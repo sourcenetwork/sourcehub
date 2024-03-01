@@ -24,15 +24,6 @@ message SignedPolicyCmd {
 // PolicyCmdPayload represents the payload containing the context of the issued command
 message PolicyCmdPayload {
 
-    message PolicyCmd {
-        oneof cmd {
-            SetRelationshipCmd set_relationship_cmd = 2;
-            DeleteRelationshipCmd delete_relationship_cmd = 3;
-            RegisterObjectCmd register_object_cmd = 4;
-            UnregisterObjectCmd unregister_object_cmd = 5;
-        }
-    }
-
     // actor is a did string representing the actor which issued the command
     string actor = 1;
 
@@ -50,7 +41,12 @@ message PolicyCmdPayload {
     // policy_id is the ID of the policy under which the Command will be executed
     string policy_id = 5;
 
-    PolicyCmd cmd = 6;
+    oneof cmd {
+        SetRelationshipCmd set_relationship_cmd = 6;
+        DeleteRelationshipCmd delete_relationship_cmd = 7;
+        RegisterObjectCmd register_object_cmd = 8;
+        UnregisterObjectCmd unregister_object_cmd = 9;
+    }
 }
 
 
@@ -72,4 +68,36 @@ message RegisterObjectCmd {
 // UnregisterObjectCmd unregisters an Object in a Policy
 message UnregisterObjectCmd {
     Object object = 1;
+}
+
+// SetRelationshipCmd sets a Relationship in a Policy
+message SetRelationshipCmdResult {
+  // Indicates whether the given Relationship previously existed, ie the Tx was a no op
+  bool record_existed = 1;
+}
+
+// DeleteRelationshipCmdResult removes a Relationship in a Policy
+message DeleteRelationshipCmdResult {
+  bool record_found = 1;
+}
+
+// RegisterObjectCmdResult registers an Object in a Policy
+message RegisterObjectCmdResult {
+    RegistrationResult result = 1;
+    RelationshipRecord record = 2;
+}
+
+// UnregisterObjectCmdResult unregisters an Object in a Policy
+message UnregisterObjectCmdResult {
+  bool found = 1;
+  uint64 relationships_removed = 2;
+}
+
+message PolicyCmdResult{
+    oneof result {
+        SetRelationshipCmdResult set_relationship_result = 1;
+        DeleteRelationshipCmdResult delete_relationship_result = 2;
+        RegisterObjectCmdResult register_object_result = 3;
+        UnregisterObjectCmdResult unregister_object_result = 4;
+    }
 }

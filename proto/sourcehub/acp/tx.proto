@@ -135,6 +135,7 @@ message MsgRegisterObject {
 
 message MsgRegisterObjectResponse {
   RegistrationResult result = 1;
+  RelationshipRecord record = 2;
 }
 
 message MsgUnregisterObject {
@@ -161,12 +162,19 @@ message MsgCheckAccessResponse {
 }
 
 message MsgPolicyCmd {
+  message SignedCmd {
+    oneof payload {
+      string jws = 1;
+      SignedPolicyCmd raw = 2;
+    }
+  }
+
   option (cosmos.msg.v1.signer) = "creator";
   string creator = 1;
-  SignedPolicyCmd signed_cmd = 2;
+  
+  SignedCmd signed_cmd = 2;
 }
 
 message MsgPolicyCmdResponse {
-
+  PolicyCmdResult result = 1;
 }
-

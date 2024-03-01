@@ -37,6 +37,7 @@ var (
 	ErrPolicyNotFound   = ErrAcpInput.Wrapf("policy not found")
 	ErrInvalidHeight    = ErrAcpInput.Wrapf("invalid block height")
 	ErrInvalidAccAddr   = ErrAcpInput.Wrapf("invalid account address")
+	ErrInvalidDID       = ErrAcpInput.Wrapf("invalid DID")
 
 	ErrNotAuthorized = ErrAcpProtocolViolation.Wrapf("actor not authorized")
 )

@@ -8,10 +8,11 @@ import (
 
 var _ sdk.Msg = &MsgUnregisterObject{}
 
-func NewMsgUnregisterObject(creator string, policyId string) *MsgUnregisterObject {
+func NewMsgUnregisterObject(creator string, policyId string, object *Object) *MsgUnregisterObject {
 	return &MsgUnregisterObject{
 		Creator:  creator,
 		PolicyId: policyId,
+		Object:   object,
 	}
 }
 

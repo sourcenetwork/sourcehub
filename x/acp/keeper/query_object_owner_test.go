@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	prototypes "github.com/cosmos/gogoproto/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
@@ -14,17 +13,15 @@ import (
 type queryObjectOwnerSuite struct {
 	suite.Suite
 
-	obj     *types.Object
-	creator string
+	obj *types.Object
 }
 
 func TestObjectOwner(t *testing.T) {
 	suite.Run(t, &queryObjectOwnerSuite{})
 }
 
-func (s *queryObjectOwnerSuite) setup(t *testing.T) (context.Context, Keeper, string) {
+func (s *queryObjectOwnerSuite) setup(t *testing.T) (context.Context, Keeper, string, string) {
 	s.obj = types.NewObject("file", "1")
-	s.creator = "cosmos1gue5de6a8fdff0jut08vw5sg9pk6rr00cstakj"
 
 	policyStr := `
 name: policy
@@ -51,16 +48,16 @@ actor:
   doc: my actor
           `
 
-	var timestamp = prototypes.TimestampNow()
+	ctx, keeper, accKeep := setupKeeper(t)
+	creator := accKeep.FirstAcc().GetAddress().String()
 
 	msg := types.MsgCreatePolicy{
-		Creator:      s.creator,
+		Creator:      creator,
 		Policy:       policyStr,
 		MarshalType:  types.PolicyMarshalingType_SHORT_YAML,
 		CreationTime: timestamp,
 	}
 
-	keeper, ctx := setupKeeper(t)
 	msgServer := NewMsgServerImpl(keeper)
 
 	resp, err := msgServer.CreatePolicy(ctx, &msg)
@@ -74,11 +71,11 @@ actor:
 	})
 	require.Nil(t, err)
 
-	return ctx, keeper, resp.Policy.Id
+	return ctx, keeper, creator, resp.Policy.Id
 }
 
 func (s *queryObjectOwnerSuite) TestQueryReturnsObjectOwner() {
-	ctx, keeper, policyId := s.setup(s.T())
+	ctx, keeper, creator, policyId := s.setup(s.T())
 
 	resp, err := keeper.ObjectOwner(ctx, &types.QueryObjectOwnerRequest{
 		PolicyId: policyId,
@@ -88,12 +85,12 @@ func (s *queryObjectOwnerSuite) TestQueryReturnsObjectOwner() {
 	require.Nil(s.T(), err)
 	require.Equal(s.T(), resp, &types.QueryObjectOwnerResponse{
 		IsRegistered: true,
-		OwnerId:      s.creator,
+		OwnerId:      creator,
 	})
 }
 
 func (s *queryObjectOwnerSuite) TestQueryingForUnregisteredObjectReturnsEmptyOwner() {
-	ctx, keeper, policyId := s.setup(s.T())
+	ctx, keeper, _, policyId := s.setup(s.T())
 
 	resp, err := keeper.ObjectOwner(ctx, &types.QueryObjectOwnerRequest{
 		PolicyId: policyId,
@@ -108,7 +105,7 @@ func (s *queryObjectOwnerSuite) TestQueryingForUnregisteredObjectReturnsEmptyOwn
 }
 
 func (s *queryObjectOwnerSuite) TestQueryingPolicyThatDoesNotExistReturnError() {
-	ctx, keeper, _ := s.setup(s.T())
+	ctx, keeper, _, _ := s.setup(s.T())
 
 	resp, err := keeper.ObjectOwner(ctx, &types.QueryObjectOwnerRequest{
 		PolicyId: "some-policy",
@@ -120,7 +117,7 @@ func (s *queryObjectOwnerSuite) TestQueryingPolicyThatDoesNotExistReturnError() 
 }
 
 func (s *queryObjectOwnerSuite) TestQueryingForObjectInNonExistingPolicyReturnsError() {
-	ctx, keeper, policyId := s.setup(s.T())
+	ctx, keeper, _, policyId := s.setup(s.T())
 
 	resp, err := keeper.ObjectOwner(ctx, &types.QueryObjectOwnerRequest{
 		PolicyId: policyId,
