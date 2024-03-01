@@ -83,7 +83,7 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 				},
 			},
 		}
-		registrationResult, record, err = cmd.Execute(ctx, engine)
+		registrationResult, record, err = cmd.Execute(ctx, engine, ctx.EventManager())
 
 		result.Result = &types.PolicyCmdResult_RegisterObjectResult{
 			RegisterObjectResult: &types.RegisterObjectCmdResult{

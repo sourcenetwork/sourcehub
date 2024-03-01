@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	prototypes "github.com/cosmos/gogoproto/types"
 
 	"github.com/sourcenetwork/sourcehub/x/acp/auth_engine"
@@ -21,7 +22,7 @@ type RegisterObjectCommand struct {
 	CreationTs   *prototypes.Timestamp
 }
 
-func (c *RegisterObjectCommand) Execute(ctx context.Context, engine auth_engine.AuthEngine) (types.RegistrationResult, *types.RelationshipRecord, error) {
+func (c *RegisterObjectCommand) Execute(ctx context.Context, engine auth_engine.AuthEngine, eventManager sdk.EventManagerI) (types.RegistrationResult, *types.RelationshipRecord, error) {
 	var err error
 	var result types.RegistrationResult
 
@@ -51,6 +52,22 @@ func (c *RegisterObjectCommand) Execute(ctx context.Context, engine auth_engine.
 	record, err = c.getOwnerRelationship(ctx, engine)
 	if err != nil {
 		return result, nil, fmt.Errorf("failed to register object: %w", err)
+	}
+
+	if result == types.RegistrationResult_Registered {
+		eventManager.EmitTypedEvent(&types.EventObjectRegistered{
+			Actor:          c.Registration.Actor.Id,
+			PolicyId:       c.Policy.Id,
+			ObjectResource: c.Registration.Object.Resource,
+			ObjectId:       c.Registration.Object.Id,
+		})
+	} else if result == types.RegistrationResult_Unarchived {
+		eventManager.EmitTypedEvent(&types.EventObjectUnarchived{
+			Actor:          c.Registration.Actor.Id,
+			PolicyId:       c.Policy.Id,
+			ObjectResource: c.Registration.Object.Resource,
+			ObjectId:       c.Registration.Object.Id,
+		})
 	}
 
 	return result, record, nil

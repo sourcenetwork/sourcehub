@@ -17,3 +17,17 @@ message EventAccessDecisionCreated {
   string actor = 4;
   string actor_did = 5;
 }
+
+message EventObjectRegistered {
+  string actor = 1;
+  string policy_id = 2;
+  string object_resource = 3;
+  string object_id = 4;
+}
+
+message EventObjectUnarchived {
+  string actor = 1;
+  string policy_id = 2;
+  string object_resource = 3;
+  string object_id = 4;
+}

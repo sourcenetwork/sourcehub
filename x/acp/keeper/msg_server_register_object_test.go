@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	"context"
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/sourcenetwork/sourcehub/x/acp/did"
@@ -11,7 +11,7 @@ import (
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
-func registerObjectTestSetup(t *testing.T) (context.Context, types.MsgServer, *types.Policy, *testutil.AccountKeeperStub) {
+func registerObjectTestSetup(t *testing.T) (sdk.Context, types.MsgServer, *types.Policy, *testutil.AccountKeeperStub) {
 	policy := `
     name: policy
     resources:
@@ -56,6 +56,14 @@ func TestRegisterObject_RegisteringNewObjectIsSucessful(t *testing.T) {
 		},
 	}
 	require.Equal(t, want, got)
+
+	event := &types.EventObjectRegistered{
+		Actor:          did,
+		PolicyId:       pol.Id,
+		ObjectId:       "foo",
+		ObjectResource: "resource",
+	}
+	testutil.AssertEventEmmited(t, ctx, event)
 }
 
 func TestRegisterObject_RegisteringObjectRegisteredToAnotherUserErrors(t *testing.T) {
@@ -150,6 +158,14 @@ func TestRegisterObject_RegisteringArchivedUserObjectUnarchivesObject(t *testing
 	}
 	require.Equal(t, want, resp)
 	require.Nil(t, err)
+
+	event := &types.EventObjectRegistered{
+		Actor:          bobDID,
+		PolicyId:       pol.Id,
+		ObjectId:       "foo",
+		ObjectResource: "resource",
+	}
+	testutil.AssertEventEmmited(t, ctx, event)
 }
 
 func TestRegisterObject_RegisteringObjectInAnUndefinedResourceErrors(t *testing.T) {
@@ -220,7 +236,3 @@ func TestRegisterObject_BlankObjectIdErrors(t *testing.T) {
 	require.Nil(t, got)
 	require.NotNil(t, err)
 }
-
-//func TestRegisterObject_(t *testing.T) {}
-//func TestRegisterObject_(t *testing.T) {}
-//func TestRegisterObject_(t *testing.T) {}

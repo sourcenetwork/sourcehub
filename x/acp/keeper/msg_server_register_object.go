@@ -13,6 +13,7 @@ import (
 
 func (k msgServer) RegisterObject(goCtx context.Context, msg *types.MsgRegisterObject) (*types.MsgRegisterObjectResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
 	engine, err := k.GetZanziEngine(ctx)
 	if err != nil {
 		return nil, err
@@ -21,8 +22,9 @@ func (k msgServer) RegisterObject(goCtx context.Context, msg *types.MsgRegisterO
 	rec, err := engine.GetPolicy(goCtx, msg.PolicyId)
 	if err != nil {
 		return nil, err
-	} else if rec == nil {
-		return nil, fmt.Errorf("policy %v: %w", msg.PolicyId, types.ErrPolicyNotFound)
+	}
+	if rec == nil {
+		return nil, fmt.Errorf("MsgRegisterObject: policy %v: %w", msg.PolicyId, types.ErrPolicyNotFound)
 	}
 
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -51,7 +53,7 @@ func (k msgServer) RegisterObject(goCtx context.Context, msg *types.MsgRegisterO
 		},
 	}
 
-	result, record, err := cmd.Execute(goCtx, engine)
+	result, record, err := cmd.Execute(goCtx, engine, ctx.EventManager())
 	if err != nil {
 		return nil, err
 	}
