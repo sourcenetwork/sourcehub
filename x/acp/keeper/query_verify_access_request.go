@@ -27,16 +27,16 @@ func (k Keeper) VerifyAccessRequest(goCtx context.Context, req *types.QueryVerif
 		return nil, err
 	}
 
-	cmd := access_decision.VerifyAccessRequestCommand{
+	cmd := access_decision.VerifyAccessRequestQuery{
 		Policy:        rec.Policy,
 		AccessRequest: req.AccessRequest,
 	}
-	err = cmd.Execute(ctx, engine)
+	valid, err := cmd.Execute(ctx, engine)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.QueryVerifyAccessRequestResponse{
-		Valid: true,
+		Valid: valid,
 	}, nil
 }

@@ -15,40 +15,6 @@ import (
 // DefaultExpirationDelta sets the number of blocks a Decision is valid for
 const DefaultExpirationDelta uint64 = 100
 
-// VerifyAccessRequest verifies whether the given AccessRequest is valid for Policy.
-// An AccessRequest is valid if the Request's Actor is authorized to
-// execute all the Operations within it.
-type VerifyAccessRequestCommand struct {
-	Policy        *types.Policy
-	AccessRequest *types.AccessRequest
-}
-
-// Execute runs the Comand for the given context and engine
-func (c *VerifyAccessRequestCommand) Execute(ctx context.Context, engine auth_engine.AuthEngine) error {
-	actor := c.AccessRequest.Actor
-	for _, operation := range c.AccessRequest.Operations {
-		isAllowed, err := engine.Check(ctx, c.Policy, operation, actor)
-		if err != nil {
-			return err
-		} else if !isAllowed {
-			return fmt.Errorf("actor %v: operation %v: %w", actor, operation, types.ErrNotAuthorized)
-		}
-	}
-	return nil
-}
-
-func (c *VerifyAccessRequestCommand) validate() error {
-	if c.Policy == nil {
-		return types.ErrPolicyNil
-	}
-
-	if c.AccessRequest == nil {
-		return types.ErrAccessRequestNil
-	}
-
-	return nil
-}
-
 type EvaluateAccessRequestsCommand struct {
 	Policy     *types.Policy
 	Operations []*types.Operation
