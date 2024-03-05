@@ -49,10 +49,11 @@ func TestRegisterObject_RegisteringNewObjectIsSucessful(t *testing.T) {
 		Result: types.RegistrationResult_Registered,
 		Record: &types.RelationshipRecord{
 			CreationTime: timestamp,
-			Creator:      did,
+			Creator:      addr,
 			PolicyId:     pol.Id,
 			Relationship: types.NewActorRelationship("resource", "foo", "owner", did),
 			Archived:     false,
+			Actor:        did,
 		},
 	}
 	require.Equal(t, want, got)
@@ -78,7 +79,6 @@ func TestRegisterObject_RegisteringObjectRegisteredToAnotherUserErrors(t *testin
 	msg = types.NewMsgRegisterObject(alice, pol.Id, types.NewObject("resource", "foo"), timestamp)
 	result, err := srv.RegisterObject(ctx, msg)
 
-	t.Logf("result: %v; err: %v", result, err)
 	require.Nil(t, result)
 	require.ErrorIs(t, err, types.ErrNotAuthorized)
 }
@@ -100,12 +100,14 @@ func TestRegisterObject_ReregisteringObjectOwnedByUserIsNoop(t *testing.T) {
 		Result: types.RegistrationResult_NoOp,
 		Record: &types.RelationshipRecord{
 			CreationTime: timestamp,
-			Creator:      bobDID,
+			Creator:      bob,
 			PolicyId:     pol.Id,
 			Relationship: types.NewActorRelationship("resource", "foo", "owner", bobDID),
 			Archived:     false,
+			Actor:        bobDID,
 		},
 	}
+	t.Logf("err %v", err)
 	require.Equal(t, want, got)
 	require.Nil(t, err)
 }
@@ -150,10 +152,11 @@ func TestRegisterObject_RegisteringArchivedUserObjectUnarchivesObject(t *testing
 		Result: types.RegistrationResult_Unarchived,
 		Record: &types.RelationshipRecord{
 			CreationTime: timestamp,
-			Creator:      bobDID,
+			Creator:      bob,
 			PolicyId:     pol.Id,
 			Relationship: types.NewActorRelationship("resource", "foo", "owner", bobDID),
 			Archived:     false,
+			Actor:        bobDID,
 		},
 	}
 	require.Equal(t, want, resp)

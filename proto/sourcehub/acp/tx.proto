@@ -109,9 +109,10 @@ message MsgSetRelationship {
 }
 
 message MsgSetRelationshipResponse {
-  
   // Indicates whether the given Relationship previously existed, ie the Tx was a no op
   bool record_existed = 1;
+
+  RelationshipRecord record = 2;
 }
 
 message MsgDeleteRelationship {

@@ -51,16 +51,26 @@ message Relationship {
 // RelationshipRecord represents a document contained a Relationship and additional data.
 message RelationshipRecord {
   google.protobuf.Timestamp creation_time = 1;
+
+  // msg_signer is the SourceHub address of the account that submited the message responsible for this record
+  // It's used for auditing only.
   string creator = 2;
-  string policy_id = 3;
-  Relationship relationship = 4;
-  bool archived = 5;
+
+  // actor is the DID of the Actor which created the relationship
+  string actor = 3;
+
+  string policy_id = 4;
+
+  Relationship relationship = 5;
+
+  // archived indicates whether an object has been unregistered
+  bool archived = 6;
 }
 
 // Registration represents a record assigning an Object as being owned by an Actor
 message Registration {
-  Object object = 2;
-  Actor actor = 3;
+  Object object = 1;
+  Actor actor = 2;
 }
 
 // RegistrationResult encodes the possible result set from Registering an Object

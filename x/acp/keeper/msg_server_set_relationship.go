@@ -18,6 +18,8 @@ func (k msgServer) SetRelationship(goCtx context.Context, msg *types.MsgSetRelat
 		return nil, err
 	}
 
+	authorizer := relationship.NewRelationshipAuthorizer(engine)
+
 	rec, err := engine.GetPolicy(goCtx, msg.PolicyId)
 	if err != nil {
 		return nil, err
@@ -41,21 +43,20 @@ func (k msgServer) SetRelationship(goCtx context.Context, msg *types.MsgSetRelat
 		return nil, fmt.Errorf("MsgSetRelationship: %w", err)
 	}
 
-	authorizer := relationship.NewRelationshipAuthorizer(engine)
-
 	cmd := relationship.SetRelationshipCommand{
 		Policy:       rec.Policy,
-		Creator:      accDID,
+		Creator:      msg.Creator,
 		CreationTs:   msg.CreationTime,
 		Relationship: msg.Relationship,
+		Actor:        accDID,
 	}
-	found, err := cmd.Execute(goCtx, engine, authorizer)
+	found, record, err := cmd.Execute(goCtx, engine, authorizer)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.MsgSetRelationshipResponse{
 		RecordExisted: bool(found),
-		// TODO return record
+		Record:        record,
 	}, nil
 }

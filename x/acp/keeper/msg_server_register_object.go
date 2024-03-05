@@ -45,6 +45,7 @@ func (k msgServer) RegisterObject(goCtx context.Context, msg *types.MsgRegisterO
 	cmd := relationship.RegisterObjectCommand{
 		Policy:     rec.Policy,
 		CreationTs: msg.CreationTime,
+		Creator:    msg.Creator,
 		Registration: &types.Registration{
 			Object: msg.Object,
 			Actor: &types.Actor{

@@ -47,7 +47,7 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 			Creator:      payload.Actor,
 			Relationship: c.SetRelationshipCmd.Relationship,
 		}
-		found, err = cmd.Execute(ctx, engine, authorizer)
+		found, _, err = cmd.Execute(ctx, engine, authorizer)
 
 		result.Result = &types.PolicyCmdResult_SetRelationshipResult{
 			SetRelationshipResult: &types.SetRelationshipCmdResult{

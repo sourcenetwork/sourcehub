@@ -35,6 +35,7 @@ var (
 	ErrTimestampNil     = ErrAcpInput.Wrapf("timestamp must not be nil")
 	ErrAccNotFound      = ErrAcpInput.Wrapf("account not found")
 	ErrPolicyNotFound   = ErrAcpInput.Wrapf("policy not found")
+	ErrObjectNotFound   = ErrAcpInput.Wrapf("object not found")
 	ErrInvalidHeight    = ErrAcpInput.Wrapf("invalid block height")
 	ErrInvalidAccAddr   = ErrAcpInput.Wrapf("invalid account address")
 	ErrInvalidDID       = ErrAcpInput.Wrapf("invalid DID")
