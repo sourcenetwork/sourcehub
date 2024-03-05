@@ -6,12 +6,19 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/sourcenetwork/sourcehub/x/acp/did"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
-func setupTestVerifyAccessRequest(t *testing.T) (context.Context, Keeper, *types.Policy) {
+func setupTestVerifyAccessRequest(t *testing.T) (context.Context, Keeper, *types.Policy, string) {
+	ctx, keeper, accKeep := setupKeeper(t)
+	msgServer := NewMsgServerImpl(keeper)
+
+	creatorAcc := accKeep.GenAccount()
+	creator := creatorAcc.GetAddress().String()
+	creatorDID, _ := did.IssueDID(creatorAcc)
+
 	obj := types.NewObject("file", "1")
-	creator := "cosmos1gue5de6a8fdff0jut08vw5sg9pk6rr00cstakj"
 
 	policyStr := `
 name: policy
@@ -36,9 +43,6 @@ resources:
 		CreationTime: timestamp,
 	}
 
-	keeper, ctx := setupKeeper(t)
-	msgServer := NewMsgServerImpl(keeper)
-
 	resp, err := msgServer.CreatePolicy(ctx, &msg)
 	require.Nil(t, err)
 
@@ -50,11 +54,11 @@ resources:
 	})
 	require.Nil(t, err)
 
-	return ctx, keeper, resp.Policy
+	return ctx, keeper, resp.Policy, creatorDID
 }
 
 func TestVerifyAccessRequest_QueryingObjectsTheActorHasAccessToReturnsTrue(t *testing.T) {
-	ctx, keeper, pol := setupTestVerifyAccessRequest(t)
+	ctx, keeper, pol, creator := setupTestVerifyAccessRequest(t)
 
 	req := &types.QueryVerifyAccessRequestRequest{
 		PolicyId: pol.Id,
@@ -70,7 +74,7 @@ func TestVerifyAccessRequest_QueryingObjectsTheActorHasAccessToReturnsTrue(t *te
 				},
 			},
 			Actor: &types.Actor{
-				Id: "cosmos1gue5de6a8fdff0jut08vw5sg9pk6rr00cstakj",
+				Id: creator,
 			},
 		},
 	}
@@ -84,7 +88,7 @@ func TestVerifyAccessRequest_QueryingObjectsTheActorHasAccessToReturnsTrue(t *te
 }
 
 func TestVerifyAccessRequest_QueryingOperationActorIsNotAuthorizedReturnNotValid(t *testing.T) {
-	ctx, keeper, pol := setupTestVerifyAccessRequest(t)
+	ctx, keeper, pol, creator := setupTestVerifyAccessRequest(t)
 
 	req := &types.QueryVerifyAccessRequestRequest{
 		PolicyId: pol.Id,
@@ -96,7 +100,7 @@ func TestVerifyAccessRequest_QueryingOperationActorIsNotAuthorizedReturnNotValid
 				},
 			},
 			Actor: &types.Actor{
-				Id: "cosmos1gue5de6a8fdff0jut08vw5sg9pk6rr00cstakj",
+				Id: creator,
 			},
 		},
 	}
@@ -110,7 +114,7 @@ func TestVerifyAccessRequest_QueryingOperationActorIsNotAuthorizedReturnNotValid
 }
 
 func TestVerifyAccessRequest_QueryingObjectThatDoesNotExistReturnValidFalse(t *testing.T) {
-	ctx, keeper, pol := setupTestVerifyAccessRequest(t)
+	ctx, keeper, pol, creator := setupTestVerifyAccessRequest(t)
 
 	req := &types.QueryVerifyAccessRequestRequest{
 		PolicyId: pol.Id,
@@ -122,7 +126,7 @@ func TestVerifyAccessRequest_QueryingObjectThatDoesNotExistReturnValidFalse(t *t
 				},
 			},
 			Actor: &types.Actor{
-				Id: "cosmos1gue5de6a8fdff0jut08vw5sg9pk6rr00cstakj",
+				Id: creator,
 			},
 		},
 	}

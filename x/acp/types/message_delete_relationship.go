@@ -8,10 +8,11 @@ import (
 
 var _ sdk.Msg = &MsgDeleteRelationship{}
 
-func NewMsgDeleteRelationship(creator string, policyId string) *MsgDeleteRelationship {
+func NewMsgDeleteRelationship(creator string, policyId string, relationship *Relationship) *MsgDeleteRelationship {
 	return &MsgDeleteRelationship{
-		Creator:  creator,
-		PolicyId: policyId,
+		Creator:      creator,
+		PolicyId:     policyId,
+		Relationship: relationship,
 	}
 }
 

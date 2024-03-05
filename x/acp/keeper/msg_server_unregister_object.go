@@ -31,7 +31,7 @@ func (k msgServer) UnregisterObject(goCtx context.Context, msg *types.MsgUnregis
 
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return nil, fmt.Errorf("MsgUnregisterObject: invalid creator: %v", err)
+		return nil, fmt.Errorf("MsgUnregisterObject: invalid creator: %v: %w", err, types.ErrAcpInput)
 	}
 
 	account := k.accountKeeper.GetAccount(ctx, addr)
