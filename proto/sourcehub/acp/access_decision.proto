@@ -19,16 +19,14 @@ message AccessDecision {
 
   repeated Operation operations = 5; // used as part of id generation
 
-  string actor_did = 6; // used as part of id generation
+  string actor = 6; // used as part of id generation
 
-  string actor = 7; // used as part of id generation
+  DecisionParams params = 7; // used as part of id generation
 
-  DecisionParams params = 8; // used as part of id generation
-
-  google.protobuf.Timestamp creation_time = 9;
+  google.protobuf.Timestamp creation_time = 8;
 
   // issued_height stores the block height when the Decision was evaluated
-  uint64 issued_height = 10;
+  uint64 issued_height = 9;
 }
 
 // DecisionParams stores auxiliary information regarding the validity of a decision

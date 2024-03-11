@@ -7,7 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sourcenetwork/sourcehub/x/acp/access_decision"
-	"github.com/sourcenetwork/sourcehub/x/acp/did"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
@@ -15,7 +14,6 @@ func (k msgServer) CheckAccess(goCtx context.Context, msg *types.MsgCheckAccess)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	eventManager := ctx.EventManager()
 
-	registry := did.NewKeyRegistry()
 	repository := k.GetAccessDecisionRepository(ctx)
 	paramsRepository := access_decision.StaticParamsRepository{}
 	engine, err := k.GetZanziEngine(ctx)
@@ -31,16 +29,6 @@ func (k msgServer) CheckAccess(goCtx context.Context, msg *types.MsgCheckAccess)
 		return nil, fmt.Errorf("policy %v: %w", msg.PolicyId, types.ErrPolicyNotFound)
 	}
 
-	actorAddr, err := sdk.AccAddressFromBech32(msg.AccessRequest.Actor.Id)
-	if err != nil {
-		return nil, types.ErrInvalidAccAddr
-	}
-
-	actorAcc := k.accountKeeper.GetAccount(ctx, actorAddr)
-	if actorAcc == nil {
-		return nil, types.ErrAccNotFound
-	}
-
 	creatorAddr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, types.ErrInvalidAccAddr
@@ -53,12 +41,12 @@ func (k msgServer) CheckAccess(goCtx context.Context, msg *types.MsgCheckAccess)
 	cmd := access_decision.EvaluateAccessRequestsCommand{
 		Policy:        record.Policy,
 		Operations:    msg.AccessRequest.Operations,
-		Actor:         actorAcc,
+		Actor:         msg.AccessRequest.Actor.Id,
 		CreationTime:  msg.CreationTime,
 		Creator:       creatorAcc,
 		CurrentHeight: uint64(ctx.BlockHeight()),
 	}
-	decision, err := cmd.Execute(goCtx, engine, repository, &paramsRepository, registry)
+	decision, err := cmd.Execute(goCtx, engine, repository, &paramsRepository)
 	if err != nil {
 		return nil, err
 	}

@@ -1,25 +1,25 @@
 package did
 
 import (
+	"context"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/TBD54566975/ssi-sdk/crypto"
-	"github.com/TBD54566975/ssi-sdk/did/key"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/cyware/ssi-sdk/crypto"
+	"github.com/cyware/ssi-sdk/did"
+	"github.com/cyware/ssi-sdk/did/key"
 	didmodel "github.com/hyperledger/aries-framework-go/component/models/did"
 )
 
-// Registry model a DID method registry
-type Registry interface {
-	// ResolveKey resolves the did and returns the first key from it
-	ResolveKey(did string) (types.PubKey, error)
+type DIDDocument struct {
+	*did.Document
+}
 
-	// Create prodcues a DID from a pub key
-	Create(key types.PubKey) (string, error)
+type Resolver interface {
+	Resolve(ctx context.Context, did string) (DIDDocument, error)
 }
 
 func IsValidDID(did string) error {

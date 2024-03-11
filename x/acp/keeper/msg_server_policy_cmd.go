@@ -19,10 +19,9 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 		return nil, err
 	}
 
-	payload, err := policy_cmd.ValidateAndExtractCmd(*msg.SignedCmd)
+	payload, err := policy_cmd.ValidateAndExtractCmd(ctx, *msg.SignedCmd, uint64(ctx.BlockHeight()))
 	if err != nil {
-		panic("wah")
-		return nil, fmt.Errorf("bad: %v", err)
+		return nil, fmt.Errorf("PolicyCmd: %w", err)
 	}
 
 	authorizer := relationship.NewRelationshipAuthorizer(engine)
@@ -31,7 +30,7 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 	if err != nil {
 		return nil, err
 	} else if rec == nil {
-		return nil, fmt.Errorf("policy %v: %w", payload.PolicyId, types.ErrPolicyNotFound)
+		return nil, fmt.Errorf("PolcyCmd: policy %v: %w", payload.PolicyId, types.ErrPolicyNotFound)
 	}
 
 	result := new(types.PolicyCmdResult)
@@ -109,7 +108,7 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 		}
 
 	default:
-		err = fmt.Errorf("bad")
+		err = fmt.Errorf("PolicyCmd: unsuported command %v: %w", c, types.ErrInvalidVariant)
 	}
 
 	if err != nil {

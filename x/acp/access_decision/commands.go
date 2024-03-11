@@ -8,7 +8,6 @@ import (
 	prototypes "github.com/cosmos/gogoproto/types"
 
 	"github.com/sourcenetwork/sourcehub/x/acp/auth_engine"
-	"github.com/sourcenetwork/sourcehub/x/acp/did"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
@@ -18,7 +17,7 @@ const DefaultExpirationDelta uint64 = 100
 type EvaluateAccessRequestsCommand struct {
 	Policy     *types.Policy
 	Operations []*types.Operation
-	Actor      authtypes.AccountI
+	Actor      string
 
 	CreationTime *prototypes.Timestamp
 
@@ -28,11 +27,10 @@ type EvaluateAccessRequestsCommand struct {
 	// Current block height
 	CurrentHeight uint64
 
-	did    string
 	params *types.DecisionParams
 }
 
-func (c *EvaluateAccessRequestsCommand) Execute(ctx context.Context, engine auth_engine.AuthEngine, repository Repository, paramsRepo ParamsRepository, registry did.Registry) (*types.AccessDecision, error) {
+func (c *EvaluateAccessRequestsCommand) Execute(ctx context.Context, engine auth_engine.AuthEngine, repository Repository, paramsRepo ParamsRepository) (*types.AccessDecision, error) {
 	err := c.validate()
 	if err != nil {
 		return nil, fmt.Errorf("EvaluateAccessRequest: %w", err)
@@ -47,12 +45,6 @@ func (c *EvaluateAccessRequestsCommand) Execute(ctx context.Context, engine auth
 	if err != nil {
 		return nil, fmt.Errorf("EvaluateAccessRequest: %w", err)
 	}
-
-	did, err := registry.Create(c.Actor.GetPubKey())
-	if err != nil {
-		return nil, fmt.Errorf("EvaluateAccessRequest: %w", err)
-	}
-	c.did = did
 
 	decision := c.buildDecision()
 
@@ -81,9 +73,8 @@ func (c *EvaluateAccessRequestsCommand) validate() error {
 }
 
 func (c *EvaluateAccessRequestsCommand) evaluateRequest(ctx context.Context, engine auth_engine.AuthEngine) error {
-	actorId := c.Actor.GetAddress().String()
 	actor := types.Actor{
-		Id: actorId,
+		Id: c.Actor,
 	}
 
 	for _, operation := range c.Operations {
@@ -105,8 +96,7 @@ func (c *EvaluateAccessRequestsCommand) buildDecision() *types.AccessDecision {
 		CreationTime:       c.CreationTime,
 		Operations:         c.Operations,
 		IssuedHeight:       c.CurrentHeight,
-		Actor:              c.Actor.GetAddress().String(),
-		ActorDid:           c.did,
+		Actor:              c.Actor,
 		Creator:            c.Creator.GetAddress().String(),
 		CreatorAccSequence: c.Creator.GetSequence(),
 	}
