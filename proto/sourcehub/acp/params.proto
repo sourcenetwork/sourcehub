@@ -11,4 +11,7 @@ option go_package = "github.com/sourcenetwork/sourcehub/x/acp/types";
 message Params {
   option (amino.name) = "sourcehub/x/acp/Params";
   option (gogoproto.equal) = true;
+
+  // policy_command_max_expiration_delta specifies a global thershold for how old a Command will be accepted for.
+  uint64 policy_command_max_expiration_delta = 1;
 }
