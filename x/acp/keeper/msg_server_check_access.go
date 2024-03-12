@@ -56,7 +56,6 @@ func (k msgServer) CheckAccess(goCtx context.Context, msg *types.MsgCheckAccess)
 		PolicyId:   msg.PolicyId,
 		DecisionId: decision.Id,
 		Actor:      decision.Actor,
-		ActorDid:   decision.ActorDid,
 	})
 	if err != nil {
 		return nil, err

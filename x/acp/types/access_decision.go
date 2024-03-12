@@ -29,7 +29,6 @@ func (decision *AccessDecision) hashDecision() []byte {
 	hasher.Write([]byte(decision.PolicyId))
 	hasher.Write([]byte(decision.Creator))
 	hasher.Write([]byte(decision.Actor))
-	hasher.Write([]byte(decision.ActorDid))
 	hasher.Write([]byte(fmt.Sprintf("%v", decision.CreatorAccSequence)))
 	hasher.Write([]byte(fmt.Sprintf("%v", decision.IssuedHeight)))
 	hasher.Write([]byte(prototypes.TimestampString(decision.CreationTime)))

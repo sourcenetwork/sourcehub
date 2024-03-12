@@ -44,8 +44,8 @@ func (s *AccessTicketSpec) SatisfiesRaw(ctx context.Context, ticket *types.Acces
 		return err
 	}
 
-	did := ticket.Decision.ActorDid
-	pkey, err := s.resolver.Resolve(did)
+	did := ticket.Decision.Actor
+	pkey, err := s.resolver.Resolve(ctx, did)
 	if err != nil {
 		return err
 	}

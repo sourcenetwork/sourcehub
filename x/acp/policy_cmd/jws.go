@@ -12,6 +12,12 @@ import (
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
+func newJWSVerifier(resolver did.Resolver) jwsVerifier {
+	return jwsVerifier{
+		resolver: resolver,
+	}
+}
+
 // jwsVerifier verifies the Signature of a JWS which contains a PolicyCmd
 type jwsVerifier struct {
 	resolver did.Resolver

@@ -9,16 +9,26 @@ import (
 var _ sdk.Msg = &MsgPolicyCmd{}
 
 func NewMsgPolicyCmd(creator string) *MsgPolicyCmd {
-  return &MsgPolicyCmd{
+	return &MsgPolicyCmd{
 		Creator: creator,
 	}
 }
 
-func (msg *MsgPolicyCmd) ValidateBasic() error {
-  _, err := sdk.AccAddressFromBech32(msg.Creator)
-  	if err != nil {
-  		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-  	}
-  return nil
+func NewMsgPolicyCmdFromJWS(creator string, jws string) *MsgPolicyCmd {
+	return &MsgPolicyCmd{
+		Creator: creator,
+		SignedCmd: &MsgPolicyCmd_SignedCmd{
+			Payload: &MsgPolicyCmd_SignedCmd_Jws{
+				Jws: jws,
+			},
+		},
+	}
 }
 
+func (msg *MsgPolicyCmd) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	return nil
+}

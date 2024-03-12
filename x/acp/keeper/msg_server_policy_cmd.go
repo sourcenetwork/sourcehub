@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sourcenetwork/sourcehub/x/acp/auth_engine"
+	"github.com/sourcenetwork/sourcehub/x/acp/did"
 	"github.com/sourcenetwork/sourcehub/x/acp/policy_cmd"
 	"github.com/sourcenetwork/sourcehub/x/acp/relationship"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
@@ -19,7 +20,11 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 		return nil, err
 	}
 
-	payload, err := policy_cmd.ValidateAndExtractCmd(ctx, *msg.SignedCmd, uint64(ctx.BlockHeight()))
+	resolver := &did.KeyResolver{}
+
+	params := k.GetParams(ctx)
+
+	payload, err := policy_cmd.ValidateAndExtractCmd(ctx, params, resolver, *msg.SignedCmd, uint64(ctx.BlockHeight()))
 	if err != nil {
 		return nil, fmt.Errorf("PolicyCmd: %w", err)
 	}
@@ -75,6 +80,7 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 		cmd := relationship.RegisterObjectCommand{
 			Policy:     policy,
 			CreationTs: payload.CreationTime,
+			Creator:    msg.Creator,
 			Registration: &types.Registration{
 				Object: c.RegisterObjectCmd.Object,
 				Actor: &types.Actor{
