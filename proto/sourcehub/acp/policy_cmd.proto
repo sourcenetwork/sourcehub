@@ -93,12 +93,3 @@ message UnregisterObjectCmdResult {
   bool found = 1;
   uint64 relationships_removed = 2;
 }
-
-message PolicyCmdResult{
-    oneof result {
-        SetRelationshipCmdResult set_relationship_result = 1;
-        DeleteRelationshipCmdResult delete_relationship_result = 2;
-        RegisterObjectCmdResult register_object_result = 3;
-        UnregisterObjectCmdResult unregister_object_result = 4;
-    }
-}

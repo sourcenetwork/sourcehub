@@ -163,19 +163,23 @@ message MsgCheckAccessResponse {
 }
 
 message MsgPolicyCmd {
-  message SignedCmd {
-    oneof payload {
-      string jws = 1;
-      SignedPolicyCmd raw = 2;
-    }
+  enum ContentType {
+    UNKNOWN = 0;
+    JWS = 1;
   }
 
   option (cosmos.msg.v1.signer) = "creator";
+
   string creator = 1;
-  
-  SignedCmd signed_cmd = 2;
+  string payload = 2;
+  ContentType type = 3;
 }
 
 message MsgPolicyCmdResponse {
-  PolicyCmdResult result = 1;
+    oneof result {
+        SetRelationshipCmdResult set_relationship_result = 1;
+        DeleteRelationshipCmdResult delete_relationship_result = 2;
+        RegisterObjectCmdResult register_object_result = 3;
+        UnregisterObjectCmdResult unregister_object_result = 4;
+    }
 }
