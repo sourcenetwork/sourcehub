@@ -14,13 +14,17 @@ func relationshipSpec(policy *types.Policy, relationship *types.Relationship) er
 	switch subj := relationship.Subject.Subject.(type) {
 	case *types.Subject_Actor:
 		if err := did.IsValidDID(subj.Actor.Id); err != nil {
-			return fmt.Errorf("invalid relationship: actor must be a valid did: %v", err)
+			return fmt.Errorf("%w: actor must be a valid did: %v", ErrInvalidRelationship, err)
 		}
 	case *types.Subject_Object:
 		err := did.IsValidDID(subj.Object.Id)
 		if subj.Object.Resource == policy.ActorResource.Name && err != nil {
-			return fmt.Errorf("invalid relationship: actor must be a valid did: %v", err)
+			return fmt.Errorf("%w: actor must be a valid did: %v", ErrInvalidRelationship, err)
 		}
+	}
+
+	if relationship.Object.Id == "" {
+		return fmt.Errorf("object id must not be empty: %w", ErrInvalidRelationship)
 	}
 
 	return nil
@@ -37,6 +41,10 @@ func registrationSpec(registration *types.Registration) error {
 
 	if registration.Object == nil {
 		return fmt.Errorf("invalid registration: %w", types.ErrObjectNil)
+	}
+
+	if registration.Object.Id == "" {
+		return fmt.Errorf("invalid registration: object id required")
 	}
 
 	if err := did.IsValidDID(registration.Actor.Id); err != nil {

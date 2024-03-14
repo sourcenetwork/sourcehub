@@ -351,6 +351,9 @@ func (c *UnregisterObjectCommand) Execute(ctx context.Context, engine auth_engin
 	}
 
 	count, err := c.removeObjectRelationships(ctx, engine)
+	if err != nil {
+		return 0, fmt.Errorf("failed to unregister object: removing orphan relationships: %w", err)
+	}
 
 	err = c.archiveObject(ctx, engine, ownerRecord)
 	if err != nil {

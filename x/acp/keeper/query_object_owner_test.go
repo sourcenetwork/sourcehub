@@ -4,9 +4,11 @@ import (
 	"context"
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/sourcenetwork/sourcehub/x/acp/did"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
 )
 
@@ -20,7 +22,7 @@ func TestObjectOwner(t *testing.T) {
 	suite.Run(t, &queryObjectOwnerSuite{})
 }
 
-func (s *queryObjectOwnerSuite) setup(t *testing.T) (context.Context, Keeper, string, string) {
+func (s *queryObjectOwnerSuite) setup(t *testing.T) (context.Context, Keeper, sdk.AccountI, string, string) {
 	s.obj = types.NewObject("file", "1")
 
 	policyStr := `
@@ -71,26 +73,27 @@ actor:
 	})
 	require.Nil(t, err)
 
-	return ctx, keeper, creator, resp.Policy.Id
+	return ctx, keeper, accKeep.FirstAcc(), creator, resp.Policy.Id
 }
 
 func (s *queryObjectOwnerSuite) TestQueryReturnsObjectOwner() {
-	ctx, keeper, creator, policyId := s.setup(s.T())
+	ctx, keeper, creatorAcc, _, policyId := s.setup(s.T())
 
 	resp, err := keeper.ObjectOwner(ctx, &types.QueryObjectOwnerRequest{
 		PolicyId: policyId,
 		Object:   s.obj,
 	})
 
-	require.Nil(s.T(), err)
+	did, _ := did.IssueDID(creatorAcc)
 	require.Equal(s.T(), resp, &types.QueryObjectOwnerResponse{
 		IsRegistered: true,
-		OwnerId:      creator,
+		OwnerId:      did,
 	})
+	require.Nil(s.T(), err)
 }
 
 func (s *queryObjectOwnerSuite) TestQueryingForUnregisteredObjectReturnsEmptyOwner() {
-	ctx, keeper, _, policyId := s.setup(s.T())
+	ctx, keeper, _, _, policyId := s.setup(s.T())
 
 	resp, err := keeper.ObjectOwner(ctx, &types.QueryObjectOwnerRequest{
 		PolicyId: policyId,
@@ -105,7 +108,7 @@ func (s *queryObjectOwnerSuite) TestQueryingForUnregisteredObjectReturnsEmptyOwn
 }
 
 func (s *queryObjectOwnerSuite) TestQueryingPolicyThatDoesNotExistReturnError() {
-	ctx, keeper, _, _ := s.setup(s.T())
+	ctx, keeper, _, _, _ := s.setup(s.T())
 
 	resp, err := keeper.ObjectOwner(ctx, &types.QueryObjectOwnerRequest{
 		PolicyId: "some-policy",
@@ -117,7 +120,7 @@ func (s *queryObjectOwnerSuite) TestQueryingPolicyThatDoesNotExistReturnError() 
 }
 
 func (s *queryObjectOwnerSuite) TestQueryingForObjectInNonExistingPolicyReturnsError() {
-	ctx, keeper, _, policyId := s.setup(s.T())
+	ctx, keeper, _, _, policyId := s.setup(s.T())
 
 	resp, err := keeper.ObjectOwner(ctx, &types.QueryObjectOwnerRequest{
 		PolicyId: policyId,

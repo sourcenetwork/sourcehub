@@ -26,6 +26,31 @@ type CmdBuilder struct {
 	params        types.Params
 	currentHeight uint64
 	cmdErr        error
+	signer        crypto.Signer
+}
+
+// BuildJWS produces a signed JWS for the specified Cmd
+func (b *CmdBuilder) BuildJWS() (string, error) {
+	if b.signer == nil {
+		return "", fmt.Errorf("CmdBuilder failed: %w", ErrSignerRequired)
+	}
+
+	payload, err := b.Build()
+	if err != nil {
+		return "", err
+	}
+
+	return SignPayload(payload, b.signer)
+}
+
+// SetSigner sets the Signer for the Builder, which will be used to produce a JWS
+func (b *CmdBuilder) SetSigner(signer crypto.Signer) {
+	b.signer = signer
+}
+
+// GetSigner returns the currently set Signer
+func (b *CmdBuilder) GetSigner() crypto.Signer {
+	return b.signer
 }
 
 // Build validates the data provided to the Builder, validates it and returns a PolicyCmdPayload or an error.

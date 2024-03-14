@@ -73,7 +73,8 @@ message UnregisterObjectCmd {
 // SetRelationshipCmd sets a Relationship in a Policy
 message SetRelationshipCmdResult {
   // Indicates whether the given Relationship previously existed, ie the Tx was a no op
-  bool record_existed = 1;
+    bool record_existed = 1;
+    RelationshipRecord record = 2;
 }
 
 // DeleteRelationshipCmdResult removes a Relationship in a Policy

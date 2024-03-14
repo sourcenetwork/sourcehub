@@ -44,18 +44,25 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 	switch c := payload.Cmd.(type) {
 	case *types.PolicyCmdPayload_SetRelationshipCmd:
 		var found auth_engine.RecordFound
+		var record *types.RelationshipRecord
 
 		cmd := relationship.SetRelationshipCommand{
 			Policy:       policy,
 			CreationTs:   payload.CreationTime,
-			Creator:      payload.Actor,
+			Creator:      msg.Creator,
 			Relationship: c.SetRelationshipCmd.Relationship,
+			Actor:        payload.Actor,
 		}
-		found, _, err = cmd.Execute(ctx, engine, authorizer)
+		found, record, err = cmd.Execute(ctx, engine, authorizer)
+		if err != nil {
+			err = fmt.Errorf("set relationship cmd: %w", err)
+			break
+		}
 
 		result.Result = &types.PolicyCmdResult_SetRelationshipResult{
 			SetRelationshipResult: &types.SetRelationshipCmdResult{
 				RecordExisted: bool(found),
+				Record:        record,
 			},
 		}
 	case *types.PolicyCmdPayload_DeleteRelationshipCmd:
@@ -67,6 +74,10 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 			Relationship: c.DeleteRelationshipCmd.Relationship,
 		}
 		found, err = cmd.Execute(ctx, engine, authorizer)
+		if err != nil {
+			err = fmt.Errorf("delete relationship cmd: %w", err)
+			break
+		}
 
 		result.Result = &types.PolicyCmdResult_DeleteRelationshipResult{
 			DeleteRelationshipResult: &types.DeleteRelationshipCmdResult{
@@ -89,6 +100,10 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 			},
 		}
 		registrationResult, record, err = cmd.Execute(ctx, engine, ctx.EventManager())
+		if err != nil {
+			err = fmt.Errorf("register object cmd: %w", err)
+			break
+		}
 
 		result.Result = &types.PolicyCmdResult_RegisterObjectResult{
 			RegisterObjectResult: &types.RegisterObjectCmdResult{
@@ -105,6 +120,10 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 			Actor:  payload.Actor,
 		}
 		count, err = cmd.Execute(ctx, engine, authorizer)
+		if err != nil {
+			err = fmt.Errorf("unregister object cmd: %w", err)
+			break
+		}
 
 		result.Result = &types.PolicyCmdResult_UnregisterObjectResult{
 			UnregisterObjectResult: &types.UnregisterObjectCmdResult{
@@ -114,11 +133,11 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 		}
 
 	default:
-		err = fmt.Errorf("PolicyCmd: unsuported command %v: %w", c, types.ErrInvalidVariant)
+		err = fmt.Errorf("unsuported command %v: %w", c, types.ErrInvalidVariant)
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("PolicyCmd failed: %v", err)
+		return nil, fmt.Errorf("PolicyCmd failed: %w", err)
 
 	}
 

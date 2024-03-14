@@ -2,6 +2,7 @@ package relationship
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sourcenetwork/sourcehub/x/acp/auth_engine"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
@@ -31,6 +32,15 @@ type RelationshipAuthorizer struct {
 // A given Relationship is only valid if for the Relationship's Object and Relation
 // the Actor has an associated permission to manage the Object, Relation pair.
 func (a *RelationshipAuthorizer) IsAuthorized(ctx context.Context, policy *types.Policy, relationship *types.Relationship, actor *types.Actor) (bool, error) {
+	resource := policy.GetResourceByName(relationship.Object.Resource)
+	if resource == nil {
+		return false, fmt.Errorf("policy %v: resource %v: not found: %w", policy.Name, relationship.Object.Resource, types.ErrAcpInput)
+	}
+	relation := resource.GetRelationByName(relationship.Relation)
+	if relation == nil {
+		return false, fmt.Errorf("policy %v: resource %v: relation %v: not found: %w", policy.Name, resource.Name, relationship.Relation, types.ErrAcpInput)
+	}
+
 	authRequest := &types.Operation{
 		Object:     relationship.Object,
 		Permission: policy.GetManagementPermissionName(relationship.Relation),

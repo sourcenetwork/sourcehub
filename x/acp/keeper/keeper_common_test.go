@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"crypto"
 	"testing"
 	"time"
 
@@ -17,10 +18,11 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	prototypes "github.com/cosmos/gogoproto/types"
+	"github.com/stretchr/testify/require"
 
+	"github.com/sourcenetwork/sourcehub/x/acp/did"
 	"github.com/sourcenetwork/sourcehub/x/acp/testutil"
 	"github.com/sourcenetwork/sourcehub/x/acp/types"
-	"github.com/stretchr/testify/require"
 )
 
 var timestamp, _ = prototypes.TimestampProto(time.Date(2024, time.January, 1, 0, 0, 0, 0, time.UTC))
@@ -62,7 +64,10 @@ func setupKeeper(t *testing.T) (sdk.Context, Keeper, *testutil.AccountKeeperStub
 	return ctx, keeper, accKeeper
 }
 
-type policyFixture struct {
-	Policy        *types.Policy
-	Relationships []*types.Relationship
+func mustGenerateActor() (string, crypto.Signer) {
+	bob, bobSigner, err := did.ProduceDID()
+	if err != nil {
+		panic(err)
+	}
+	return bob, bobSigner
 }
