@@ -24,16 +24,14 @@ func payloadSpec(params types.Params, currentHeight uint64, payload *types.Polic
 }
 
 // ValidateAndExtractCmd validates a MsgPolicyCmd and return the Cmd payload
-func ValidateAndExtractCmd(ctx context.Context, params types.Params, resolver did.Resolver, msg types.MsgPolicyCmd_SignedCmd, currentHeight uint64) (*types.PolicyCmdPayload, error) {
+func ValidateAndExtractCmd(ctx context.Context, params types.Params, resolver did.Resolver, payload string, contentType types.MsgPolicyCmd_ContentType, currentHeight uint64) (*types.PolicyCmdPayload, error) {
 	var cmd *types.PolicyCmdPayload
 	var err error
 
-	switch payload := msg.Payload.(type) {
-	case *types.MsgPolicyCmd_SignedCmd_Jws:
+	switch contentType {
+	case types.MsgPolicyCmd_JWS:
 		verifier := newJWSVerifier(resolver)
-		cmd, err = verifier.Verify(ctx, payload.Jws)
-	case *types.MsgPolicyCmd_SignedCmd_Raw:
-		err = fmt.Errorf("unsupported format raw: cmd %v: %w", payload, types.ErrInvalidVariant)
+		cmd, err = verifier.Verify(ctx, payload)
 	default:
 		err = fmt.Errorf("invalid signed command: cmd %v: %w", payload, types.ErrInvalidVariant)
 	}

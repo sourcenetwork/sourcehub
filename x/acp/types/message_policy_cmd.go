@@ -8,20 +8,19 @@ import (
 
 var _ sdk.Msg = &MsgPolicyCmd{}
 
-func NewMsgPolicyCmd(creator string) *MsgPolicyCmd {
+func NewMsgPolicyCmd(creator string, payload string, contentType MsgPolicyCmd_ContentType) *MsgPolicyCmd {
 	return &MsgPolicyCmd{
 		Creator: creator,
+		Payload: payload,
+		Type:    contentType,
 	}
 }
 
 func NewMsgPolicyCmdFromJWS(creator string, jws string) *MsgPolicyCmd {
 	return &MsgPolicyCmd{
 		Creator: creator,
-		SignedCmd: &MsgPolicyCmd_SignedCmd{
-			Payload: &MsgPolicyCmd_SignedCmd_Jws{
-				Jws: jws,
-			},
-		},
+		Type:    MsgPolicyCmd_JWS,
+		Payload: jws,
 	}
 }
 

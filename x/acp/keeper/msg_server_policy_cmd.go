@@ -24,7 +24,7 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 
 	params := k.GetParams(ctx)
 
-	payload, err := policy_cmd.ValidateAndExtractCmd(ctx, params, resolver, *msg.SignedCmd, uint64(ctx.BlockHeight()))
+	payload, err := policy_cmd.ValidateAndExtractCmd(ctx, params, resolver, msg.Payload, msg.Type, uint64(ctx.BlockHeight()))
 	if err != nil {
 		return nil, fmt.Errorf("PolicyCmd: %w", err)
 	}
@@ -38,7 +38,7 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 		return nil, fmt.Errorf("PolcyCmd: policy %v: %w", payload.PolicyId, types.ErrPolicyNotFound)
 	}
 
-	result := new(types.PolicyCmdResult)
+	result := &types.MsgPolicyCmdResponse{}
 	policy := rec.Policy
 
 	switch c := payload.Cmd.(type) {
@@ -59,7 +59,7 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 			break
 		}
 
-		result.Result = &types.PolicyCmdResult_SetRelationshipResult{
+		result.Result = &types.MsgPolicyCmdResponse_SetRelationshipResult{
 			SetRelationshipResult: &types.SetRelationshipCmdResult{
 				RecordExisted: bool(found),
 				Record:        record,
@@ -79,7 +79,7 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 			break
 		}
 
-		result.Result = &types.PolicyCmdResult_DeleteRelationshipResult{
+		result.Result = &types.MsgPolicyCmdResponse_DeleteRelationshipResult{
 			DeleteRelationshipResult: &types.DeleteRelationshipCmdResult{
 				RecordFound: bool(found),
 			},
@@ -105,7 +105,7 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 			break
 		}
 
-		result.Result = &types.PolicyCmdResult_RegisterObjectResult{
+		result.Result = &types.MsgPolicyCmdResponse_RegisterObjectResult{
 			RegisterObjectResult: &types.RegisterObjectCmdResult{
 				Result: registrationResult,
 				Record: record,
@@ -125,7 +125,7 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 			break
 		}
 
-		result.Result = &types.PolicyCmdResult_UnregisterObjectResult{
+		result.Result = &types.MsgPolicyCmdResponse_UnregisterObjectResult{
 			UnregisterObjectResult: &types.UnregisterObjectCmdResult{
 				Found:                true, //TODO true,
 				RelationshipsRemoved: uint64(count),
@@ -141,7 +141,5 @@ func (k msgServer) PolicyCmd(goCtx context.Context, msg *types.MsgPolicyCmd) (*t
 
 	}
 
-	return &types.MsgPolicyCmdResponse{
-		Result: result,
-	}, nil
+	return result, nil
 }

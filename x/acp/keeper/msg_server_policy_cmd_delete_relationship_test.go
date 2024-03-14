@@ -85,11 +85,9 @@ func TestPolicyCmd_DeleteRelationship_ObjectOwnerCanRemoveRelationship(t *testin
 	resp, err := srv.PolicyCmd(ctx, types.NewMsgPolicyCmdFromJWS(creator, jws))
 
 	want := &types.MsgPolicyCmdResponse{
-		Result: &types.PolicyCmdResult{
-			Result: &types.PolicyCmdResult_DeleteRelationshipResult{
-				DeleteRelationshipResult: &types.DeleteRelationshipCmdResult{
-					RecordFound: true,
-				},
+		Result: &types.MsgPolicyCmdResponse_DeleteRelationshipResult{
+			DeleteRelationshipResult: &types.DeleteRelationshipCmdResult{
+				RecordFound: true,
 			},
 		},
 	}
@@ -116,11 +114,9 @@ func TestPolicyCmd_DeleteRelationship_ObjectManagerCanRemoveRelationshipsForRela
 	resp, err := srv.PolicyCmd(ctx, types.NewMsgPolicyCmdFromJWS(creator, jws))
 
 	want := &types.MsgPolicyCmdResponse{
-		Result: &types.PolicyCmdResult{
-			Result: &types.PolicyCmdResult_DeleteRelationshipResult{
-				DeleteRelationshipResult: &types.DeleteRelationshipCmdResult{
-					RecordFound: true,
-				},
+		Result: &types.MsgPolicyCmdResponse_DeleteRelationshipResult{
+			DeleteRelationshipResult: &types.DeleteRelationshipCmdResult{
+				RecordFound: true,
 			},
 		},
 	}

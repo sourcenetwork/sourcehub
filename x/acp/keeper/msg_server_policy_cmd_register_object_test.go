@@ -57,18 +57,16 @@ func TestPolicyCmd_RegisterObject_RegisteringNewObjectIsSucessful(t *testing.T) 
 
 	require.Nil(t, err)
 	want := &types.MsgPolicyCmdResponse{
-		Result: &types.PolicyCmdResult{
-			Result: &types.PolicyCmdResult_RegisterObjectResult{
-				RegisterObjectResult: &types.RegisterObjectCmdResult{
-					Result: types.RegistrationResult_Registered,
-					Record: &types.RelationshipRecord{
-						CreationTime: timestamp,
-						Creator:      creator,
-						PolicyId:     pol.Id,
-						Relationship: types.NewActorRelationship("resource", "foo", "owner", alice),
-						Archived:     false,
-						Actor:        alice,
-					},
+		Result: &types.MsgPolicyCmdResponse_RegisterObjectResult{
+			RegisterObjectResult: &types.RegisterObjectCmdResult{
+				Result: types.RegistrationResult_Registered,
+				Record: &types.RelationshipRecord{
+					CreationTime: timestamp,
+					Creator:      creator,
+					PolicyId:     pol.Id,
+					Relationship: types.NewActorRelationship("resource", "foo", "owner", alice),
+					Archived:     false,
+					Actor:        alice,
 				},
 			},
 		},
@@ -117,18 +115,16 @@ func TestPolicyCmd_RegisterObject_ReregisteringObjectOwnedByUserIsNoop(t *testin
 	result, err := srv.PolicyCmd(ctx, types.NewMsgPolicyCmdFromJWS(creator, jws))
 
 	want := &types.MsgPolicyCmdResponse{
-		Result: &types.PolicyCmdResult{
-			Result: &types.PolicyCmdResult_RegisterObjectResult{
-				RegisterObjectResult: &types.RegisterObjectCmdResult{
-					Result: types.RegistrationResult_NoOp,
-					Record: &types.RelationshipRecord{
-						CreationTime: timestamp,
-						Creator:      creator,
-						PolicyId:     pol.Id,
-						Relationship: types.NewActorRelationship("resource", "foo", "owner", alice),
-						Archived:     false,
-						Actor:        alice,
-					},
+		Result: &types.MsgPolicyCmdResponse_RegisterObjectResult{
+			RegisterObjectResult: &types.RegisterObjectCmdResult{
+				Result: types.RegistrationResult_NoOp,
+				Record: &types.RelationshipRecord{
+					CreationTime: timestamp,
+					Creator:      creator,
+					PolicyId:     pol.Id,
+					Relationship: types.NewActorRelationship("resource", "foo", "owner", alice),
+					Archived:     false,
+					Actor:        alice,
 				},
 			},
 		},
@@ -185,18 +181,16 @@ func TestPolicyCmd_RegisterObject_RegisteringArchivedUserObjectUnarchivesObject(
 	resp, err := srv.PolicyCmd(ctx, types.NewMsgPolicyCmdFromJWS(creator, jws))
 
 	want := &types.MsgPolicyCmdResponse{
-		Result: &types.PolicyCmdResult{
-			Result: &types.PolicyCmdResult_RegisterObjectResult{
-				RegisterObjectResult: &types.RegisterObjectCmdResult{
-					Result: types.RegistrationResult_Unarchived,
-					Record: &types.RelationshipRecord{
-						CreationTime: timestamp,
-						Creator:      creator,
-						PolicyId:     pol.Id,
-						Relationship: types.NewActorRelationship("resource", "foo", "owner", alice),
-						Archived:     false,
-						Actor:        alice,
-					},
+		Result: &types.MsgPolicyCmdResponse_RegisterObjectResult{
+			RegisterObjectResult: &types.RegisterObjectCmdResult{
+				Result: types.RegistrationResult_Unarchived,
+				Record: &types.RelationshipRecord{
+					CreationTime: timestamp,
+					Creator:      creator,
+					PolicyId:     pol.Id,
+					Relationship: types.NewActorRelationship("resource", "foo", "owner", alice),
+					Archived:     false,
+					Actor:        alice,
 				},
 			},
 		},

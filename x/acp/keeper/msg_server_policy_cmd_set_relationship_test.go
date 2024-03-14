@@ -69,18 +69,16 @@ func TestPolicyCmd_SetRelationship_OwnerCanSetRelationshipForObjectTheyOwn(t *te
 	got, err := srv.PolicyCmd(ctx, types.NewMsgPolicyCmdFromJWS(creator, jws))
 
 	want := &types.MsgPolicyCmdResponse{
-		Result: &types.PolicyCmdResult{
-			Result: &types.PolicyCmdResult_SetRelationshipResult{
-				SetRelationshipResult: &types.SetRelationshipCmdResult{
-					RecordExisted: false,
-					Record: &types.RelationshipRecord{
-						Actor:        alice,
-						CreationTime: timestamp,
-						Creator:      creator,
-						PolicyId:     pol.Id,
-						Relationship: types.NewActorRelationship("file", "foo", "reader", alice),
-						Archived:     false,
-					},
+		Result: &types.MsgPolicyCmdResponse_SetRelationshipResult{
+			SetRelationshipResult: &types.SetRelationshipCmdResult{
+				RecordExisted: false,
+				Record: &types.RelationshipRecord{
+					Actor:        alice,
+					CreationTime: timestamp,
+					Creator:      creator,
+					PolicyId:     pol.Id,
+					Relationship: types.NewActorRelationship("file", "foo", "reader", alice),
+					Archived:     false,
 				},
 			},
 		},
@@ -134,18 +132,16 @@ func TestPolicyCmd_SetRelationship_ManagerActorCanSetRelationshipForARelationThe
 	got, err := srv.PolicyCmd(ctx, types.NewMsgPolicyCmdFromJWS(creator, jws))
 
 	want := &types.MsgPolicyCmdResponse{
-		Result: &types.PolicyCmdResult{
-			Result: &types.PolicyCmdResult_SetRelationshipResult{
-				SetRelationshipResult: &types.SetRelationshipCmdResult{
-					RecordExisted: false,
-					Record: &types.RelationshipRecord{
-						Actor:        bob,
-						CreationTime: timestamp,
-						Creator:      creator,
-						PolicyId:     pol.Id,
-						Relationship: types.NewActorRelationship("file", "foo", "reader", bob),
-						Archived:     false,
-					},
+		Result: &types.MsgPolicyCmdResponse_SetRelationshipResult{
+			SetRelationshipResult: &types.SetRelationshipCmdResult{
+				RecordExisted: false,
+				Record: &types.RelationshipRecord{
+					Actor:        bob,
+					CreationTime: timestamp,
+					Creator:      creator,
+					PolicyId:     pol.Id,
+					Relationship: types.NewActorRelationship("file", "foo", "reader", bob),
+					Archived:     false,
 				},
 			},
 		},

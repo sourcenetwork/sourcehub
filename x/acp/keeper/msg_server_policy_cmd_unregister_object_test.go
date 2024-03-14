@@ -71,12 +71,10 @@ func TestPolicyCmd_UnregisterObject_RegisteredObjectCanBeUnregisteredByAuthor(t 
 	resp, err := srv.PolicyCmd(ctx, types.NewMsgPolicyCmdFromJWS(creator, jws))
 
 	want := &types.MsgPolicyCmdResponse{
-		Result: &types.PolicyCmdResult{
-			Result: &types.PolicyCmdResult_UnregisterObjectResult{
-				UnregisterObjectResult: &types.UnregisterObjectCmdResult{
-					Found:                true,
-					RelationshipsRemoved: 2,
-				},
+		Result: &types.MsgPolicyCmdResponse_UnregisterObjectResult{
+			UnregisterObjectResult: &types.UnregisterObjectCmdResult{
+				Found:                true,
+				RelationshipsRemoved: 2,
 			},
 		},
 	}
@@ -123,15 +121,13 @@ func TestPolicyCmd_UnregisterObject_UnregisteringAnAlreadyArchivedObjectIsANoop(
 
 	// When the Creator Unregisters it
 	builder.UnregisterObject(types.NewObject("file", "foo"))
-	jws, err = builder.BuildJWS()
+	jws, _ = builder.BuildJWS()
 	resp, err := srv.PolicyCmd(ctx, types.NewMsgPolicyCmdFromJWS(creator, jws))
 
 	want := &types.MsgPolicyCmdResponse{
-		Result: &types.PolicyCmdResult{
-			Result: &types.PolicyCmdResult_UnregisterObjectResult{
-				UnregisterObjectResult: &types.UnregisterObjectCmdResult{
-					Found: true,
-				},
+		Result: &types.MsgPolicyCmdResponse_UnregisterObjectResult{
+			UnregisterObjectResult: &types.UnregisterObjectCmdResult{
+				Found: true,
 			},
 		},
 	}
