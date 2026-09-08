@@ -83,4 +83,9 @@ if [ -n "$APP_CONFIG_PATH" ]; then
     cp $APP_CONFIG_PATH /vera/config/app.toml
 fi
 
+if [ -n "$CLIENT_CONFIG_PATH" ]; then 
+    echo "CLIENT_CONFIG_PATH set: updating client config with $CLIENT_CONFIG_PATH"
+    cp $CLIENT_CONFIG_PATH /vera/config/client.toml
+fi
+
 exec "$@"
