@@ -687,6 +687,32 @@ func TestMsgServer_FinalizeRing_UnauthorizedNonPeer(t *testing.T) {
 	require.ErrorIs(t, err, types.ErrInvalidRingFinalizer)
 }
 
+func TestMsgServer_FinalizeRing_RejectsIdentityPublicKey(t *testing.T) {
+	k, authKeeper, ctx := setupOrbisKeeper(t)
+	ctx = ctx.WithValue(appparams.ExtractedDIDContextKey, testDID)
+
+	creatorAddr, _ := testAccountWithPubKey(t, ctx, authKeeper)
+	peerAddr, peerKey := setupPeerWithNodeInfo(t, k, authKeeper, ctx, "12D3KooWPeer1")
+	policyID := createOrbisRingPolicy(t, k, ctx, creatorAddr)
+
+	createRingResp, err := k.CreateRing(ctx, &types.MsgCreateRing{
+		Creator:      creatorAddr,
+		PeerNodeKeys: []string{peerKey},
+		Threshold:    1,
+		PssInterval:  types.MinPSSIntervalSeconds,
+		PolicyId:     policyID,
+	})
+	require.NoError(t, err)
+
+	_, err = k.FinalizeRing(ctx, &types.MsgFinalizeRing{
+		Creator: peerAddr,
+		RingId:  createRingResp.RingId,
+		RingPk:  strings.Repeat("00", decaf377PublicKeySize),
+	})
+	require.ErrorIs(t, err, types.ErrInvalidRing)
+	require.Empty(t, k.GetRing(ctx, createRingResp.RingId).Confirmations)
+}
+
 func TestMsgServer_FinalizeRing_RequiresAllNodes(t *testing.T) {
 	k, authKeeper, ctx := setupOrbisKeeper(t)
 	ctx = ctx.WithValue(appparams.ExtractedDIDContextKey, testDID)

@@ -37,6 +37,34 @@ func TestRingReshareSignStateHashIncludesTrustedAuthRelays(t *testing.T) {
 	require.NotEqual(t, withoutRelay, directOnly)
 }
 
+func TestDecaf377IdentityPublicKeyForgeryRejected(t *testing.T) {
+	identityBytes, err := decaf377.Encode(decaf377.Identity())
+	require.NoError(t, err)
+
+	// The underlying Schnorr equation accepts this construction for Y = 0:
+	// choose z, then publish R = z*G. No signing secret is needed.
+	z := big.NewInt(42)
+	generator, err := decaf377.Generator()
+	require.NoError(t, err)
+	rPoint, err := decaf377.ScalarMul(generator, z)
+	require.NoError(t, err)
+	rBytes, err := decaf377.Encode(rPoint)
+	require.NoError(t, err)
+	forgedSignature := append(rBytes, scalarToLittleEndian32(z)...)
+
+	ok, err := orbisfrost.Verify(identityBytes, []byte("identity-key forgery"), forgedSignature)
+	require.NoError(t, err)
+	require.True(t, ok, "regression setup must exercise the underlying identity-key vulnerability")
+
+	err = verifyDecaf377FROSTThresholdSignature(
+		hex.EncodeToString(identityBytes),
+		[]byte("identity-key forgery"),
+		forgedSignature,
+	)
+	require.ErrorIs(t, err, types.ErrInvalidThresholdSignature)
+	require.ErrorIs(t, rejectIdentityRingPublicKey(hex.EncodeToString(identityBytes)), types.ErrInvalidRing)
+}
+
 func TestMsgServer_FinalizeRingReshareByThresholdSignature_BLS12381(t *testing.T) {
 	k, authKeeper, ctx := setupOrbisKeeper(t)
 	ctx = ctx.
@@ -101,14 +129,15 @@ func TestMsgServer_FinalizeRingReshareByThresholdSignature_BLS12381(t *testing.T
 	signBytes, err := ringReshareFinalizeSignBytes(ctx.ChainID(), ring, finalizedRing)
 	require.NoError(t, err)
 
-	dst := []byte("BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_NUL_")
-	sig := new(blst.P2Affine).Sign(sk, signBytes, dst)
+	// Augmented BLS: the ring public key is prepended to the message.
+	dst := []byte(bls12381G2SignatureAugDST)
+	sig := new(blst.P2Affine).Sign(sk, signBytes, dst, pk.Compress())
 	require.NotNil(t, sig)
 
 	_, err = k.FinalizeRingReshareByThresholdSignature(ctx, &types.MsgFinalizeRingReshareByThresholdSignature{
 		Creator:         creatorAddr,
 		RingId:          ringID,
-		SignatureScheme: ThresholdSignatureSchemeBLS12381G1PKG2SigNUL,
+		SignatureScheme: ThresholdSignatureSchemeBLS12381G1PKG2SigAugV1,
 		Signature:       sig.Compress(),
 	})
 	require.NoError(t, err)

@@ -119,6 +119,9 @@ func (k *Keeper) FinalizeRing(goCtx context.Context, msg *types.MsgFinalizeRing)
 	if ring.RingPk != "" {
 		return nil, types.ErrRingAlreadyFinalized
 	}
+	if err := rejectIdentityRingPublicKey(msg.RingPk); err != nil {
+		return nil, err
+	}
 
 	signerKey, err := signerPublicKeyHex(ctx, k, msg.Creator)
 	if err != nil {
