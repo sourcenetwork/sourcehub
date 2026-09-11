@@ -2012,13 +2012,16 @@ func TestMsgServer_SubmitReportRejectsSecurityFailures(t *testing.T) {
 		report := fixture.validReport(t, committeeScopeCurrent, committeeScopeCurrent, 0)
 		_, reportID, err := reportEnvelopeCanonicalMessageAndID(&report)
 		require.NoError(t, err)
-		sig := new(blst.P2Affine).Sign(sk, []byte(reportID), []byte(bls12381G2SignatureDST))
+		// Correct ciphersuite/augmentation, but signs the report ID rather than
+		// the canonical envelope — must still be rejected.
+		pkComp := new(blst.P1Affine).From(sk).Compress()
+		sig := new(blst.P2Affine).Sign(sk, []byte(reportID), []byte(bls12381G2SignatureAugDST), pkComp)
 		require.NotNil(t, sig)
 		_, err = fixture.k.SubmitReport(fixture.ctx, &types.MsgSubmitReport{
 			Creator:         fixture.creator,
 			Report:          report,
 			ReportId:        reportID,
-			SignatureScheme: ThresholdSignatureSchemeBLS12381G1PKG2SigNUL,
+			SignatureScheme: ThresholdSignatureSchemeBLS12381G1PKG2SigAugV1,
 			Signature:       sig.Compress(),
 		})
 		require.ErrorIs(t, err, types.ErrInvalidThresholdSignature)
@@ -2212,13 +2215,15 @@ func (f reportTestFixture) signBLSReport(t *testing.T, sk *blst.SecretKey, repor
 	t.Helper()
 	message, reportID, err := reportEnvelopeCanonicalMessageAndID(&report)
 	require.NoError(t, err)
-	sig := new(blst.P2Affine).Sign(sk, message, []byte(bls12381G2SignatureDST))
+	// Augmented BLS: prepend the compressed ring public key to the message.
+	pkComp := new(blst.P1Affine).From(sk).Compress()
+	sig := new(blst.P2Affine).Sign(sk, message, []byte(bls12381G2SignatureAugDST), pkComp)
 	require.NotNil(t, sig)
 	return &types.MsgSubmitReport{
 		Creator:         f.creator,
 		Report:          report,
 		ReportId:        reportID,
-		SignatureScheme: ThresholdSignatureSchemeBLS12381G1PKG2SigNUL,
+		SignatureScheme: ThresholdSignatureSchemeBLS12381G1PKG2SigAugV1,
 		Signature:       sig.Compress(),
 	}
 }
